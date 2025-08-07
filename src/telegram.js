@@ -9,7 +9,6 @@ class TelegramLogger {
     // For now, disable Telegram to avoid unauthorized errors
     this.enabled = false;
     console.log('⚠️ Telegram logging disabled to avoid unauthorized errors');
-    this.enabled = !!(this.botToken && this.chatId);
     
     if (this.enabled) {
       console.log('📱 Telegram logging enabled');

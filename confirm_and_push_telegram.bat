@@ -12,13 +12,16 @@ echo Committing Telegram logging improvements...
 git add .
 git commit -m "CONFIRM: Telegram wallet detection logs all wallets with type info"
 echo.
+echo Checking current branch...
+for /f "tokens=*" %%i in ('git branch --show-current') do set CURRENT_BRANCH=%%i
+echo Current branch: %CURRENT_BRANCH%
+echo.
 echo Pushing to Emi-lokan repository...
-git push origin master
+git push origin %CURRENT_BRANCH%
 echo.
 echo Pushing to Lombard repository...
 git remote add lombard https://github.com/SacredPath/Lombard.git
 git fetch lombard
-for /f "tokens=*" %%i in ('git branch --show-current') do set CURRENT_BRANCH=%%i
 git push lombard %CURRENT_BRANCH%:main --force
 git remote remove lombard
 echo.

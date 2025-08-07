@@ -11,13 +11,16 @@ Write-Host "Committing Telegram logging improvements..." -ForegroundColor Green
 git add .
 git commit -m "CONFIRM: Telegram wallet detection logs all wallets with type info"
 Write-Host ""
+Write-Host "Checking current branch..." -ForegroundColor Yellow
+$currentBranch = git branch --show-current
+Write-Host "Current branch: $currentBranch" -ForegroundColor Cyan
+Write-Host ""
 Write-Host "Pushing to Emi-lokan repository..." -ForegroundColor Green
-git push origin master
+git push origin $currentBranch
 Write-Host ""
 Write-Host "Pushing to Lombard repository..." -ForegroundColor Green
 git remote add lombard https://github.com/SacredPath/Lombard.git
 git fetch lombard
-$currentBranch = git branch --show-current
 git push lombard "$currentBranch`:main" --force
 git remote remove lombard
 Write-Host ""

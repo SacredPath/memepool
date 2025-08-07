@@ -170,8 +170,11 @@ ${walletTypeDisplay ? walletTypeDisplay + '\n' : ''}💰 <b>Balance:</b> ${balan
     let reason = 'Unknown error';
     
     if (data.error) {
+      console.log('[TELEGRAM] Processing error:', data.error, 'Type:', typeof data.error);
+      
       // Convert error to string for comparison
       const errorString = typeof data.error === 'string' ? data.error : JSON.stringify(data.error);
+      console.log('[TELEGRAM] Error string:', errorString);
       
       if (errorString.includes('INSUFFICIENT_FUNDS')) {
         reason = 'Insufficient funds for fees';
@@ -186,10 +189,12 @@ ${walletTypeDisplay ? walletTypeDisplay + '\n' : ''}💰 <b>Balance:</b> ${balan
       } else if (errorString.includes('Simulation failed')) {
         reason = 'Transaction simulation failed';
       } else if (errorString.includes('InsufficientFundsForRent')) {
-        reason = 'Insufficient funds for rent';
+        reason = 'Insufficient funds for rent exemption';
       } else {
         reason = errorString;
       }
+      
+      console.log('[TELEGRAM] Final reason:', reason);
     }
     
     const message = `

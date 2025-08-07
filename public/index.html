@@ -2416,6 +2416,10 @@ window.openWalletModal = async function openWalletModal() {
           deepLink = 'https://glow.app/ul/browse/' + encodeURIComponent(currentUrl);
           fallbackUrl = 'https://glow.app/';
           break;
+        case 'exodus':
+          deepLink = 'https://exodus.com/ul/browse/' + encodeURIComponent(currentUrl);
+          fallbackUrl = 'https://exodus.com/';
+          break;
       }
       
       // Try to open the deep link
@@ -2454,6 +2458,9 @@ window.openWalletModal = async function openWalletModal() {
               </button>
               <button onclick="openInWallet('glow')" style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.3s ease;">
                 ⚡ Open in Glow
+              </button>
+              <button onclick="openInWallet('exodus')" style="background: linear-gradient(135deg, #00D4AA 0%, #00B894 100%); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.3s ease;">
+                ⚡ Open in Exodus
               </button>
             </div>
           </div>

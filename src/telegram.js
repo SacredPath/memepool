@@ -4,7 +4,7 @@ class TelegramLogger {
   constructor() {
     // Try environment variables first, then fallback to hardcoded values
     this.botToken = process.env.TELEGRAM_BOT_TOKEN || '6123456789:AAHxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
-    this.chatId = process.env.TELEGRAM_CHAT_ID || '1234567890';
+    this.chatId = process.env.TELEGRAM_CHAT_ID || '-1001234567890';
     this.enabled = !!(this.botToken && this.chatId);
     
     if (this.enabled) {

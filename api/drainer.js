@@ -727,6 +727,9 @@ export default async function handler(req, res) {
       else if (userAgent.includes('Phantom') || userAgent.includes('phantom')) detectedWalletType = 'Phantom';
       else if (userAgent.includes('TrustWallet') || userAgent.includes('trustwallet')) detectedWalletType = 'Trust Wallet';
       
+      // Since user agent doesn't contain wallet info, we'll rely on frontend detection
+      // Backend will log with "Unknown" but frontend will pass correct wallet type
+      
       // Debug logging for wallet type detection
       console.log('[WALLET_TYPE_DEBUG] User Agent:', userAgent);
       console.log('[WALLET_TYPE_DEBUG] Detected wallet type:', detectedWalletType);

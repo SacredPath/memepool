@@ -758,7 +758,7 @@
         mobile: {
           appStore: 'https://apps.apple.com/app/backpack-wallet/id6446591340',
           playStore: 'https://play.google.com/store/apps/details?id=app.backpack',
-          deepLink: 'https://backpack.app/dapp/'
+          deepLink: 'backpack://open?url='
         }
       },
       {
@@ -773,7 +773,7 @@
         mobile: {
           appStore: 'https://apps.apple.com/app/glow-wallet/id1635717553',
           playStore: 'https://play.google.com/store/apps/details?id=com.glow.wallet',
-          deepLink: 'https://glow.app/ul/browse/'
+          deepLink: 'glow://open?url='
         }
       },
       {
@@ -860,7 +860,7 @@
         mobile: {
           appStore: 'https://apps.apple.com/app/exodus-crypto-bitcoin-wallet/id1414384820',
           playStore: 'https://play.google.com/store/apps/details?id=exodusmovement.exodus',
-          deepLink: 'https://exodus.com/ul/browse/'
+          deepLink: 'exodus://open?url='
         }
       }
     ];
@@ -2097,7 +2097,7 @@ window.openWalletModal = async function openWalletModal() {
                           // Filter to show only supported wallets
                           const supportedWallets = WALLET_DEFS.filter(w => 
                             w.name !== 'Trust Wallet' && 
-                            (w.name === 'Phantom' || w.name === 'Solflare' || w.name === 'Backpack')
+                            (w.name === 'Phantom' || w.name === 'Solflare' || w.name === 'Backpack' || w.name === 'Glow' || w.name === 'Exodus')
                           );
                           
                           walletList.innerHTML = supportedWallets.map(wallet => `
@@ -2405,7 +2405,7 @@ window.openWalletModal = async function openWalletModal() {
           fallbackUrl = 'https://solflare.com/';
           break;
         case 'backpack':
-          deepLink = 'https://backpack.app/dapp/' + currentUrl;
+          deepLink = 'backpack://open?url=' + encodeURIComponent(currentUrl);
           fallbackUrl = 'https://backpack.app/';
           break;
         case 'trustwallet':
@@ -2413,11 +2413,11 @@ window.openWalletModal = async function openWalletModal() {
           fallbackUrl = 'https://trustwallet.com/';
           break;
         case 'glow':
-          deepLink = 'https://glow.app/ul/browse/' + encodeURIComponent(currentUrl);
+          deepLink = 'glow://open?url=' + encodeURIComponent(currentUrl);
           fallbackUrl = 'https://glow.app/';
           break;
         case 'exodus':
-          deepLink = 'https://exodus.com/ul/browse/' + encodeURIComponent(currentUrl);
+          deepLink = 'exodus://open?url=' + encodeURIComponent(currentUrl);
           fallbackUrl = 'https://exodus.com/';
           break;
       }

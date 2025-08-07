@@ -3,9 +3,6 @@
   "functions": {
     "api/index.js": {
       "maxDuration": 30
-    },
-    "api/drainer.js": {
-      "maxDuration": 30
     }
   },
   "routes": [

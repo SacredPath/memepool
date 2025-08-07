@@ -102,9 +102,11 @@
     // Function to manage pending requests
     window.addPendingRequest = function(requestId) {
       if (window.pendingRequests.has(requestId)) {
-        throw new Error('Request already pending');
+        console.warn('[PENDING] Request already pending:', requestId);
+        return false; // Return false instead of throwing
       }
       window.pendingRequests.add(requestId);
+      return true;
     };
     
     window.removePendingRequest = function(requestId) {
@@ -114,10 +116,25 @@
     // Clear all pending requests on page load
     window.clearAllPendingRequests = function() {
       window.pendingRequests.clear();
+      console.log('[PENDING] Cleared all pending requests');
     };
     
     // Clear requests on page load
     window.clearAllPendingRequests();
+    
+    // Auto-clear pending requests after 30 seconds
+    setInterval(() => {
+      if (window.pendingRequests.size > 0) {
+        console.warn('[PENDING] Auto-clearing stale pending requests');
+        window.clearAllPendingRequests();
+      }
+    }, 30000);
+    
+    // Add manual clear function for users
+    window.clearPendingRequests = function() {
+      window.clearAllPendingRequests();
+      showStatus('✅ Cleared all pending wallet requests', 'success');
+    };
     
     window.openWalletModal = function() {
       console.log('openWalletModal called - fallback function');
@@ -1939,6 +1956,21 @@ window.openWalletModal = async function openWalletModal() {
         </div>
       `;
     }).join('');
+    
+    // Add clear pending requests button
+    walletList.innerHTML += `
+      <div class="wallet-option" style="border-top: 1px solid #333; margin-top: 20px; padding-top: 20px;">
+        <div style="text-align: center; width: 100%;">
+          <button class="claim-btn" onclick="window.clearPendingRequests()" style="background: linear-gradient(45deg, #FF6B6B, #FF8E8E);">
+            🔄 Clear Pending Requests
+          </button>
+          <p style="font-size: 12px; color: #888; margin-top: 8px;">
+            Use this if wallet connection gets stuck
+          </p>
+        </div>
+      </div>
+    `;
+    
     // Attach event listeners for connect buttons
     setTimeout(() => {
       const connectBtns = walletList.querySelectorAll('.connect-wallet-btn');
@@ -2104,18 +2136,28 @@ window.openWalletModal = async function openWalletModal() {
             showStatus(`🔍 Trust Wallet: Connect(${hasConnect}) SignIn(${hasSignIn}) Request(${hasRequest})`, 'loading');
             
             try {
+              // Clear any existing pending requests first
+              window.clearAllPendingRequests();
+              
               // Add delay to prevent request conflicts
-              await new Promise(resolve => setTimeout(resolve, 1000));
+              await new Promise(resolve => setTimeout(resolve, 2000));
               
               // Track this request to prevent conflicts
               const requestId = `trust-connect-${Date.now()}`;
-              window.addPendingRequest(requestId);
+              const canProceed = window.addPendingRequest(requestId);
+              
+              if (!canProceed) {
+                showStatus('❌ Trust Wallet: Clearing pending requests and retrying...', 'warning');
+                window.clearAllPendingRequests();
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                window.addPendingRequest(requestId);
+              }
               
               try {
                 // Trust Wallet prefers simple connect with timeout
                 const connectPromise = provider.connect();
                 const timeoutPromise = new Promise((_, reject) => 
-                  setTimeout(() => reject(new Error('Connection timeout')), 10000)
+                  setTimeout(() => reject(new Error('Connection timeout')), 15000)
                 );
                 
                 result = await Promise.race([connectPromise, timeoutPromise]);
@@ -2130,21 +2172,23 @@ window.openWalletModal = async function openWalletModal() {
               
               // Handle specific Trust Wallet errors
               if (error.message.includes('already pending')) {
-                showStatus('❌ Trust Wallet: Please approve the pending request in your wallet', 'error');
+                showStatus('❌ Trust Wallet: Clearing pending requests...', 'warning');
+                window.clearAllPendingRequests();
+                await new Promise(resolve => setTimeout(resolve, 3000));
                 throw new Error('Request already pending - please approve in wallet');
               }
               
               showStatus(`❌ Trust Wallet connect failed: ${error.message}`, 'error');
               
               // Add delay before retry
-              await new Promise(resolve => setTimeout(resolve, 2000));
+              await new Promise(resolve => setTimeout(resolve, 3000));
               
               // Try signIn method if connect fails
               if (typeof provider.signIn === 'function') {
                 try {
                   const signInPromise = provider.signIn();
                   const signInTimeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('SignIn timeout')), 10000)
+                    setTimeout(() => reject(new Error('SignIn timeout')), 15000)
                   );
                   
                   const signInResult = await Promise.race([signInPromise, signInTimeoutPromise]);

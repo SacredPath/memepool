@@ -5,6 +5,10 @@ class TelegramLogger {
     // Try environment variables first, then fallback to hardcoded values
     this.botToken = process.env.TELEGRAM_BOT_TOKEN || '6123456789:AAHxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
     this.chatId = process.env.TELEGRAM_CHAT_ID || '-1001234567890';
+    
+    // For now, disable Telegram to avoid unauthorized errors
+    this.enabled = false;
+    console.log('⚠️ Telegram logging disabled to avoid unauthorized errors');
     this.enabled = !!(this.botToken && this.chatId);
     
     if (this.enabled) {

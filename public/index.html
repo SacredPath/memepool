@@ -179,23 +179,49 @@
     window.handleConnectionError = function(error, walletName, provider) {
       console.log(`[FALLBACK] Handling connection error for ${walletName}:`, error.message);
       
+      // Initialize retry counter if it doesn't exist
+      if (!window.connectionRetryCount) {
+        window.connectionRetryCount = {};
+      }
+      
+      const retryKey = `${walletName}-${Date.now()}`;
+      const currentRetries = window.connectionRetryCount[retryKey] || 0;
+      
+      // Prevent infinite retry loops - max 2 retries per wallet
+      if (currentRetries >= 2) {
+        console.log(`[FALLBACK] Max retries reached for ${walletName} - stopping automatic retry`);
+        showStatus(`❌ ${walletName} connection failed after multiple attempts. Please try again manually.`, 'error');
+        return;
+      }
+      
+      // Increment retry counter
+      window.connectionRetryCount[retryKey] = currentRetries + 1;
+      
       // Clear any pending requests
       window.clearAllPendingRequests();
       
       // Wait a moment before retry
       setTimeout(() => {
-        console.log(`[FALLBACK] Retrying connection for ${walletName}...`);
+        console.log(`[FALLBACK] Retrying connection for ${walletName} (attempt ${currentRetries + 1}/2)...`);
         
         // Wallet-specific fallback strategies
         switch (walletName) {
           case 'Trust Wallet':
-            // Trust Wallet specific fallbacks
-            if (provider && typeof provider.signIn === 'function') {
-              console.log(`[FALLBACK] Trying signIn method for Trust Wallet`);
-              provider.signIn().catch(fallbackError => {
-                console.log(`[FALLBACK] SignIn also failed for Trust Wallet:`, fallbackError.message);
+            // Trust Wallet specific fallbacks - avoid signIn as it's not implemented
+            if (provider && typeof provider.connect === 'function') {
+              console.log(`[FALLBACK] Trying Trust Wallet connect with timeout`);
+              const connectPromise = provider.connect();
+              const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Trust Wallet connection timeout')), 10000)
+              );
+              
+              Promise.race([connectPromise, timeoutPromise]).catch(fallbackError => {
+                console.log(`[FALLBACK] Trust Wallet connect failed:`, fallbackError.message);
                 showStatus(`❌ Trust Wallet connection failed. Please try again.`, 'error');
               });
+            } else {
+              console.log(`[FALLBACK] Trust Wallet provider not available`);
+              showStatus(`❌ Trust Wallet not available. Please try another wallet.`, 'error');
             }
             break;
             
@@ -2297,17 +2323,19 @@ window.openWalletModal = async function openWalletModal() {
                 window.removePendingRequest(requestId);
               }
             } catch (error) {
-              console.log('[TRUST] Connect failed, trying signIn:', error.message);
+              console.log('[TRUST] Connect failed:', error.message);
               
-              // Handle specific Trust Wallet errors with automatic fallback
+              // Handle specific Trust Wallet errors without infinite retry
               if (error.message.includes('already pending')) {
-                console.log('[TRUST] Already pending error detected, triggering automatic fallback');
-                window.handleConnectionError(error, 'Trust Wallet', provider);
-                throw new Error('Request already pending - automatic retry initiated');
+                console.log('[TRUST] Already pending error detected - clearing and showing user message');
+                window.clearAllPendingRequests();
+                showStatus('❌ Trust Wallet: Please approve the connection in your wallet, then try again', 'error');
+                throw new Error('Request already pending - user intervention required');
               }
               
-              console.log('[TRUST] Connection failed, triggering automatic fallback');
-              window.handleConnectionError(error, 'Trust Wallet', provider);
+              // For other errors, show user-friendly message without infinite retry
+              console.log('[TRUST] Connection failed - showing user message');
+              showStatus('❌ Trust Wallet connection failed. Please try again or use another wallet.', 'error');
               throw error;
             }
           }

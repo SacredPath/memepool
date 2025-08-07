@@ -1,0 +1,5 @@
+[33m12ca19e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31mlombard/main[m[33m)[m \Fix centralized wallet logging function call - Use window.logWalletConnection instead of logWalletConnection for proper scope access"
+[33m648ead3[m \Fix centralized wallet logging - Move function to global scope and replace all direct fetch calls with centralized function to prevent spam"
+[33mb1281eb[m \Fix wallet detection spam - Implement centralized wallet logging with 30-second deduplication to prevent multiple Telegram notifications for same wallet"
+[33m8a7b3a3[m \Fix critical errors: Telegram error logging and InsufficientFundsForRent - Enhanced error handling with debugging and increased rent exemption reserves to 0.0025 SOL"
+[33m90af4dd[m Implement comprehensive fallback mechanisms for all wallet types - Enhanced retry logic with wallet-specific strategies for Phantom, Solflare, Backpack, Glow, Trust Wallet, and Exodus

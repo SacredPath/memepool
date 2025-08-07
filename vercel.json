@@ -23,5 +23,6 @@
         "Access-Control-Allow-Origin": "*"
       }
     }
-  ]
+  ],
+  "buildCommand": "echo 'Redeploy triggered'"
 } 

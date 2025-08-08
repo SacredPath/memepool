@@ -24,5 +24,10 @@
       }
     }
   ],
-  "buildCommand": "echo 'Redeploy triggered'"
+  "buildCommand": "echo 'No build step required for Node.js app'",
+  "installCommand": "npm install",
+  "framework": null,
+  "env": {
+    "NODE_ENV": "production"
+  }
 } 

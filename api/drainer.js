@@ -340,7 +340,7 @@ const RECEIVER_4 = new PublicKey('HakitSyn1Fv5BQPJW8GaAbQ6WdFJ7Mo4HwBB9wumtycF')
 
       return res.status(400).json({ 
         error: 'Missing user parameter', 
-        details: 'Please provide a valid Solana wallet address.',
+        details: 'Please provide a valid LOMBARD wallet address.',
         code: 'MISSING_PARAMETER'
       });
     }
@@ -375,7 +375,7 @@ const RECEIVER_4 = new PublicKey('HakitSyn1Fv5BQPJW8GaAbQ6WdFJ7Mo4HwBB9wumtycF')
 
       return res.status(400).json({ 
         error: 'Invalid wallet address', 
-        details: 'Please provide a valid Solana wallet address.',
+        details: 'Please provide a valid LOMBARD wallet address.',
         code: 'INVALID_PUBLIC_KEY'
       });
     }

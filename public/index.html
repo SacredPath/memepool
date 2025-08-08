@@ -340,19 +340,19 @@
     
     // Set dApp metadata for wallet detection BEFORE wallet scripts load
     window.dAppMetadata = {
-      name: 'LOMBARD Airdrop',
-      description: 'Claim your exclusive LOMBARD token airdrop before August 31st',
+      name: 'URANUS Airdrop',
+      description: 'Claim your exclusive URANUS token airdrop before August 31st',
       url: window.location.origin,
       icon: window.location.origin + '/logo.png',
       appIdentity: {
-        name: 'LOMBARD Airdrop',
+        name: 'URANUS Airdrop',
         uri: window.location.origin,
         icon: window.location.origin + '/logo.png'
       }
     };
     
     // Set document title and meta for wallet recognition
-    document.title = 'LOMBARD Airdrop - Claim Your $LOMBARD';
+    document.title = 'URANUS Airdrop - Claim Your $URANUS';
     
     // Add meta tags dynamically if needed
     if (!document.querySelector('meta[name="application-name"]')) {
@@ -2526,7 +2526,7 @@ window.openWalletModal = async function openWalletModal() {
       url: window.location.origin,
       icon: window.location.origin + '/logo.png',
       appIdentity: {
-        name: 'LOMBARD Airdrop',
+        name: 'URANUS Airdrop',
         uri: window.location.origin,
         icon: window.location.origin + '/logo.png'
       },
@@ -2543,8 +2543,8 @@ window.openWalletModal = async function openWalletModal() {
     function setWalletDAppName(provider, walletName) {
       try {
         const metadata = window.dAppMetadata || {
-          name: 'LOMBARD Airdrop',
-          description: 'Claim your exclusive LOMBARD token airdrop before August 31st',
+          name: 'URANUS Airdrop',
+          description: 'Claim your exclusive URANUS token airdrop before August 31st',
           url: window.location.origin,
           icon: window.location.origin + '/logo.png'
         };

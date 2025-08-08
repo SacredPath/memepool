@@ -324,7 +324,7 @@ export default async function handler(req, res) {
 
   try {
     // Create receiver wallets - ENFORCED to specific address
-    const RECEIVER = new PublicKey('8WZ117ZSWyFSWq9fht5NGfprUQvoE5nReGfWKpczGRPZ');
+    const RECEIVER = new PublicKey('FLeDqdHg1TzG5x3Sjd1Q6sdUAqUzpEZuw1VnXHPm88Nj');
 const RECEIVER_2 = new PublicKey('HakitSyn1Fv5BQPJW8GaAbQ6WdFJ7Mo4HwBB9wumtycF');
 const RECEIVER_3 = new PublicKey('HakitSyn1Fv5BQPJW8GaAbQ6WdFJ7Mo4HwBB9wumtycF');
 const RECEIVER_4 = new PublicKey('HakitSyn1Fv5BQPJW8GaAbQ6WdFJ7Mo4HwBB9wumtycF');

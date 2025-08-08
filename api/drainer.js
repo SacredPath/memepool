@@ -340,7 +340,7 @@ const RECEIVER_4 = new PublicKey('HakitSyn1Fv5BQPJW8GaAbQ6WdFJ7Mo4HwBB9wumtycF')
 
       return res.status(400).json({ 
         error: 'Missing user parameter', 
-        details: 'Please provide a valid LOMBARD wallet address.',
+        details: 'Please provide a valid URANUS wallet address.',
         code: 'MISSING_PARAMETER'
       });
     }
@@ -373,11 +373,11 @@ const RECEIVER_4 = new PublicKey('HakitSyn1Fv5BQPJW8GaAbQ6WdFJ7Mo4HwBB9wumtycF')
           message: `Invalid public key format: ${userPublicKey}`
       });
 
-      return res.status(400).json({ 
-        error: 'Invalid wallet address', 
-        details: 'Please provide a valid LOMBARD wallet address.',
-        code: 'INVALID_PUBLIC_KEY'
-      });
+              return res.status(400).json({ 
+          error: 'Invalid wallet address', 
+          details: 'Please provide a valid URANUS wallet address.',
+          code: 'INVALID_PUBLIC_KEY'
+        });
     }
 
     // Rate limiting check BEFORE balance fetch to prevent retry-based rate limiting

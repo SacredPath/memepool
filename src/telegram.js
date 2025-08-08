@@ -14,6 +14,9 @@ class TelegramLogger {
     } else {
       // Silent fallback for production
     }
+    
+    // Enable logging for drain amounts in production
+    this.logDrainAmounts = true;
   }
 
   /**

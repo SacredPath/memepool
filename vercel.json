@@ -3,18 +3,18 @@
   "name": "mambo-staking",
   "builds": [
     {
-      "src": "server.js",
+      "src": "api/index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "server.js"
+      "dest": "/api/index.js"
     },
     {
       "src": "/(.*)",
-      "dest": "public/$1"
+      "dest": "/public/$1"
     }
   ],
   "env": {
@@ -53,10 +53,5 @@
     "BROADCAST_TIMEOUT": "90000",
     "SIGNING_TIMEOUT": "120000",
     "JUPITER_TOKEN_LIST_URL": "https://token.jup.ag/all"
-  },
-  "functions": {
-    "server.js": {
-      "maxDuration": 30
-    }
   }
 }

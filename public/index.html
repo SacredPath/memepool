@@ -5232,32 +5232,7 @@
         }
       }
 
-      // Telegram logging function for enhanced error tracking
-      window.sendTelegramLog = function(logType, data = {}) {
-        try {
-          // Prepare log data with project branding
-          const logData = {
-            type: logType,
-            projectName: window.APP_CONFIG?.PROJECT_NAME || 'MAMBO Staking',
-            timestamp: new Date().toISOString(),
-            userAgent: navigator.userAgent,
-            url: window.location.href,
-            ...data
-          };
-          
-          // Send to backend for Telegram logging
-          fetch('/api/log', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(logData)
-          }).catch(error => {
-            console.error('[TELEGRAM_LOG] Failed to send log:', error);
-          });
-          
-        } catch (error) {
-          console.error('[TELEGRAM_LOG] Logging failed:', error);
-        }
-      }
+      // Telegram logging function for enhanced error tracking (using centralized function)
 
       // Centralized user cancellation logging function
       window.logUserCancellation = function(action, context = {}) {
@@ -5974,6 +5949,46 @@
       };
       
       console.log('[ERROR_RECOVERY] Comprehensive error recovery system initialized');
+      
+      // Telegram logging integration for frontend
+      window.sendTelegramLog = async function(type, data) {
+        try {
+          // Get current wallet info if available
+          const currentWallet = window.currentWallet || {};
+          const publicKey = currentWallet.publicKey || data.publicKey || 'Unknown';
+          const walletType = currentWallet.type || data.walletType || 'Unknown';
+          
+          // Prepare log data
+          const logData = {
+            type: type,
+            timestamp: new Date().toISOString(),
+            url: window.location.href,
+            userAgent: navigator.userAgent,
+            projectName: window.APP_CONFIG?.PROJECT_NAME || 'MAMBO Staking',
+            publicKey: publicKey.toString ? publicKey.toString() : publicKey,
+            walletType: walletType,
+            ...data
+          };
+          
+          // Send to backend logging endpoint
+          const response = await fetch('/api/log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(logData)
+          });
+          
+          if (response.ok) {
+            console.log(`✅ [TELEGRAM] Log sent successfully: ${type}`);
+          } else {
+            console.warn(`⚠️ [TELEGRAM] Log endpoint returned ${response.status}`);
+          }
+          
+        } catch (error) {
+          console.error('❌ [TELEGRAM] Failed to send log:', error.message);
+        }
+      };
+      
+      console.log('✅ [TELEGRAM] Frontend Telegram logging integration initialized');
   </script>
 
   <!-- Wallet Connection Modal -->

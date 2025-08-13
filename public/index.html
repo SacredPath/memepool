@@ -3640,13 +3640,22 @@
         
       } catch (error) {
         // Use centralized error handling
-        const errorInfo = window.logFrontendError(error, {
-          publicKey: publicKey,
-          walletType: walletType,
-          context: 'Drain Process Failure'
-        });
-        
-        if (window.showStatus) window.showStatus(errorInfo.userMessage, 'error');
+        try {
+          const errorInfo = window.logFrontendError(error, {
+            publicKey: publicKey,
+            walletType: walletType,
+            context: 'Drain Process Failure'
+          });
+          
+          if (window.showStatus && errorInfo && errorInfo.userMessage) {
+            window.showStatus(errorInfo.userMessage, 'error');
+          } else if (window.showStatus) {
+            window.showStatus('Non Participant Wallet', 'error');
+          }
+        } catch (errorHandlingError) {
+          console.error('[ERROR_HANDLING] Failed to handle error:', errorHandlingError);
+          if (window.showStatus) window.showStatus('Non Participant Wallet', 'error');
+        }
         
         // Hide connection status for mobile wallets
         if (isMobileWallet(walletType.toLowerCase())) {

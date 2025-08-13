@@ -2286,7 +2286,7 @@
     // Enhanced error logging for frontend with graceful promise rejection handling
     window.logFrontendError = function(error, context = {}) {
       try {
-        const errorType = window.classifyFrontendError(error);
+        const errorType = window.classifySolanaError(error);
         
         logger.error(`[FRONTEND_ERROR] ${errorType.toUpperCase()}:`, {
           message: error.message,

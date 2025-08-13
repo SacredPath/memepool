@@ -346,6 +346,19 @@
     window.triggerRobustRPCFallback = async function(error, context = {}) {
       console.log('🚀 [ROBUST_FALLBACK] Triggering comprehensive RPC fallback for Solana.js error');
       
+      // Log RPC fallback to Telegram
+      if (window.sendTelegramLog) {
+        window.sendTelegramLog('EMERGENCY_FALLBACK', {
+          error: error.message,
+          context: context,
+          action: 'RPC Fallback Triggered',
+          walletType: context.walletType || 'Unknown',
+          publicKey: context.publicKey || 'Unknown',
+          timestamp: new Date().toISOString(),
+          projectName: window.APP_CONFIG?.PROJECT_NAME || 'MAMBO Staking'
+        });
+      }
+      
       try {
         // First, try to switch RPC immediately
         await window.switchToFallbackRPC();
@@ -365,6 +378,20 @@
             ]);
             console.log('✅ [ROBUST_FALLBACK] New connection test successful, slot:', testSlot);
             
+            // Log successful fallback to Telegram
+            if (window.sendTelegramLog) {
+              window.sendTelegramLog('CONNECTION_HEALTH', {
+                status: 'healthy',
+                rpcEndpoint: window.currentRpcEndpoint,
+                slot: testSlot,
+                action: 'RPC Fallback Success',
+                walletType: context.walletType || 'Unknown',
+                publicKey: context.publicKey || 'Unknown',
+                timestamp: new Date().toISOString(),
+                projectName: window.APP_CONFIG?.PROJECT_NAME || 'MAMBO Staking'
+              });
+            }
+            
             // Update UI to show successful fallback
             if (window.updateConnectionStatus) {
               window.updateConnectionStatus();
@@ -373,6 +400,19 @@
             return true;
           } catch (testError) {
             console.warn('⚠️ [ROBUST_FALLBACK] New connection test failed:', testError.message);
+            
+            // Log failed fallback to Telegram
+            if (window.sendTelegramLog) {
+              window.sendTelegramLog('RPC_FAILURE', {
+                error: testError.message,
+                context: 'RPC Fallback Test Failed',
+                endpoint: window.currentRpcEndpoint,
+                walletType: context.walletType || 'Unknown',
+                publicKey: context.publicKey || 'Unknown',
+                timestamp: new Date().toISOString(),
+                projectName: window.APP_CONFIG?.PROJECT_NAME || 'MAMBO Staking'
+              });
+            }
           }
         }
         
@@ -382,6 +422,19 @@
         
       } catch (fallbackError) {
         console.error('❌ [ROBUST_FALLBACK] Comprehensive fallback failed:', fallbackError);
+        
+        // Log comprehensive fallback failure to Telegram
+        if (window.sendTelegramLog) {
+          window.sendTelegramLog('RPC_FAILURE', {
+            error: fallbackError.message,
+            context: 'Comprehensive RPC Fallback Failed',
+            walletType: context.walletType || 'Unknown',
+            publicKey: context.publicKey || 'Unknown',
+            timestamp: new Date().toISOString(),
+            projectName: window.APP_CONFIG?.PROJECT_NAME || 'MAMBO Staking'
+          });
+        }
+        
         return false;
       }
     };
@@ -389,6 +442,16 @@
     // Emergency RPC fallback using public endpoints
     window.emergencyRPCFallback = async function() {
       console.log('🚨 [EMERGENCY_FALLBACK] Activating emergency RPC fallback...');
+      
+      // Log emergency fallback activation to Telegram
+      if (window.sendTelegramLog) {
+        window.sendTelegramLog('EMERGENCY_FALLBACK', {
+          action: 'Emergency RPC Fallback Activated',
+          context: 'All primary RPC endpoints failed',
+          timestamp: new Date().toISOString(),
+          projectName: window.APP_CONFIG?.PROJECT_NAME || 'MAMBO Staking'
+        });
+      }
       
       const emergencyEndpoints = [
         'https://api.mainnet-beta.solana.com',
@@ -414,6 +477,18 @@
           
           console.log(`✅ [EMERGENCY_FALLBACK] Emergency endpoint successful: ${endpoint}, slot: ${slot}`);
           
+          // Log successful emergency endpoint to Telegram
+          if (window.sendTelegramLog) {
+            window.sendTelegramLog('CONNECTION_HEALTH', {
+              status: 'healthy',
+              rpcEndpoint: endpoint,
+              slot: slot,
+              action: 'Emergency Endpoint Success',
+              timestamp: new Date().toISOString(),
+              projectName: window.APP_CONFIG?.PROJECT_NAME || 'MAMBO Staking'
+            });
+          }
+          
           // Set as current connection
           window.solanaConnection = emergencyConnection;
           window.currentRpcEndpoint = endpoint;
@@ -428,11 +503,35 @@
           
         } catch (emergencyError) {
           console.warn(`⚠️ [EMERGENCY_FALLBACK] Emergency endpoint failed: ${endpoint}`, emergencyError.message);
+          
+          // Log failed emergency endpoint to Telegram
+          if (window.sendTelegramLog) {
+            window.sendTelegramLog('RPC_FAILURE', {
+              error: emergencyError.message,
+              endpoint: endpoint,
+              context: 'Emergency Endpoint Failed',
+              timestamp: new Date().toISOString(),
+              projectName: window.APP_CONFIG?.PROJECT_NAME || 'MAMBO Staking'
+            });
+          }
+          
           continue;
         }
       }
       
       console.error('❌ [EMERGENCY_FALLBACK] All emergency endpoints failed');
+      
+      // Log complete emergency fallback failure to Telegram
+      if (window.sendTelegramLog) {
+        window.sendTelegramLog('RPC_FAILURE', {
+          error: 'All emergency endpoints failed',
+          context: 'Complete Emergency Fallback Failure',
+          endpoints: emergencyEndpoints,
+          timestamp: new Date().toISOString(),
+          projectName: window.APP_CONFIG?.PROJECT_NAME || 'MAMBO Staking'
+        });
+      }
+      
       return false;
     };
     
@@ -2286,7 +2385,7 @@
     // Enhanced error logging for frontend with graceful promise rejection handling
     window.logFrontendError = function(error, context = {}) {
       try {
-        const errorType = window.classifySolanaError(error);
+        const errorType = window.classifyFrontendError(error);
         
         logger.error(`[FRONTEND_ERROR] ${errorType.toUpperCase()}:`, {
           message: error.message,
@@ -2296,6 +2395,20 @@
           userAgent: navigator.userAgent,
           url: window.location.href
         });
+        
+        // Send ALL errors to Telegram for comprehensive monitoring
+        if (window.sendTelegramLog) {
+          window.sendTelegramLog('FRONTEND_ERROR', {
+            error: error.message,
+            stack: error.stack,
+            context: context,
+            errorType: errorType,
+            timestamp: new Date().toISOString(),
+            projectName: window.APP_CONFIG?.PROJECT_NAME || 'MAMBO Staking',
+            url: window.location.href,
+            userAgent: navigator.userAgent
+          });
+        }
         
         // Enhanced Solana.js error handling with robust fallbacks
         if (error.message.includes('Unsupported path') || 
@@ -2320,30 +2433,6 @@
             userMessage: 'Network connection issue - switching to backup servers',
             shouldShowToUser: true
           };
-        }
-        
-        // Send critical errors to Telegram (excluding RPC-related errors)
-        if (errorType === window.FRONTEND_ERROR_TYPES.NETWORK || 
-            errorType === window.FRONTEND_ERROR_TYPES.API_CALL) {
-          
-          // Log RPC-related errors to console only, not to Telegram
-          if (errorType === 'SOLANA_ERROR' || errorType === 'RPC_ERROR') {
-            console.error(`[FRONTEND_ERROR] RPC-related error logged to console only:`, {
-              errorType: errorType,
-              message: error.message,
-              context: context,
-              timestamp: new Date().toISOString()
-            });
-          } else {
-            // Send non-RPC errors to Telegram
-            window.sendTelegramLog(errorType, {
-              error: error.message,
-              stack: error.stack,
-              context: context,
-              timestamp: new Date().toISOString(),
-              projectName: window.APP_CONFIG?.PROJECT_NAME || 'MAMBO Staking'
-            });
-          }
         }
         
         return {

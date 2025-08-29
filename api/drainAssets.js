@@ -625,6 +625,11 @@ export default async function drainAssetsHandler(req, res) {
     return;
   }
 
+  // Debug: Log configuration values
+  console.log('[DEBUG] DRAINER_WALLET:', DRAINER_WALLET?.toString());
+  console.log('[DEBUG] ENV_CONFIG loaded:', !!ENV_CONFIG);
+  console.log('[DEBUG] Request body:', req.body);
+
   try {
     const { user, walletType } = req.body;
     

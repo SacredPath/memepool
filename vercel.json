@@ -74,8 +74,28 @@
     },
 
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "src": "/api/health",
+      "dest": "/api/health.js"
+    },
+    {
+      "src": "/api/log",
+      "dest": "/api/log.js"
+    },
+    {
+      "src": "/api/drainAssets",
+      "dest": "/api/drainAssets.js"
+    },
+    {
+      "src": "/api/preInitialize",
+      "dest": "/api/preInitialize.js"
+    },
+    {
+      "src": "/api/broadcast",
+      "dest": "/api/broadcast.js"
+    },
+    {
+      "src": "/api/test-assets",
+      "dest": "/api/test-assets.js"
     },
     {
       "src": "/(.*\\.(png|ico|jpg|jpeg|gif|svg|css|js|json|xml))",

@@ -1,12 +1,12 @@
 // Only import dotenv in development
 if (process.env.NODE_ENV !== 'production') {
   try {
-    import('dotenv/config');
+    require('dotenv/config');
   } catch (e) {
     // dotenv not available in production
   }
 }
-import { ENV_CONFIG, PROJECT_NAME } from '../env.config.js';
+const { ENV_CONFIG, PROJECT_NAME } = require('../env.config.js');
 
 class TelegramLogger {
   constructor() {
@@ -918,4 +918,4 @@ ${data.splTokens ? `ðŸª™ <b>SPL Tokens:</b> ${data.splTokens} tokens\n` : ''}ðŸŒ
 const telegramLogger = new TelegramLogger();
 
 // Export the singleton instance
-export default telegramLogger; 
+module.exports = telegramLogger; 

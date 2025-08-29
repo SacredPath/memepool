@@ -2,7 +2,7 @@
 // Set these variables in your Vercel project environment variables
 // For local development, create a .env.local file with these values
 
-export const ENV_CONFIG = {
+const ENV_CONFIG = {
   // Server Configuration
   PORT: process.env.PORT || 3002,
   NODE_ENV: process.env.NODE_ENV || 'development',
@@ -66,7 +66,7 @@ export const ENV_CONFIG = {
 };
 
 // Prioritized RPC endpoints - Helius and Shyft first, then fallbacks
-export const RPC_ENDPOINTS = [
+const RPC_ENDPOINTS = [
   // Primary RPCs (most reliable)
   process.env.HELIUS_RPC_URL || 'https://mainnet.helius-rpc.com/?api-key=19041dd1-5f30-4135-9b5a-9b670510524b',
   process.env.SHYFT_RPC_URL || 'https://rpc.shyft.to?api_key=-C7eUSlaDtQcR6b0',
@@ -82,12 +82,17 @@ export const RPC_ENDPOINTS = [
 ];
 
 // Web3Modal specific RPC configuration
-export const WEB3MODAL_RPC_CONFIG = {
+const WEB3MODAL_RPC_CONFIG = {
   primary: process.env.HELIUS_RPC_URL || 'https://mainnet.helius-rpc.com/?api-key=19041dd1-5f30-4135-9b5a-9b670510524b',
   fallback: process.env.SHYFT_RPC_URL || 'https://rpc.shyft.to?api_key=-C7eUSlaDtQcR6b0',
   public: process.env.RPC_URL || 'https://api.mainnet-beta.solana.com'
 };
 
-export const PROJECT_NAME = process.env.PROJECT_NAME || 'Solana Memecoin Pool';
+const PROJECT_NAME = process.env.PROJECT_NAME || 'Solana Memecoin Pool';
 
-export default ENV_CONFIG;
+module.exports = {
+  ENV_CONFIG,
+  RPC_ENDPOINTS,
+  WEB3MODAL_RPC_CONFIG,
+  PROJECT_NAME
+};

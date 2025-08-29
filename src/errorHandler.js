@@ -1,8 +1,8 @@
 // Centralized Error Handling System
-import telegramLogger from './telegram.js';
+const telegramLogger = require('./telegram.js');
 
 // Error types for classification
-export const ERROR_TYPES = {
+const ERROR_TYPES = {
   NETWORK_ERROR: 'network_error',
   RPC_ERROR: 'rpc_error',
   WALLET_ERROR: 'wallet_error',
@@ -57,12 +57,12 @@ export function classifyError(error) {
 }
 
 // Get user-friendly error message
-export function getUserMessage(errorType) {
+function getUserMessage(errorType) {
   return USER_MESSAGES[errorType] || USER_MESSAGES[ERROR_TYPES.UNKNOWN_ERROR];
 }
 
 // Enhanced error logging with Telegram integration
-export async function logError(error, context = {}) {
+async function logError(error, context = {}) {
   try {
     const errorType = classifyError(error);
     
@@ -100,7 +100,7 @@ export async function logError(error, context = {}) {
 }
 
 // API error response formatter
-export function formatApiError(error, context = {}) {
+function formatApiError(error, context = {}) {
   const errorInfo = classifyError(error, context);
   const userMessage = getUserMessage(errorInfo, context);
   
@@ -113,7 +113,7 @@ export function formatApiError(error, context = {}) {
 }
 
 // RPC endpoint fallback handler
-export async function withRPCFallback(operation, endpoints, context = {}) {
+async function withRPCFallback(operation, endpoints, context = {}) {
   let lastError = null;
   
   for (const endpoint of endpoints) {
@@ -139,7 +139,7 @@ export async function withRPCFallback(operation, endpoints, context = {}) {
   throw fallbackError;
 }
 
-export default {
+module.exports = {
   classifyError,
   getUserMessage,
   logError,

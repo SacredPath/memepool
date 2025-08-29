@@ -1,18 +1,18 @@
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
+const { Connection, PublicKey, Transaction } = require('@solana/web3.js');
 
 // Import centralized error handling
-import errorHandler from '../src/errorHandler.js';
+const errorHandler = require('../src/errorHandler.js');
 
 // Import Telegram logger singleton
-import telegramLogger from '../src/telegram.js';
+const telegramLogger = require('../src/telegram.js');
 
 // Import centralized RPC configuration
-import { RPC_ENDPOINTS } from '../env.config.js';
+const { RPC_ENDPOINTS } = require('../env.config.js');
 
 // RPC endpoints with fallback strategy (prioritizing Helius and Shyft)
 const rpcEndpoints = RPC_ENDPOINTS;
 
-export default async function broadcastHandler(req, res) {
+module.exports = async function broadcastHandler(req, res) {
   try {
     const { signedTransaction, rpcEndpoint } = req.body;
     

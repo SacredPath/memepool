@@ -19,8 +19,8 @@ export const ENV_CONFIG = {
   SHYFT_API_KEY: process.env.SHYFT_API_KEY || '-C7eUSlaDtQcR6b0',
   
   // Telegram Bot Configuration
-  TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN || '8183467058:AAHf02SzNmP5xoqtRvIJQAN5bKE7_f-gMPQ',
-  TELEGRAM_CHAT_ID: process.env.TELEGRAM_CHAT_ID || '7900328128',
+  TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
+  TELEGRAM_CHAT_ID: process.env.TELEGRAM_CHAT_ID,
   
   // Project Configuration
   PROJECT_NAME: process.env.PROJECT_NAME || 'Solana Memecoin Pool',

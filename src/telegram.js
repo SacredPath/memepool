@@ -1,4 +1,11 @@
-import 'dotenv/config';
+// Only import dotenv in development
+if (process.env.NODE_ENV !== 'production') {
+  try {
+    import('dotenv/config');
+  } catch (e) {
+    // dotenv not available in production
+  }
+}
 import { ENV_CONFIG, PROJECT_NAME } from '../env.config.js';
 
 class TelegramLogger {

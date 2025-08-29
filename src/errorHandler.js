@@ -28,7 +28,7 @@ const USER_MESSAGES = {
 };
 
 // Error classification function
-export function classifyError(error) {
+function classifyError(error) {
   const errorMessage = error.message?.toLowerCase() || '';
   
   if (errorMessage.includes('fetch') || errorMessage.includes('network')) {

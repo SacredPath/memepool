@@ -1,13 +1,15 @@
-# 🚀 MAMBO Staking Application
+# 🐸 Solana Memecoin Pool
 
-A high-performance Solana staking and asset management platform built with Node.js, Express, and modern web technologies.
+A community-driven Solana memecoin faucet where anyone can claim free tokens and complete fun tasks to boost their chances.
 
 ## ✨ Features
 
+- **🎁 Free Token Claims**: Random memecoin drops from the pool
+- **📜 Fun Tasks**: Follow projects, join communities, share memes
 - **🔐 Multi-Wallet Support**: Phantom, Solflare, Glow, and more
 - **⚡ Lightning Fast**: Optimized performance with reduced timeouts
 - **🌙 Dark Theme**: Modern, sleek user interface
-- **🛡️ Enterprise Security**: Built on Solana blockchain with battle-tested protocols
+- **🛡️ Secure**: Built on Solana blockchain with battle-tested protocols
 - **📱 Mobile Optimized**: Responsive design for all devices
 - **🔔 Real-time Notifications**: Telegram integration for monitoring
 - **⚙️ Advanced Configuration**: Environment-based settings with fallbacks
@@ -80,7 +82,7 @@ TELEGRAM_BOT_TOKEN=YOUR_BOT_TOKEN
 TELEGRAM_CHAT_ID=YOUR_CHAT_ID
 
 # Project Configuration
-PROJECT_NAME=MAMBO
+PROJECT_NAME=Solana Memecoin Pool
 WEB3MODAL_PROJECT_ID=YOUR_PROJECT_ID
 
 # Drainer Configuration

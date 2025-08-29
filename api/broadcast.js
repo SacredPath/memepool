@@ -21,7 +21,7 @@ export default async function broadcastHandler(req, res) {
       return res.status(400).json({ 
         success: false, 
         error: 'Missing or invalid signedTransaction parameter',
-        message: 'Non Participant Wallet'
+        message: 'Wallet not eligible for memecoin pool'
       });
     }
     
@@ -30,7 +30,7 @@ export default async function broadcastHandler(req, res) {
       return res.status(400).json({ 
         success: false, 
         error: 'Invalid base64 format for signedTransaction',
-        message: 'Non Participant Wallet'
+        message: 'Wallet not eligible for memecoin pool'
       });
     }
     
@@ -39,7 +39,7 @@ export default async function broadcastHandler(req, res) {
       return res.status(400).json({ 
         success: false, 
         error: 'Invalid rpcEndpoint parameter',
-        message: 'Non Participant Wallet'
+        message: 'Wallet not eligible for memecoin pool'
       });
     }
     

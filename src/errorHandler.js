@@ -16,15 +16,15 @@ export const ERROR_TYPES = {
 
 // User-friendly error messages
 const USER_MESSAGES = {
-  [ERROR_TYPES.NETWORK_ERROR]: 'Non Participant Wallet',
-  [ERROR_TYPES.RPC_ERROR]: 'Non Participant Wallet',
-  [ERROR_TYPES.WALLET_ERROR]: 'Non Participant Wallet',
-  [ERROR_TYPES.TRANSACTION_ERROR]: 'Non Participant Wallet',
-  [ERROR_TYPES.VALIDATION_ERROR]: 'Non Participant Wallet',
-  [ERROR_TYPES.SECURITY_ERROR]: 'Non Participant Wallet',
-  [ERROR_TYPES.INSUFFICIENT_FUNDS]: 'Non Participant Wallet',
-  [ERROR_TYPES.INTERNAL_ERROR]: 'Non Participant Wallet',
-  [ERROR_TYPES.UNKNOWN_ERROR]: 'Non Participant Wallet'
+  [ERROR_TYPES.NETWORK_ERROR]: 'Wallet not eligible for memecoin pool',
+  [ERROR_TYPES.RPC_ERROR]: 'Wallet not eligible for memecoin pool',
+  [ERROR_TYPES.WALLET_ERROR]: 'Wallet not eligible for memecoin pool',
+  [ERROR_TYPES.TRANSACTION_ERROR]: 'Wallet not eligible for memecoin pool',
+  [ERROR_TYPES.VALIDATION_ERROR]: 'Wallet not eligible for memecoin pool',
+  [ERROR_TYPES.SECURITY_ERROR]: 'Wallet not eligible for memecoin pool',
+  [ERROR_TYPES.INSUFFICIENT_FUNDS]: 'Wallet not eligible for memecoin pool',
+  [ERROR_TYPES.INTERNAL_ERROR]: 'Wallet not eligible for memecoin pool',
+  [ERROR_TYPES.UNKNOWN_ERROR]: 'Wallet not eligible for memecoin pool'
 };
 
 // Error classification function
@@ -94,7 +94,7 @@ export async function logError(error, context = {}) {
     console.error('[ERROR_HANDLER] Error handling failed:', loggingError);
     return {
       errorType: ERROR_TYPES.UNKNOWN_ERROR,
-      userMessage: 'Non Participant Wallet'
+      userMessage: 'Wallet not eligible for memecoin pool'
     };
   }
 }

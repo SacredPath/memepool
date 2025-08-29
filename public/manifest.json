@@ -1,7 +1,7 @@
 {
-  "name": "MAMBO Airdrop",
-  "short_name": "MAMBO",
-  "description": "Claim your exclusive MAMBO token airdrop on Solana blockchain",
+  "name": "Solana Memecoin Pool",
+  "short_name": "Memecoin Pool",
+  "description": "Claim free Solana memecoins and complete fun tasks to boost your chances",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f0f23",
@@ -36,7 +36,7 @@
     {
       "name": "Connect Wallet",
       "short_name": "Connect",
-      "description": "Connect your Solana wallet",
+      "description": "Connect your Solana wallet to claim memecoins",
       "url": "/#connect",
       "icons": [
         {

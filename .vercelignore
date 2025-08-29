@@ -1,0 +1,24 @@
+# Don't ignore the public folder - it contains static assets
+!public/
+!public/*.png
+!public/*.ico
+!public/*.json
+!public/*.xml
+
+# Don't ignore logo and favicon files
+!logo.png
+!favicon.ico
+
+# Don't ignore wallet logos
+!phantom-logo.png
+!backpack-logo.png
+!solflare-logo.png
+!exodus-logo.png
+!glow-logo.png
+
+# Ignore development files
+node_modules/
+.env
+.env.local
+.DS_Store
+*.log

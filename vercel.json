@@ -1,7 +1,16 @@
 {
   "version": 2,
   "name": "solana-memecoin-pool",
-  "public": true,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    }
+  ],
   "functions": {
     "api/health.js": {
       "maxDuration": 10
@@ -51,49 +60,63 @@
       "src": "/logo.png",
       "dest": "/public/logo.png",
       "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
+        "Content-Type": "image/png",
+        "Cache-Control": "public, max-age=31536000"
       }
     },
     {
       "src": "/favicon.ico",
       "dest": "/public/favicon.ico",
       "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
+        "Content-Type": "image/x-icon",
+        "Cache-Control": "public, max-age=31536000"
       }
     },
     {
       "src": "/phantom-logo.png",
       "dest": "/public/phantom-logo.png",
       "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
+        "Content-Type": "image/png",
+        "Cache-Control": "public, max-age=31536000"
       }
     },
     {
       "src": "/backpack-logo.png",
       "dest": "/public/backpack-logo.png",
       "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
+        "Content-Type": "image/png",
+        "Cache-Control": "public, max-age=31536000"
       }
     },
     {
       "src": "/solflare-logo.png",
       "dest": "/public/solflare-logo.png",
       "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
+        "Content-Type": "image/png",
+        "Cache-Control": "public, max-age=31536000"
       }
     },
     {
       "src": "/exodus-logo.png",
       "dest": "/public/exodus-logo.png",
       "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
+        "Content-Type": "image/png",
+        "Cache-Control": "public, max-age=31536000"
       }
     },
     {
       "src": "/glow-logo.png",
       "dest": "/public/glow-logo.png",
       "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
+        "Content-Type": "image/png",
+        "Cache-Control": "public, max-age=31536000"
+      }
+    },
+    {
+      "src": "/(.*\\.(png|ico|jpg|jpeg|gif|svg|css|js|json|xml))",
+      "dest": "/public/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000"
       }
     },
     {

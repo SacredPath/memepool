@@ -40,6 +40,14 @@
       "dest": "/api/broadcast.js"
     },
     {
+      "src": "/logo.png",
+      "dest": "/public/logo.png"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/public/favicon.ico"
+    },
+    {
       "src": "/(.*)",
       "dest": "/public/$1"
     }

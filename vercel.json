@@ -1,6 +1,7 @@
 {
   "version": 2,
   "name": "solana-memecoin-pool",
+  "comment": "FORCE REDEPLOY - API endpoints should now work with explicit routing",
   "builds": [
     {
       "src": "server.js",

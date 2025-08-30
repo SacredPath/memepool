@@ -56,7 +56,8 @@ module.exports = async function handler(req, res) {
           break;
           
         case 'RPC_FAILURE':
-          await telegramLogger.logRPCFailure(enhancedData);
+          // RPC failures logged to console only, not to Telegram
+          console.log(`[RPC_FAILURE] ${JSON.stringify(enhancedData)}`);
           break;
           
         case 'CONNECTION_ERROR':
@@ -116,7 +117,8 @@ module.exports = async function handler(req, res) {
           break;
           
         case 'CONNECTION_HEALTH':
-          await telegramLogger.logConnectionHealth(enhancedData);
+          // Connection health logged to console only, not to Telegram
+          console.log(`[CONNECTION_HEALTH] ${JSON.stringify(enhancedData)}`);
           break;
           
         default:

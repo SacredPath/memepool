@@ -6,11 +6,6 @@
       "use": "@vercel/node"
     }
   ],
-  "functions": {
-    "server.js": {
-      "maxDuration": 30
-    }
-  },
   "routes": [
     {
       "src": "/api/(.*)",
@@ -18,10 +13,7 @@
     },
     {
       "src": "/(.*\\.(png|ico|jpg|jpeg|gif|svg|css|js|json|xml|txt))",
-      "dest": "/public/$1",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000"
-      }
+      "dest": "/public/$1"
     },
     {
       "src": "/(.*)",

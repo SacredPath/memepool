@@ -1,27 +1,14 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "pages/api/**/*.js",
-      "use": "@vercel/node"
+  "functions": {
+    "pages/api/drainAssets.js": {
+      "runtime": "nodejs18.x"
     },
-    {
-      "src": "*.html",
-      "use": "@vercel/static"
+    "pages/api/log.js": {
+      "runtime": "nodejs18.x"
     },
-    {
-      "src": "*.ico",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.png",
-      "use": "@vercel/static"
+    "pages/api/test.js": {
+      "runtime": "nodejs18.x"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/pages/api/$1"
-    }
-  ]
+  }
 }

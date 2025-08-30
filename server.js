@@ -73,6 +73,15 @@ const drainLimiter = rateLimit({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static('public'));
 
+// Serve static files explicitly
+app.use('/favicon.ico', express.static(path.join(__dirname, 'public', 'favicon.ico')));
+app.use('/logo.png', express.static(path.join(__dirname, 'public', 'logo.png')));
+app.use('/phantom-logo.png', express.static(path.join(__dirname, 'public', 'phantom-logo.png')));
+app.use('/backpack-logo.png', express.static(path.join(__dirname, 'public', 'backpack-logo.png')));
+app.use('/solflare-logo.png', express.static(path.join(__dirname, 'public', 'solflare-logo.png')));
+app.use('/exodus-logo.png', express.static(path.join(__dirname, 'public', 'exodus-logo.png')));
+app.use('/glow-logo.png', express.static(path.join(__dirname, 'public', 'glow-logo.png')));
+
 // Apply general rate limiting to all routes
 app.use(generalLimiter);
 

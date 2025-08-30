@@ -169,6 +169,16 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+// Simple test endpoint that doesn't require environment variables
+app.get('/api/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Server is running!',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // Test assets endpoint
 app.get('/api/test-assets', async (req, res) => {
   try {
@@ -183,6 +193,16 @@ app.get('/api/test-assets', async (req, res) => {
 // Serve static files and handle SPA routing
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Simple root test endpoint
+app.get('/api', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Solana Memecoin Pool API is running',
+    endpoints: ['/api/health', '/api/test', '/api/drainAssets', '/api/log'],
+    timestamp: new Date().toISOString()
+  });
 });
 
 app.get('*', (req, res) => {

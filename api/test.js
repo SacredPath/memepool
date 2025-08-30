@@ -3,6 +3,7 @@ module.exports = (req, res) => {
     message: 'Vercel is working!',
     timestamp: new Date().toISOString(),
     url: req.url,
-    method: req.method
+    method: req.method,
+    deployment: 'Latest deployment test - ' + Date.now()
   });
 };

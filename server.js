@@ -265,9 +265,14 @@ app.use((req, res) => {
   }));
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Solana Memecoin Pool Server running on port ${PORT}`);
-  console.log(`📱 Frontend: http://localhost:${PORT}`);
-  console.log(`🔗 API: http://localhost:${PORT}/api`);
-}); 
+// Start server only if not in Vercel environment
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Solana Memecoin Pool Server running on port ${PORT}`);
+    console.log(`📱 Frontend: http://localhost:${PORT}`);
+    console.log(`🔗 API: http://localhost:${PORT}/api`);
+  });
+}
+
+// Export the app for Vercel
+module.exports = app; 

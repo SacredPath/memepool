@@ -180,11 +180,24 @@ app.get('/api/health', async (req, res) => {
 
 // Simple test endpoint that doesn't require environment variables
 app.get('/api/test', (req, res) => {
+  console.log('[TEST] API test endpoint called');
   res.json({
     success: true,
     message: 'Server is running!',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    path: req.path
+  });
+});
+
+// Basic health check without any imports
+app.get('/api/basic', (req, res) => {
+  console.log('[BASIC] Basic health check called');
+  res.json({
+    success: true,
+    message: 'Basic health check passed',
+    timestamp: new Date().toISOString(),
+    path: req.path
   });
 });
 
@@ -201,6 +214,7 @@ app.get('/api/test-assets', async (req, res) => {
 
 // Serve static files and handle SPA routing
 app.get('/', (req, res) => {
+  console.log('[ROOT] Serving index.html for root path');
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 

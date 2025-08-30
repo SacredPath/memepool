@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+const fs = require('fs');
+const path = require('path');
 
 // Vercel build script to ensure public folder is properly handled
 console.log('🚀 Starting Vercel build process...');

@@ -1,8 +1,31 @@
 {
   "version": 2,
-  "functions": {
-    "api/test.js": {
-      "maxDuration": 10
+  "builds": [
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "test.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
     }
-  }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/test.html",
+      "dest": "/test.html"
+    }
+  ]
 }
